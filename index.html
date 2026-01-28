@@ -763,39 +763,46 @@
       debounceTimer = setTimeout(() => fetchCities(query), 300);
     });
     
-    async function fetchCities(query) {
-      cityDropdown.innerHTML = '<div class="city-loading">Searching...</div>';
-      cityDropdown.classList.add('active');
+    // Major cities list for autocomplete
+    const CITIES = [
+      "Sydney, Australia", "Melbourne, Australia", "Brisbane, Australia", "Perth, Australia", "Adelaide, Australia",
+      "Auckland, New Zealand", "Wellington, New Zealand",
+      "London, United Kingdom", "Manchester, United Kingdom", "Birmingham, United Kingdom", "Edinburgh, United Kingdom",
+      "New York, United States", "Los Angeles, United States", "Chicago, United States", "San Francisco, United States", 
+      "Seattle, United States", "Boston, United States", "Miami, United States", "Austin, United States", "Denver, United States",
+      "Washington DC, United States", "Houston, United States", "Dallas, United States", "Atlanta, United States",
+      "Toronto, Canada", "Vancouver, Canada", "Montreal, Canada", "Calgary, Canada",
+      "Mumbai, India", "Delhi, India", "Bangalore, India", "Hyderabad, India", "Chennai, India", "Pune, India", "Kolkata, India",
+      "Singapore", "Hong Kong", "Dubai, UAE", "Abu Dhabi, UAE",
+      "Dublin, Ireland", "Paris, France", "Berlin, Germany", "Munich, Germany", "Amsterdam, Netherlands",
+      "Zurich, Switzerland", "Geneva, Switzerland", "Stockholm, Sweden", "Copenhagen, Denmark", "Oslo, Norway",
+      "Tokyo, Japan", "Seoul, South Korea", "Shanghai, China", "Beijing, China",
+      "Johannesburg, South Africa", "Cape Town, South Africa",
+      "São Paulo, Brazil", "Rio de Janeiro, Brazil", "Mexico City, Mexico", "Buenos Aires, Argentina"
+    ];
+    
+    function fetchCities(query) {
+      const lowerQuery = query.toLowerCase();
+      const matches = CITIES.filter(city => 
+        city.toLowerCase().includes(lowerQuery)
+      ).slice(0, 7);
       
-      try {
-        // Using Teleport API (free, no auth required)
-        const response = await fetch(
-          `https://api.teleport.org/api/cities/?search=${encodeURIComponent(query)}&limit=7`
-        );
-        
-        if (!response.ok) throw new Error('API error');
-        
-        const data = await response.json();
-        const cities = data._embedded?.['city:search-results'] || [];
-        displayCities(cities);
-      } catch (error) {
-        // Fallback: just let them type freely
-        cityDropdown.classList.remove('active');
-      }
+      displayCities(matches);
     }
     
     function displayCities(cities) {
       if (cities.length === 0) {
-        cityDropdown.innerHTML = '<div class="city-loading">No cities found. You can type manually.</div>';
+        cityDropdown.innerHTML = '<div class="city-loading">Type your city or select from suggestions</div>';
+        cityDropdown.classList.add('active');
         return;
       }
       
       selectedIndex = -1;
       cityDropdown.innerHTML = cities.map((city, index) => {
-        // Teleport API returns matching_full_name like "Sydney, New South Wales, Australia"
-        const display = city.matching_full_name;
-        return `<div class="city-option" data-index="${index}" data-value="${display}">${display}</div>`;
+        return `<div class="city-option" data-index="${index}" data-value="${city}">${city}</div>`;
       }).join('');
+      
+      cityDropdown.classList.add('active');
       
       // Add click handlers
       cityDropdown.querySelectorAll('.city-option').forEach(option => {
