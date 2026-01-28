@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ethos – Made for the intentional</title>
-  <meta name="description" content="A dating app for those who want to find their person. Join the waitlist for early access.">
+  <meta name="description" content="A dating app for those dating with intention. Join the waitlist for early access.">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -104,6 +104,22 @@
       background-position: center;
     }
     
+    /* Subtle dark overlay for better text contrast */
+    .hero-image::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.15) 0%,
+        rgba(0, 0, 0, 0.05) 50%,
+        rgba(0, 0, 0, 0) 100%
+      );
+    }
+    
     .hero-content {
       position: relative;
       z-index: 1;
@@ -131,7 +147,7 @@
       color: var(--color-white);
       letter-spacing: -0.01em;
       margin-bottom: 0.75rem;
-      text-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2);
     }
     
     .subheadline {
@@ -139,8 +155,7 @@
       font-size: clamp(1rem, 1.5vw, 1.375rem);
       font-weight: 400;
       color: var(--color-white);
-      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.15);
-      opacity: 0.95;
+      text-shadow: 0 1px 12px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.15);
     }
     
     /* Form Card */
@@ -173,7 +188,16 @@
       font-weight: 400;
       color: var(--color-text-light);
       text-align: center;
-      margin-bottom: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .form-scarcity {
+      font-family: var(--font-serif);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--color-gold);
+      text-align: center;
+      margin-bottom: 1.5rem;
     }
     
     /* Form Elements */
@@ -302,13 +326,14 @@
       transform: none;
     }
     
-    /* Privacy Note */
+    /* Privacy Note - slightly more visible */
     .privacy-note {
       font-family: var(--font-serif);
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
       color: var(--color-text-light);
       text-align: center;
       margin-top: 1rem;
+      opacity: 0.85;
     }
     
     /* Success & Error States */
@@ -493,13 +518,14 @@
       <div class="hero-content">
         <div class="headline-container">
           <h1 class="headline">Made for the<br>intentional.</h1>
-          <p class="subheadline">For those who want to find their person.</p>
+          <p class="subheadline">For those wanting to find their person.</p>
         </div>
         
         <div class="form-container">
           <div class="form-card" id="formCard">
-            <h2 class="form-title">Request Early Access</h2>
+            <h2 class="form-title">Join for Early Access</h2>
             <p class="form-subtitle">Priority access and launch updates.</p>
+            <p class="form-scarcity">Early access is limited.</p>
             
             <div class="form-message" id="formMessage"></div>
             
@@ -560,7 +586,7 @@
               </div>
               
               <button type="submit" class="submit-btn" id="submitBtn">
-                Request Early Access
+                Join Early Access
               </button>
               
               <p class="privacy-note">We respect your privacy. No spam. Ever.</p>
@@ -582,9 +608,9 @@
   </div>
   
   <script>
-    // Supabase configuration - UPDATE THESE VALUES
-    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    // Supabase configuration
+    const SUPABASE_URL = 'https://ecdxgzpjgdosueacomwn.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_7Ef8xN852RGoSgFYiFJ6Sw_QMVIFzfX';
     
     const form = document.getElementById('waitlistForm');
     const formCard = document.getElementById('formCard');
@@ -596,7 +622,7 @@
       
       // Disable button and show loading state
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Requesting...';
+      submitBtn.textContent = 'Joining...';
       formMessage.className = 'form-message';
       formMessage.style.display = 'none';
       
@@ -642,7 +668,7 @@
       
       // Re-enable button
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Request Early Access';
+      submitBtn.textContent = 'Join Early Access';
     });
     
     function showError(message) {
