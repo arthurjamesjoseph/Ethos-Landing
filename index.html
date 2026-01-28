@@ -652,11 +652,11 @@
           formCard.classList.add('submitted');
         } else if (response.status === 409) {
           // Duplicate email
-          showError('This email is already on our waitlist!');
+          showAlreadyRegistered();
         } else {
           const error = await response.json();
           if (error.message?.includes('duplicate') || error.message?.includes('unique')) {
-            showError('This email is already on our waitlist!');
+            showAlreadyRegistered();
           } else {
             showError('Something went wrong. Please try again.');
           }
@@ -674,6 +674,22 @@
     function showError(message) {
       formMessage.textContent = message;
       formMessage.className = 'form-message error';
+      formMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    
+    function showAlreadyRegistered() {
+      // Show a friendly "already registered" state instead of the form
+      formCard.innerHTML = `
+        <div class="success-content" style="display: block;">
+          <div class="success-icon" style="background: rgba(181, 161, 120, 0.15);">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="color: var(--color-gold);">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h3 class="success-title">You're already on the list!</h3>
+          <p class="success-text">We have your details and will be in touch soon with early access updates.</p>
+        </div>
+      `;
     }
   </script>
 </body>
