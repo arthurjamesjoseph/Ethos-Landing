@@ -437,12 +437,9 @@
   </div>
   
   <script>
-    // Valid beta codes - add your codes here
+    // Valid beta codes (case-insensitive)
     const VALID_CODES = [
-      'ETHOS2025',
-      'EARLYFRIEND',
-      'BETA-ACCESS'
-      // Add more codes as needed
+      'noswipes'
     ];
     
     const form = document.getElementById('betaForm');
@@ -453,16 +450,16 @@
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       
-      const code = codeInput.value.trim().toUpperCase();
+      const code = codeInput.value.trim().toLowerCase();
       
       // Hide any previous error
       formMessage.className = 'form-message';
       formMessage.style.display = 'none';
       
-      // Check if code is valid
-      if (VALID_CODES.map(c => c.toUpperCase()).includes(code)) {
-        // Set cookie that works across all subdomains
-        document.cookie = `beta_access=true; domain=.ethosapp.co; path=/; max-age=${60 * 60 * 24 * 365}; secure; samesite=lax`;
+      // Check if code is valid (case-insensitive)
+      if (VALID_CODES.map(c => c.toLowerCase()).includes(code)) {
+        // Set cookie that works across all subdomains (14 days)
+        document.cookie = "beta_access=true; domain=.ethosapp.co; path=/; max-age=1209600; secure; samesite=lax";
         
         // Show loading state
         submitBtn.disabled = true;
@@ -477,11 +474,6 @@
         codeInput.focus();
         codeInput.select();
       }
-    });
-    
-    // Auto-uppercase as user types
-    codeInput.addEventListener('input', (e) => {
-      e.target.value = e.target.value.toUpperCase();
     });
   </script>
 </body>
