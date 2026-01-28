@@ -6,6 +6,10 @@
   <title>Ethos – Made for the intentional</title>
   <meta name="description" content="A dating app for those dating with intention. Join the waitlist for early access.">
   
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+  <link rel="apple-touch-icon" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+  
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -763,22 +767,117 @@
       debounceTimer = setTimeout(() => fetchCities(query), 300);
     });
     
-    // Major cities list for autocomplete
+    // Major cities list for autocomplete (300+ cities worldwide)
     const CITIES = [
+      // Australia
       "Sydney, Australia", "Melbourne, Australia", "Brisbane, Australia", "Perth, Australia", "Adelaide, Australia",
-      "Auckland, New Zealand", "Wellington, New Zealand",
+      "Gold Coast, Australia", "Canberra, Australia", "Newcastle, Australia", "Hobart, Australia", "Darwin, Australia",
+      "Wollongong, Australia", "Geelong, Australia", "Townsville, Australia", "Cairns, Australia", "Toowoomba, Australia",
+      // New Zealand
+      "Auckland, New Zealand", "Wellington, New Zealand", "Christchurch, New Zealand", "Hamilton, New Zealand", "Dunedin, New Zealand",
+      // United Kingdom
       "London, United Kingdom", "Manchester, United Kingdom", "Birmingham, United Kingdom", "Edinburgh, United Kingdom",
-      "New York, United States", "Los Angeles, United States", "Chicago, United States", "San Francisco, United States", 
-      "Seattle, United States", "Boston, United States", "Miami, United States", "Austin, United States", "Denver, United States",
-      "Washington DC, United States", "Houston, United States", "Dallas, United States", "Atlanta, United States",
-      "Toronto, Canada", "Vancouver, Canada", "Montreal, Canada", "Calgary, Canada",
-      "Mumbai, India", "Delhi, India", "Bangalore, India", "Hyderabad, India", "Chennai, India", "Pune, India", "Kolkata, India",
-      "Singapore", "Hong Kong", "Dubai, UAE", "Abu Dhabi, UAE",
-      "Dublin, Ireland", "Paris, France", "Berlin, Germany", "Munich, Germany", "Amsterdam, Netherlands",
-      "Zurich, Switzerland", "Geneva, Switzerland", "Stockholm, Sweden", "Copenhagen, Denmark", "Oslo, Norway",
-      "Tokyo, Japan", "Seoul, South Korea", "Shanghai, China", "Beijing, China",
-      "Johannesburg, South Africa", "Cape Town, South Africa",
-      "São Paulo, Brazil", "Rio de Janeiro, Brazil", "Mexico City, Mexico", "Buenos Aires, Argentina"
+      "Glasgow, United Kingdom", "Liverpool, United Kingdom", "Bristol, United Kingdom", "Leeds, United Kingdom",
+      "Sheffield, United Kingdom", "Newcastle, United Kingdom", "Nottingham, United Kingdom", "Southampton, United Kingdom",
+      "Brighton, United Kingdom", "Cambridge, United Kingdom", "Oxford, United Kingdom", "Cardiff, United Kingdom",
+      "Belfast, United Kingdom", "Leicester, United Kingdom", "Coventry, United Kingdom", "Reading, United Kingdom",
+      // Ireland
+      "Dublin, Ireland", "Cork, Ireland", "Galway, Ireland", "Limerick, Ireland",
+      // United States
+      "New York, United States", "Los Angeles, United States", "Chicago, United States", "Houston, United States",
+      "Phoenix, United States", "Philadelphia, United States", "San Antonio, United States", "San Diego, United States",
+      "Dallas, United States", "San Jose, United States", "Austin, United States", "Jacksonville, United States",
+      "Fort Worth, United States", "Columbus, United States", "Charlotte, United States", "San Francisco, United States",
+      "Indianapolis, United States", "Seattle, United States", "Denver, United States", "Boston, United States",
+      "Nashville, United States", "Portland, United States", "Las Vegas, United States", "Detroit, United States",
+      "Memphis, United States", "Louisville, United States", "Baltimore, United States", "Milwaukee, United States",
+      "Albuquerque, United States", "Tucson, United States", "Fresno, United States", "Sacramento, United States",
+      "Atlanta, United States", "Miami, United States", "Oakland, United States", "Minneapolis, United States",
+      "Cleveland, United States", "Raleigh, United States", "Tampa, United States", "New Orleans, United States",
+      "Pittsburgh, United States", "Cincinnati, United States", "St. Louis, United States", "Orlando, United States",
+      "Washington DC, United States", "Honolulu, United States", "Salt Lake City, United States", "Kansas City, United States",
+      // Canada
+      "Toronto, Canada", "Montreal, Canada", "Vancouver, Canada", "Calgary, Canada", "Edmonton, Canada",
+      "Ottawa, Canada", "Winnipeg, Canada", "Quebec City, Canada", "Hamilton, Canada", "Victoria, Canada",
+      "Halifax, Canada", "Saskatoon, Canada", "Regina, Canada", "Kitchener, Canada", "London, Canada",
+      // India
+      "Mumbai, India", "Delhi, India", "Bangalore, India", "Hyderabad, India", "Chennai, India",
+      "Kolkata, India", "Pune, India", "Ahmedabad, India", "Jaipur, India", "Surat, India",
+      "Lucknow, India", "Kanpur, India", "Nagpur, India", "Indore, India", "Thane, India",
+      "Bhopal, India", "Visakhapatnam, India", "Patna, India", "Vadodara, India", "Ghaziabad, India",
+      "Ludhiana, India", "Agra, India", "Nashik, India", "Faridabad, India", "Meerut, India",
+      "Coimbatore, India", "Kochi, India", "Chandigarh, India", "Goa, India", "Trivandrum, India",
+      // Singapore, Hong Kong, Malaysia
+      "Singapore", "Hong Kong", "Kuala Lumpur, Malaysia", "Penang, Malaysia", "Johor Bahru, Malaysia",
+      // UAE & Middle East
+      "Dubai, UAE", "Abu Dhabi, UAE", "Sharjah, UAE", "Doha, Qatar", "Kuwait City, Kuwait",
+      "Riyadh, Saudi Arabia", "Jeddah, Saudi Arabia", "Manama, Bahrain", "Muscat, Oman", "Amman, Jordan",
+      "Beirut, Lebanon", "Tel Aviv, Israel", "Jerusalem, Israel",
+      // Europe - Western
+      "Paris, France", "Marseille, France", "Lyon, France", "Toulouse, France", "Nice, France", "Bordeaux, France",
+      "Berlin, Germany", "Munich, Germany", "Frankfurt, Germany", "Hamburg, Germany", "Cologne, Germany", "Stuttgart, Germany", "Düsseldorf, Germany",
+      "Amsterdam, Netherlands", "Rotterdam, Netherlands", "The Hague, Netherlands", "Utrecht, Netherlands",
+      "Brussels, Belgium", "Antwerp, Belgium", "Ghent, Belgium",
+      "Zurich, Switzerland", "Geneva, Switzerland", "Basel, Switzerland", "Bern, Switzerland",
+      "Vienna, Austria", "Salzburg, Austria",
+      "Luxembourg City, Luxembourg",
+      // Europe - Southern
+      "Madrid, Spain", "Barcelona, Spain", "Valencia, Spain", "Seville, Spain", "Málaga, Spain", "Bilbao, Spain",
+      "Rome, Italy", "Milan, Italy", "Naples, Italy", "Turin, Italy", "Florence, Italy", "Bologna, Italy", "Venice, Italy",
+      "Lisbon, Portugal", "Porto, Portugal",
+      "Athens, Greece", "Thessaloniki, Greece",
+      // Europe - Northern
+      "Stockholm, Sweden", "Gothenburg, Sweden", "Malmö, Sweden",
+      "Copenhagen, Denmark", "Aarhus, Denmark",
+      "Oslo, Norway", "Bergen, Norway",
+      "Helsinki, Finland", "Tampere, Finland",
+      "Reykjavik, Iceland",
+      // Europe - Eastern
+      "Warsaw, Poland", "Krakow, Poland", "Wroclaw, Poland", "Gdansk, Poland",
+      "Prague, Czech Republic", "Brno, Czech Republic",
+      "Budapest, Hungary",
+      "Bucharest, Romania", "Cluj-Napoca, Romania",
+      "Sofia, Bulgaria",
+      "Belgrade, Serbia",
+      "Zagreb, Croatia", "Split, Croatia",
+      "Ljubljana, Slovenia",
+      "Bratislava, Slovakia",
+      "Tallinn, Estonia", "Riga, Latvia", "Vilnius, Lithuania",
+      "Kyiv, Ukraine", "Lviv, Ukraine",
+      "Moscow, Russia", "St. Petersburg, Russia",
+      // Asia - East
+      "Tokyo, Japan", "Osaka, Japan", "Yokohama, Japan", "Nagoya, Japan", "Kyoto, Japan", "Fukuoka, Japan", "Sapporo, Japan",
+      "Seoul, South Korea", "Busan, South Korea", "Incheon, South Korea",
+      "Beijing, China", "Shanghai, China", "Guangzhou, China", "Shenzhen, China", "Chengdu, China", "Hangzhou, China",
+      "Taipei, Taiwan", "Kaohsiung, Taiwan",
+      // Asia - Southeast
+      "Bangkok, Thailand", "Chiang Mai, Thailand", "Phuket, Thailand",
+      "Ho Chi Minh City, Vietnam", "Hanoi, Vietnam",
+      "Jakarta, Indonesia", "Bali, Indonesia", "Surabaya, Indonesia",
+      "Manila, Philippines", "Cebu, Philippines",
+      "Phnom Penh, Cambodia", "Yangon, Myanmar",
+      // Asia - South
+      "Colombo, Sri Lanka", "Dhaka, Bangladesh", "Kathmandu, Nepal", "Karachi, Pakistan", "Lahore, Pakistan", "Islamabad, Pakistan",
+      // Africa
+      "Johannesburg, South Africa", "Cape Town, South Africa", "Durban, South Africa", "Pretoria, South Africa",
+      "Lagos, Nigeria", "Abuja, Nigeria", "Accra, Ghana", "Nairobi, Kenya", "Addis Ababa, Ethiopia",
+      "Cairo, Egypt", "Alexandria, Egypt", "Casablanca, Morocco", "Marrakech, Morocco", "Tunis, Tunisia",
+      "Dar es Salaam, Tanzania", "Kampala, Uganda", "Kigali, Rwanda",
+      // South America
+      "São Paulo, Brazil", "Rio de Janeiro, Brazil", "Brasília, Brazil", "Salvador, Brazil", "Belo Horizonte, Brazil", "Curitiba, Brazil",
+      "Buenos Aires, Argentina", "Córdoba, Argentina", "Mendoza, Argentina",
+      "Santiago, Chile", "Valparaíso, Chile",
+      "Lima, Peru", "Cusco, Peru",
+      "Bogotá, Colombia", "Medellín, Colombia", "Cartagena, Colombia",
+      "Quito, Ecuador", "Guayaquil, Ecuador",
+      "Caracas, Venezuela",
+      "Montevideo, Uruguay",
+      // Central America & Caribbean
+      "Mexico City, Mexico", "Guadalajara, Mexico", "Monterrey, Mexico", "Cancún, Mexico", "Tijuana, Mexico",
+      "Panama City, Panama", "San José, Costa Rica", "Guatemala City, Guatemala",
+      "Havana, Cuba", "San Juan, Puerto Rico", "Kingston, Jamaica", "Nassau, Bahamas",
+      // Pacific
+      "Suva, Fiji", "Port Moresby, Papua New Guinea"
     ];
     
     function fetchCities(query) {
