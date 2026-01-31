@@ -4,7 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ethos – Made for the intentional</title>
-  <meta name="description" content="A dating app for those dating with intention. Join the waitlist for early access.">
+  <meta name="description" content="Ethos – matchmaking, not swiping. Join the waitlist for early access.">
+  
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ethosapp.co">
+  <meta property="og:title" content="Ethos – Made for the intentional">
+  <meta property="og:description" content="Matchmaking, not swiping. Join the waitlist for early access.">
+  <meta property="og:image" content="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Ethos – Made for the intentional">
+  <meta name="twitter:description" content="Matchmaking, not swiping. Join the waitlist for early access.">
+  <meta name="twitter:image" content="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
   
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
@@ -455,6 +466,87 @@
       font-size: 1rem;
       color: var(--color-text-light);
       line-height: 1.5;
+      margin-bottom: 1.25rem;
+    }
+    
+    /* Share Section */
+    .share-divider {
+      height: 1px;
+      background: var(--color-input-border);
+      margin: 0 0 1.25rem;
+    }
+    
+    .share-label {
+      font-family: var(--font-serif);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--color-text);
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    
+    .share-btn-primary {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-white);
+      background: var(--color-gold);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+    }
+    
+    .share-btn-primary:hover {
+      background: var(--color-gold-hover);
+    }
+    
+    .share-btn-primary:active {
+      transform: scale(0.99);
+    }
+    
+    .share-btn-primary svg {
+      width: 18px;
+      height: 18px;
+    }
+    
+    .share-btn-secondary {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-family: var(--font-serif);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--color-gold);
+      background: transparent;
+      border: 1.5px solid var(--color-gold);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .share-btn-secondary:hover {
+      background: rgba(181, 161, 120, 0.08);
+    }
+    
+    .share-btn-secondary svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .share-btn-secondary.copied {
+      color: var(--color-success);
+      border-color: var(--color-success);
     }
     
     /* Desktop large screens */
@@ -654,6 +746,23 @@
               </div>
               <h3 class="success-title">You're on the list!</h3>
               <p class="success-text">We'll be in touch soon with early access details. Thank you for your interest in Ethos.</p>
+              
+              <div class="share-divider"></div>
+              <p class="share-label">Know someone who should be on this list?</p>
+              
+              <button class="share-btn-primary" id="shareBtn" onclick="handleShare()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" />
+                </svg>
+                Share with Friends
+              </button>
+              
+              <button class="share-btn-secondary" id="copyBtn" onclick="handleCopyLink()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101M10.172 13.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                </svg>
+                Copy link
+              </button>
             </div>
           </div>
         </div>
@@ -767,126 +876,133 @@
       debounceTimer = setTimeout(() => fetchCities(query), 300);
     });
     
-    // Major cities list for autocomplete (300+ cities worldwide)
-    const CITIES = [
-      // Australia
-      "Sydney, Australia", "Melbourne, Australia", "Brisbane, Australia", "Perth, Australia", "Adelaide, Australia",
-      "Gold Coast, Australia", "Canberra, Australia", "Newcastle, Australia", "Hobart, Australia", "Darwin, Australia",
-      "Wollongong, Australia", "Geelong, Australia", "Townsville, Australia", "Cairns, Australia", "Toowoomba, Australia",
-      // New Zealand
-      "Auckland, New Zealand", "Wellington, New Zealand", "Christchurch, New Zealand", "Hamilton, New Zealand", "Dunedin, New Zealand",
-      // United Kingdom
-      "London, United Kingdom", "Manchester, United Kingdom", "Birmingham, United Kingdom", "Edinburgh, United Kingdom",
-      "Glasgow, United Kingdom", "Liverpool, United Kingdom", "Bristol, United Kingdom", "Leeds, United Kingdom",
-      "Sheffield, United Kingdom", "Newcastle, United Kingdom", "Nottingham, United Kingdom", "Southampton, United Kingdom",
-      "Brighton, United Kingdom", "Cambridge, United Kingdom", "Oxford, United Kingdom", "Cardiff, United Kingdom",
-      "Belfast, United Kingdom", "Leicester, United Kingdom", "Coventry, United Kingdom", "Reading, United Kingdom",
-      // Ireland
-      "Dublin, Ireland", "Cork, Ireland", "Galway, Ireland", "Limerick, Ireland",
-      // United States
-      "New York, United States", "Los Angeles, United States", "Chicago, United States", "Houston, United States",
-      "Phoenix, United States", "Philadelphia, United States", "San Antonio, United States", "San Diego, United States",
-      "Dallas, United States", "San Jose, United States", "Austin, United States", "Jacksonville, United States",
-      "Fort Worth, United States", "Columbus, United States", "Charlotte, United States", "San Francisco, United States",
-      "Indianapolis, United States", "Seattle, United States", "Denver, United States", "Boston, United States",
-      "Nashville, United States", "Portland, United States", "Las Vegas, United States", "Detroit, United States",
-      "Memphis, United States", "Louisville, United States", "Baltimore, United States", "Milwaukee, United States",
-      "Albuquerque, United States", "Tucson, United States", "Fresno, United States", "Sacramento, United States",
-      "Atlanta, United States", "Miami, United States", "Oakland, United States", "Minneapolis, United States",
-      "Cleveland, United States", "Raleigh, United States", "Tampa, United States", "New Orleans, United States",
-      "Pittsburgh, United States", "Cincinnati, United States", "St. Louis, United States", "Orlando, United States",
-      "Washington DC, United States", "Honolulu, United States", "Salt Lake City, United States", "Kansas City, United States",
-      // Canada
-      "Toronto, Canada", "Montreal, Canada", "Vancouver, Canada", "Calgary, Canada", "Edmonton, Canada",
-      "Ottawa, Canada", "Winnipeg, Canada", "Quebec City, Canada", "Hamilton, Canada", "Victoria, Canada",
-      "Halifax, Canada", "Saskatoon, Canada", "Regina, Canada", "Kitchener, Canada", "London, Canada",
-      // India
-      "Mumbai, India", "Delhi, India", "Bangalore, India", "Hyderabad, India", "Chennai, India",
-      "Kolkata, India", "Pune, India", "Ahmedabad, India", "Jaipur, India", "Surat, India",
-      "Lucknow, India", "Kanpur, India", "Nagpur, India", "Indore, India", "Thane, India",
-      "Bhopal, India", "Visakhapatnam, India", "Patna, India", "Vadodara, India", "Ghaziabad, India",
-      "Ludhiana, India", "Agra, India", "Nashik, India", "Faridabad, India", "Meerut, India",
-      "Coimbatore, India", "Kochi, India", "Chandigarh, India", "Goa, India", "Trivandrum, India",
-      // Singapore, Hong Kong, Malaysia
-      "Singapore", "Hong Kong", "Kuala Lumpur, Malaysia", "Penang, Malaysia", "Johor Bahru, Malaysia",
-      // UAE & Middle East
-      "Dubai, UAE", "Abu Dhabi, UAE", "Sharjah, UAE", "Doha, Qatar", "Kuwait City, Kuwait",
-      "Riyadh, Saudi Arabia", "Jeddah, Saudi Arabia", "Manama, Bahrain", "Muscat, Oman", "Amman, Jordan",
-      "Beirut, Lebanon", "Tel Aviv, Israel", "Jerusalem, Israel",
-      // Europe - Western
-      "Paris, France", "Marseille, France", "Lyon, France", "Toulouse, France", "Nice, France", "Bordeaux, France",
-      "Berlin, Germany", "Munich, Germany", "Frankfurt, Germany", "Hamburg, Germany", "Cologne, Germany", "Stuttgart, Germany", "Düsseldorf, Germany",
-      "Amsterdam, Netherlands", "Rotterdam, Netherlands", "The Hague, Netherlands", "Utrecht, Netherlands",
-      "Brussels, Belgium", "Antwerp, Belgium", "Ghent, Belgium",
-      "Zurich, Switzerland", "Geneva, Switzerland", "Basel, Switzerland", "Bern, Switzerland",
-      "Vienna, Austria", "Salzburg, Austria",
-      "Luxembourg City, Luxembourg",
-      // Europe - Southern
-      "Madrid, Spain", "Barcelona, Spain", "Valencia, Spain", "Seville, Spain", "Málaga, Spain", "Bilbao, Spain",
-      "Rome, Italy", "Milan, Italy", "Naples, Italy", "Turin, Italy", "Florence, Italy", "Bologna, Italy", "Venice, Italy",
-      "Lisbon, Portugal", "Porto, Portugal",
-      "Athens, Greece", "Thessaloniki, Greece",
-      // Europe - Northern
-      "Stockholm, Sweden", "Gothenburg, Sweden", "Malmö, Sweden",
-      "Copenhagen, Denmark", "Aarhus, Denmark",
-      "Oslo, Norway", "Bergen, Norway",
-      "Helsinki, Finland", "Tampere, Finland",
-      "Reykjavik, Iceland",
-      // Europe - Eastern
-      "Warsaw, Poland", "Krakow, Poland", "Wroclaw, Poland", "Gdansk, Poland",
-      "Prague, Czech Republic", "Brno, Czech Republic",
-      "Budapest, Hungary",
-      "Bucharest, Romania", "Cluj-Napoca, Romania",
-      "Sofia, Bulgaria",
-      "Belgrade, Serbia",
-      "Zagreb, Croatia", "Split, Croatia",
-      "Ljubljana, Slovenia",
-      "Bratislava, Slovakia",
-      "Tallinn, Estonia", "Riga, Latvia", "Vilnius, Lithuania",
-      "Kyiv, Ukraine", "Lviv, Ukraine",
-      "Moscow, Russia", "St. Petersburg, Russia",
-      // Asia - East
-      "Tokyo, Japan", "Osaka, Japan", "Yokohama, Japan", "Nagoya, Japan", "Kyoto, Japan", "Fukuoka, Japan", "Sapporo, Japan",
-      "Seoul, South Korea", "Busan, South Korea", "Incheon, South Korea",
-      "Beijing, China", "Shanghai, China", "Guangzhou, China", "Shenzhen, China", "Chengdu, China", "Hangzhou, China",
-      "Taipei, Taiwan", "Kaohsiung, Taiwan",
-      // Asia - Southeast
-      "Bangkok, Thailand", "Chiang Mai, Thailand", "Phuket, Thailand",
-      "Ho Chi Minh City, Vietnam", "Hanoi, Vietnam",
-      "Jakarta, Indonesia", "Bali, Indonesia", "Surabaya, Indonesia",
-      "Manila, Philippines", "Cebu, Philippines",
-      "Phnom Penh, Cambodia", "Yangon, Myanmar",
-      // Asia - South
-      "Colombo, Sri Lanka", "Dhaka, Bangladesh", "Kathmandu, Nepal", "Karachi, Pakistan", "Lahore, Pakistan", "Islamabad, Pakistan",
-      // Africa
-      "Johannesburg, South Africa", "Cape Town, South Africa", "Durban, South Africa", "Pretoria, South Africa",
-      "Lagos, Nigeria", "Abuja, Nigeria", "Accra, Ghana", "Nairobi, Kenya", "Addis Ababa, Ethiopia",
-      "Cairo, Egypt", "Alexandria, Egypt", "Casablanca, Morocco", "Marrakech, Morocco", "Tunis, Tunisia",
-      "Dar es Salaam, Tanzania", "Kampala, Uganda", "Kigali, Rwanda",
-      // South America
-      "São Paulo, Brazil", "Rio de Janeiro, Brazil", "Brasília, Brazil", "Salvador, Brazil", "Belo Horizonte, Brazil", "Curitiba, Brazil",
-      "Buenos Aires, Argentina", "Córdoba, Argentina", "Mendoza, Argentina",
-      "Santiago, Chile", "Valparaíso, Chile",
-      "Lima, Peru", "Cusco, Peru",
-      "Bogotá, Colombia", "Medellín, Colombia", "Cartagena, Colombia",
-      "Quito, Ecuador", "Guayaquil, Ecuador",
-      "Caracas, Venezuela",
-      "Montevideo, Uruguay",
-      // Central America & Caribbean
-      "Mexico City, Mexico", "Guadalajara, Mexico", "Monterrey, Mexico", "Cancún, Mexico", "Tijuana, Mexico",
-      "Panama City, Panama", "San José, Costa Rica", "Guatemala City, Guatemala",
-      "Havana, Cuba", "San Juan, Puerto Rico", "Kingston, Jamaica", "Nassau, Bahamas",
-      // Pacific
-      "Suva, Fiji", "Port Moresby, Papua New Guinea"
+    // Major cities with population rank for sorting (lower = bigger city)
+    // Each entry: [name, population_rank]
+    const CITIES_RANKED = [
+      // Global megacities (rank 1-20)
+      ["Tokyo, Japan", 1], ["Delhi, India", 2], ["Shanghai, China", 3], ["São Paulo, Brazil", 4],
+      ["Mexico City, Mexico", 5], ["Cairo, Egypt", 6], ["Mumbai, India", 7], ["Beijing, China", 8],
+      ["Dhaka, Bangladesh", 9], ["Osaka, Japan", 10], ["New York, United States", 11], ["Karachi, Pakistan", 12],
+      ["Buenos Aires, Argentina", 13], ["Istanbul, Turkey", 14], ["Kolkata, India", 15], ["Lagos, Nigeria", 16],
+      ["Manila, Philippines", 17], ["Guangzhou, China", 18], ["Rio de Janeiro, Brazil", 19], ["Lahore, Pakistan", 20],
+      // Major world cities (rank 21-80)
+      ["Bangalore, India", 21], ["Moscow, Russia", 22], ["Shenzhen, China", 23], ["Jakarta, Indonesia", 24],
+      ["London, United Kingdom", 25], ["Bangkok, Thailand", 26], ["Chennai, India", 27], ["Lima, Peru", 28],
+      ["Bogotá, Colombia", 29], ["Ho Chi Minh City, Vietnam", 30], ["Hyderabad, India", 31], ["Seoul, South Korea", 32],
+      ["Chengdu, China", 33], ["Hangzhou, China", 34], ["Pune, India", 35], ["Ahmedabad, India", 36],
+      ["Riyadh, Saudi Arabia", 37], ["Jaipur, India", 38], ["Surat, India", 39], ["Hong Kong", 40],
+      ["Singapore", 41], ["Jeddah, Saudi Arabia", 42], ["Lucknow, India", 43], ["Kanpur, India", 44],
+      ["Nagpur, India", 45], ["Indore, India", 46], ["Hanoi, Vietnam", 47], ["Johannesburg, South Africa", 48],
+      ["Los Angeles, United States", 49], ["Chicago, United States", 50], ["Toronto, Canada", 51],
+      ["Sydney, Australia", 52], ["Melbourne, Australia", 53], ["Paris, France", 54], ["Berlin, Germany", 55],
+      ["Madrid, Spain", 56], ["Dubai, UAE", 57], ["Rome, Italy", 58], ["Houston, United States", 59],
+      ["Taipei, Taiwan", 60], ["Nairobi, Kenya", 61], ["Addis Ababa, Ethiopia", 62], ["Dar es Salaam, Tanzania", 63],
+      ["Yangon, Myanmar", 64], ["Colombo, Sri Lanka", 65], ["Cape Town, South Africa", 66],
+      ["Phoenix, United States", 67], ["Philadelphia, United States", 68], ["San Antonio, United States", 69],
+      ["San Diego, United States", 70], ["Dallas, United States", 71], ["Busan, South Korea", 72],
+      ["Barcelona, Spain", 73], ["Kathmandu, Nepal", 74], ["Islamabad, Pakistan", 75],
+      ["Accra, Ghana", 76], ["Abuja, Nigeria", 77], ["Kampala, Uganda", 78], ["Casablanca, Morocco", 79],
+      ["Alexandria, Egypt", 80],
+      // Large cities (rank 81-150)
+      ["Milan, Italy", 81], ["Brisbane, Australia", 82], ["Montreal, Canada", 83], ["Vancouver, Canada", 84],
+      ["Perth, Australia", 85], ["San Jose, United States", 86], ["Austin, United States", 87],
+      ["San Francisco, United States", 88], ["Jacksonville, United States", 89], ["Fort Worth, United States", 90],
+      ["Columbus, United States", 91], ["Charlotte, United States", 92], ["Indianapolis, United States", 93],
+      ["Seattle, United States", 94], ["Denver, United States", 95], ["Boston, United States", 96],
+      ["Nashville, United States", 97], ["Washington DC, United States", 98], ["Amsterdam, Netherlands", 99],
+      ["Munich, Germany", 100], ["Stockholm, Sweden", 101], ["Vienna, Austria", 102],
+      ["Warsaw, Poland", 103], ["Budapest, Hungary", 104], ["Prague, Czech Republic", 105],
+      ["Dublin, Ireland", 106], ["Zurich, Switzerland", 107], ["Lisbon, Portugal", 108],
+      ["Copenhagen, Denmark", 109], ["Helsinki, Finland", 110], ["Oslo, Norway", 111],
+      ["Brussels, Belgium", 112], ["Athens, Greece", 113], ["Bucharest, Romania", 114],
+      ["Manchester, United Kingdom", 115], ["Birmingham, United Kingdom", 116], ["Edinburgh, United Kingdom", 117],
+      ["Glasgow, United Kingdom", 118], ["Adelaide, Australia", 119], ["Calgary, Canada", 120],
+      ["Edmonton, Canada", 121], ["Ottawa, Canada", 122], ["Auckland, New Zealand", 123],
+      ["Incheon, South Korea", 124], ["Yokohama, Japan", 125], ["Nagoya, Japan", 126],
+      ["Surabaya, Indonesia", 127], ["Cebu, Philippines", 128], ["Medellín, Colombia", 129],
+      ["Santiago, Chile", 130], ["Montevideo, Uruguay", 131], ["Caracas, Venezuela", 132],
+      ["Quito, Ecuador", 133], ["Panama City, Panama", 134], ["Guadalajara, Mexico", 135],
+      ["Monterrey, Mexico", 136], ["Kigali, Rwanda", 137], ["Tunis, Tunisia", 138],
+      ["Durban, South Africa", 139], ["Pretoria, South Africa", 140],
+      ["Abu Dhabi, UAE", 141], ["Doha, Qatar", 142], ["Kuwait City, Kuwait", 143],
+      ["Manama, Bahrain", 144], ["Muscat, Oman", 145], ["Amman, Jordan", 146],
+      ["Beirut, Lebanon", 147], ["Tel Aviv, Israel", 148], ["Jerusalem, Israel", 149],
+      ["Sharjah, UAE", 150],
+      // Mid-size cities (rank 151-280)
+      ["Portland, United States", 151], ["Las Vegas, United States", 152], ["Detroit, United States", 153],
+      ["Memphis, United States", 154], ["Louisville, United States", 155], ["Baltimore, United States", 156],
+      ["Milwaukee, United States", 157], ["Albuquerque, United States", 158], ["Tucson, United States", 159],
+      ["Fresno, United States", 160], ["Sacramento, United States", 161], ["Atlanta, United States", 162],
+      ["Miami, United States", 163], ["Oakland, United States", 164], ["Minneapolis, United States", 165],
+      ["Cleveland, United States", 166], ["Raleigh, United States", 167], ["Tampa, United States", 168],
+      ["New Orleans, United States", 169], ["Pittsburgh, United States", 170], ["Cincinnati, United States", 171],
+      ["St. Louis, United States", 172], ["Orlando, United States", 173], ["Honolulu, United States", 174],
+      ["Salt Lake City, United States", 175], ["Kansas City, United States", 176],
+      ["Liverpool, United Kingdom", 177], ["Bristol, United Kingdom", 178], ["Leeds, United Kingdom", 179],
+      ["Sheffield, United Kingdom", 180], ["Newcastle, United Kingdom", 181], ["Nottingham, United Kingdom", 182],
+      ["Southampton, United Kingdom", 183], ["Brighton, United Kingdom", 184], ["Cambridge, United Kingdom", 185],
+      ["Oxford, United Kingdom", 186], ["Cardiff, United Kingdom", 187], ["Belfast, United Kingdom", 188],
+      ["Leicester, United Kingdom", 189], ["Coventry, United Kingdom", 190], ["Reading, United Kingdom", 191],
+      ["Cork, Ireland", 192], ["Galway, Ireland", 193], ["Limerick, Ireland", 194],
+      ["Gold Coast, Australia", 195], ["Canberra, Australia", 196], ["Newcastle, Australia", 197],
+      ["Hobart, Australia", 198], ["Darwin, Australia", 199], ["Wollongong, Australia", 200],
+      ["Geelong, Australia", 201], ["Townsville, Australia", 202], ["Cairns, Australia", 203], ["Toowoomba, Australia", 204],
+      ["Wellington, New Zealand", 205], ["Christchurch, New Zealand", 206], ["Hamilton, New Zealand", 207], ["Dunedin, New Zealand", 208],
+      ["Winnipeg, Canada", 209], ["Quebec City, Canada", 210], ["Hamilton, Canada", 211], ["Victoria, Canada", 212],
+      ["Halifax, Canada", 213], ["Saskatoon, Canada", 214], ["Regina, Canada", 215], ["Kitchener, Canada", 216], ["London, Canada", 217],
+      ["Thane, India", 218], ["Bhopal, India", 219], ["Visakhapatnam, India", 220], ["Patna, India", 221],
+      ["Vadodara, India", 222], ["Ghaziabad, India", 223], ["Ludhiana, India", 224], ["Agra, India", 225],
+      ["Nashik, India", 226], ["Faridabad, India", 227], ["Meerut, India", 228], ["Coimbatore, India", 229],
+      ["Kochi, India", 230], ["Chandigarh, India", 231], ["Goa, India", 232], ["Trivandrum, India", 233],
+      ["Kuala Lumpur, Malaysia", 234], ["Penang, Malaysia", 235], ["Johor Bahru, Malaysia", 236],
+      ["Frankfurt, Germany", 237], ["Hamburg, Germany", 238], ["Cologne, Germany", 239], ["Stuttgart, Germany", 240], ["Düsseldorf, Germany", 241],
+      ["Marseille, France", 242], ["Lyon, France", 243], ["Toulouse, France", 244], ["Nice, France", 245], ["Bordeaux, France", 246],
+      ["Rotterdam, Netherlands", 247], ["The Hague, Netherlands", 248], ["Utrecht, Netherlands", 249],
+      ["Antwerp, Belgium", 250], ["Ghent, Belgium", 251],
+      ["Geneva, Switzerland", 252], ["Basel, Switzerland", 253], ["Bern, Switzerland", 254],
+      ["Salzburg, Austria", 255], ["Luxembourg City, Luxembourg", 256],
+      ["Valencia, Spain", 257], ["Seville, Spain", 258], ["Málaga, Spain", 259], ["Bilbao, Spain", 260],
+      ["Naples, Italy", 261], ["Turin, Italy", 262], ["Florence, Italy", 263], ["Bologna, Italy", 264], ["Venice, Italy", 265],
+      ["Porto, Portugal", 266], ["Thessaloniki, Greece", 267],
+      ["Gothenburg, Sweden", 268], ["Malmö, Sweden", 269], ["Aarhus, Denmark", 270], ["Bergen, Norway", 271],
+      ["Tampere, Finland", 272], ["Reykjavik, Iceland", 273],
+      ["Krakow, Poland", 274], ["Wroclaw, Poland", 275], ["Gdansk, Poland", 276],
+      ["Brno, Czech Republic", 277], ["Cluj-Napoca, Romania", 278], ["Sofia, Bulgaria", 279],
+      ["Belgrade, Serbia", 280], ["Zagreb, Croatia", 281], ["Split, Croatia", 282],
+      ["Ljubljana, Slovenia", 283], ["Bratislava, Slovakia", 284],
+      ["Tallinn, Estonia", 285], ["Riga, Latvia", 286], ["Vilnius, Lithuania", 287],
+      ["Kyiv, Ukraine", 288], ["Lviv, Ukraine", 289], ["St. Petersburg, Russia", 290],
+      ["Kyoto, Japan", 291], ["Fukuoka, Japan", 292], ["Sapporo, Japan", 293],
+      ["Kaohsiung, Taiwan", 294], ["Chiang Mai, Thailand", 295], ["Phuket, Thailand", 296],
+      ["Bali, Indonesia", 297], ["Phnom Penh, Cambodia", 298],
+      ["Brasília, Brazil", 299], ["Salvador, Brazil", 300], ["Belo Horizonte, Brazil", 301], ["Curitiba, Brazil", 302],
+      ["Córdoba, Argentina", 303], ["Mendoza, Argentina", 304], ["Valparaíso, Chile", 305],
+      ["Cusco, Peru", 306], ["Cartagena, Colombia", 307], ["Guayaquil, Ecuador", 308],
+      ["Cancún, Mexico", 309], ["Tijuana, Mexico", 310], ["San José, Costa Rica", 311], ["Guatemala City, Guatemala", 312],
+      ["Havana, Cuba", 313], ["San Juan, Puerto Rico", 314], ["Kingston, Jamaica", 315], ["Nassau, Bahamas", 316],
+      ["Marrakech, Morocco", 317], ["Suva, Fiji", 318], ["Port Moresby, Papua New Guinea", 319]
     ];
     
     function fetchCities(query) {
       const lowerQuery = query.toLowerCase();
-      const matches = CITIES.filter(city => 
-        city.toLowerCase().includes(lowerQuery)
-      ).slice(0, 7);
       
-      displayCities(matches);
+      // Filter matching cities
+      const matches = CITIES_RANKED.filter(([city]) => 
+        city.toLowerCase().includes(lowerQuery)
+      );
+      
+      // Sort: "starts with" matches first (by rank), then "contains" matches (by rank)
+      matches.sort(([cityA, rankA], [cityB, rankB]) => {
+        const aStarts = cityA.toLowerCase().startsWith(lowerQuery);
+        const bStarts = cityB.toLowerCase().startsWith(lowerQuery);
+        
+        if (aStarts && !bStarts) return -1;
+        if (!aStarts && bStarts) return 1;
+        return rankA - rankB;
+      });
+      
+      // Take top 7
+      displayCities(matches.slice(0, 7).map(([city]) => city));
     }
     
     function displayCities(cities) {
@@ -946,6 +1062,40 @@
         cityDropdown.classList.remove('active');
       }
     });
+    
+    // Share functionality
+    const SHARE_TEXT = 'Just joined the Ethos waitlist \u2013 matchmaking, not swiping. Thought of you:';
+    const SHARE_URL = 'https://ethosapp.co';
+    
+    function handleShare() {
+      // Use native share sheet on mobile (iOS/Android)
+      if (navigator.share) {
+        navigator.share({
+          title: 'Ethos',
+          text: SHARE_TEXT,
+          url: SHARE_URL
+        }).catch(() => {
+          // User cancelled or error - fall back to copy
+          handleCopyLink();
+        });
+      } else {
+        // Desktop fallback - copy to clipboard
+        handleCopyLink();
+      }
+    }
+    
+    function handleCopyLink() {
+      const fullText = SHARE_TEXT + ' ' + SHARE_URL;
+      navigator.clipboard.writeText(fullText).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.classList.add('copied');
+        btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg> Copied!';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101M10.172 13.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg> Copy link';
+        }, 2500);
+      });
+    }
   </script>
 </body>
 </html>
