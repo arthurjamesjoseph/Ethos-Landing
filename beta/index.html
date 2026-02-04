@@ -441,42 +441,58 @@
   </div>
   
   <script>
-    // Valid beta codes (case-insensitive)
-    const VALID_CODES = [
-      'noswipes'
-    ];
-    
+    const VALIDATE_URL = 'https://ecdxgzpjgdosueacomwn.supabase.co/functions/v1/validate-beta-code';
+
     const form = document.getElementById('betaForm');
     const formMessage = document.getElementById('formMessage');
     const submitBtn = document.getElementById('submitBtn');
     const codeInput = document.getElementById('betaCode');
-    
-    form.addEventListener('submit', (e) => {
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
-      const code = codeInput.value.trim().toLowerCase();
-      
+
+      const code = codeInput.value.trim();
+
       // Hide any previous error
       formMessage.className = 'form-message';
       formMessage.style.display = 'none';
-      
-      // Check if code is valid (case-insensitive)
-      if (VALID_CODES.map(c => c.toLowerCase()).includes(code)) {
-        // Set cookie that works across all subdomains (14 days)
-        document.cookie = "beta_access=true; domain=.ethosapp.co; path=/; max-age=1209600; secure; samesite=lax";
-        
-        // Show loading state
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Redirecting...';
-        
-        // Redirect to app
-        window.location.href = 'https://app.ethosapp.co';
-      } else {
-        // Show error
-        formMessage.textContent = 'Invalid access code. Please check your invite and try again.';
+
+      // Show loading state
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Verifying...';
+
+      try {
+        const response = await fetch(VALIDATE_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code })
+        });
+
+        const data = await response.json();
+
+        if (data.valid) {
+          // Set cookie that works across all subdomains (1 year)
+          document.cookie = "beta_access=true; domain=.ethosapp.co; path=/; max-age=31536000; secure; samesite=lax";
+
+          submitBtn.textContent = 'Redirecting...';
+
+          // Redirect to app
+          window.location.href = 'https://app.ethosapp.co';
+        } else {
+          // Show error
+          formMessage.textContent = 'Invalid access code. Please check your invite and try again.';
+          formMessage.className = 'form-message error';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Access Beta';
+          codeInput.focus();
+          codeInput.select();
+        }
+      } catch (error) {
+        console.error('Error validating code:', error);
+        formMessage.textContent = 'Something went wrong. Please try again.';
         formMessage.className = 'form-message error';
-        codeInput.focus();
-        codeInput.select();
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Access Beta';
       }
     });
   </script>
