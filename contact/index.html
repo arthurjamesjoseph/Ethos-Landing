@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us – Ethos</title>
+  <meta name="description" content="Get in touch with the Ethos team. We're here to help.">
+  
+  <link rel="icon" type="image/png" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+  <link rel="apple-touch-icon" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --color-cream: #f5f2ed;
+      --color-card: #f9f7f4;
+      --color-input-border: #e8e4de;
+      --color-gold: #b5a178;
+      --color-gold-hover: #a6926b;
+      --color-text: #3d3630;
+      --color-text-light: #6b5f54;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Source Sans 3', -apple-system, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body { font-family: var(--font-sans); color: var(--color-text); background: var(--color-cream); line-height: 1.6; }
+    .header { background: var(--color-cream); padding: 1rem 2.5rem; border-bottom: 1px solid var(--color-input-border); }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; max-width: 800px; margin: 0 auto; }
+    .logo { display: flex; align-items: center; gap: 0.625rem; text-decoration: none; color: var(--color-text); }
+    .logo-img { height: 32px; width: auto; }
+    .logo-text { font-family: var(--font-serif); font-size: 1.375rem; font-weight: 600; letter-spacing: 0.01em; }
+    .back-link { font-family: var(--font-serif); font-size: 0.9375rem; color: var(--color-gold); text-decoration: none; transition: color 0.2s; }
+    .back-link:hover { color: var(--color-gold-hover); }
+    .content { max-width: 800px; margin: 0 auto; padding: 3rem 2.5rem 4rem; }
+    .page-label { font-family: var(--font-sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-gold); margin-bottom: 0.75rem; }
+    .page-title { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 500; color: var(--color-text); line-height: 1.15; margin-bottom: 0.5rem; }
+    .page-subtitle { font-family: var(--font-serif); font-size: 1.125rem; color: var(--color-text-light); margin-bottom: 2.5rem; line-height: 1.6; }
+    .contact-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 2.5rem; }
+    .contact-card { background: var(--color-card); border: 1px solid var(--color-input-border); border-radius: 10px; padding: 1.75rem; }
+    .contact-card h3 { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.5rem; }
+    .contact-card p { font-family: var(--font-serif); font-size: 1rem; color: var(--color-text-light); line-height: 1.65; margin-bottom: 0.75rem; }
+    .contact-card a { color: var(--color-gold); text-decoration: none; font-weight: 600; font-family: var(--font-serif); font-size: 1rem; }
+    .contact-card a:hover { text-decoration: underline; color: var(--color-gold-hover); }
+    .legal-info { border-top: 1px solid var(--color-input-border); padding-top: 2rem; }
+    .legal-info h2 { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.75rem; }
+    .legal-info p { font-family: var(--font-serif); font-size: 1rem; color: var(--color-text-light); line-height: 1.65; margin-bottom: 0.5rem; }
+    .footer { text-align: center; padding: 2rem; border-top: 1px solid var(--color-input-border); }
+    .footer p { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light); }
+    @media (max-width: 600px) {
+      .header { padding: 0.875rem 1.5rem; }
+      .content { padding: 2rem 1.5rem 3rem; }
+      .logo-img { height: 28px; }
+      .logo-text { font-size: 1.25rem; }
+      .contact-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <img src="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png" alt="Ethos" class="logo-img">
+        <span class="logo-text">Ethos</span>
+      </a>
+      <a href="/" class="back-link">&larr; Back to home</a>
+    </div>
+  </header>
+
+  <main class="content">
+    <p class="page-label">Get in Touch</p>
+    <h1 class="page-title">Contact Us</h1>
+    <p class="page-subtitle">Have a question, concern, or just want to say hello? We'd love to hear from you.</p>
+
+    <div class="contact-cards">
+      <div class="contact-card">
+        <h3>General Enquiries</h3>
+        <p>Questions about Ethos, your account, or how the platform works.</p>
+        <a href="mailto:support@ethosapp.co">support@ethosapp.co</a>
+      </div>
+
+      <div class="contact-card">
+        <h3>Safety &amp; Reports</h3>
+        <p>Report a concern about another user or a safety issue.</p>
+        <a href="mailto:support@ethosapp.co">support@ethosapp.co</a>
+      </div>
+
+      <div class="contact-card">
+        <h3>Privacy</h3>
+        <p>Data requests, privacy complaints, or questions about how we handle your information.</p>
+        <a href="mailto:support@ethosapp.co">support@ethosapp.co</a>
+      </div>
+
+      <div class="contact-card">
+        <h3>Press &amp; Partnerships</h3>
+        <p>Media enquiries, collaborations, or business opportunities.</p>
+        <a href="mailto:support@ethosapp.co">support@ethosapp.co</a>
+      </div>
+    </div>
+
+    <div class="legal-info">
+      <h2>Legal Entity</h2>
+      <p><strong>Ethos Labs Pty Ltd</strong></p>
+      <p>ABN 20 694 353 332</p>
+      <p>Sydney, New South Wales, Australia</p>
+      <p>Website: <a href="https://ethosapp.co" style="color: var(--color-gold); text-decoration: none;">ethosapp.co</a></p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 Ethos Labs Pty Ltd &middot; <a href="https://ethosapp.co" style="color: var(--color-gold); text-decoration: none;">ethosapp.co</a></p>
+  </footer>
+</body>
+</html>
