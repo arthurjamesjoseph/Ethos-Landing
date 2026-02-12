@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Safety Tips – Ethos</title>
+  <meta name="description" content="Ethos Safety Tips – practical guidance for staying safe while using our matchmaking platform.">
+  
+  <link rel="icon" type="image/png" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+  <link rel="apple-touch-icon" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --color-cream: #f5f2ed;
+      --color-card: #f9f7f4;
+      --color-input-border: #e8e4de;
+      --color-gold: #b5a178;
+      --color-gold-hover: #a6926b;
+      --color-text: #3d3630;
+      --color-text-light: #6b5f54;
+      --color-white: #ffffff;
+      --color-error: #c45c4a;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Source Sans 3', -apple-system, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--color-text);
+      background: var(--color-cream);
+      line-height: 1.6;
+    }
+
+    .header {
+      background: var(--color-cream);
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid var(--color-input-border);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      text-decoration: none;
+      color: var(--color-text);
+    }
+
+    .logo-img { height: 32px; width: auto; }
+
+    .logo-text {
+      font-family: var(--font-serif);
+      font-size: 1.375rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .back-link {
+      font-family: var(--font-serif);
+      font-size: 0.9375rem;
+      color: var(--color-gold);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--color-gold-hover); }
+
+    .content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 3rem 2.5rem 4rem;
+    }
+
+    .page-label {
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: 0.75rem;
+    }
+
+    .page-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 500;
+      color: var(--color-text);
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+      font-family: var(--font-serif);
+      font-size: 1.125rem;
+      color: var(--color-text-light);
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+    }
+
+    /* Tip cards */
+    .tip-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .tip-section-title {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--color-input-border);
+    }
+
+    .tip-card {
+      background: var(--color-card);
+      border-radius: 10px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid var(--color-input-border);
+    }
+
+    .tip-card-title {
+      font-family: var(--font-serif);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 0.375rem;
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+    }
+
+    .tip-icon {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(181, 161, 120, 0.12);
+      border-radius: 50%;
+      color: var(--color-gold);
+    }
+
+    .tip-icon svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .tip-card p {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      color: var(--color-text-light);
+      line-height: 1.65;
+      margin-left: 2.375rem;
+    }
+
+    /* Emergency banner */
+    .emergency-banner {
+      background: rgba(196, 92, 74, 0.08);
+      border: 1px solid rgba(196, 92, 74, 0.2);
+      border-radius: 10px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .emergency-banner-title {
+      font-family: var(--font-serif);
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--color-error);
+      margin-bottom: 0.375rem;
+    }
+
+    .emergency-banner p {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      color: var(--color-text);
+      line-height: 1.65;
+    }
+
+    .emergency-banner a {
+      color: var(--color-error);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .emergency-banner a:hover {
+      text-decoration: underline;
+    }
+
+    /* Report section */
+    .report-section {
+      background: var(--color-card);
+      border-radius: 10px;
+      padding: 2rem 1.75rem;
+      border: 1px solid var(--color-input-border);
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .report-section h3 {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: 0.5rem;
+    }
+
+    .report-section p {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      color: var(--color-text-light);
+      line-height: 1.65;
+      margin-bottom: 1rem;
+    }
+
+    .report-section a {
+      color: var(--color-gold);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .report-section a:hover { text-decoration: underline; }
+
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--color-input-border);
+    }
+
+    .footer p {
+      font-family: var(--font-serif);
+      font-size: 0.875rem;
+      color: var(--color-text-light);
+    }
+
+    @media (max-width: 600px) {
+      .header { padding: 0.875rem 1.5rem; }
+      .content { padding: 2rem 1.5rem 3rem; }
+      .logo-img { height: 28px; }
+      .logo-text { font-size: 1.25rem; }
+      .tip-card { padding: 1.25rem 1.25rem; }
+      .tip-card p { margin-left: 2.125rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <img src="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png" alt="Ethos" class="logo-img">
+        <span class="logo-text">Ethos</span>
+      </a>
+      <a href="/" class="back-link">&larr; Back to home</a>
+    </div>
+  </header>
+
+  <main class="content">
+    <p class="page-label">Your Safety</p>
+    <h1 class="page-title">Safety Tips</h1>
+    <p class="page-subtitle">Ethos is built for people who are intentional about finding their person. Your safety is important to us — here are some practical steps to help you stay safe while getting to know someone new.</p>
+
+    <div class="emergency-banner">
+      <p class="emergency-banner-title">In immediate danger?</p>
+      <p>If you are ever in a situation where you feel unsafe, leave immediately and call emergency services. In Australia, call <strong>000</strong>. In the US, call <strong>911</strong>. In the UK, call <strong>999</strong>. In the EU, call <strong>112</strong>.</p>
+    </div>
+
+    <div class="tip-section">
+      <h2 class="tip-section-title">Meeting in Person</h2>
+
+      <div class="tip-card">
+        <h3 class="tip-card-title">
+          <span class="tip-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg></span>
+          Meet in a public place
+        </h3>
+        <p>For your first few dates, always choose a public venue — a café, restaurant, or bar where other people are around. Avoid meeting at someone's home, in a secluded area, or anywhere you'd feel uncomfortable leaving quickly.</p>
+      </div>
+
+      <div class="tip-card">
+        <h3 class="tip-card-title">
+          <span class="tip-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></span>
+          Tell someone your plans
+        </h3>
+        <p>Let a friend or family member know where you're going, who you're meeting, and when you expect to be back. Share your live location with a trusted contact if you can. Having someone who knows your plans is one of the simplest and most effective safety measures.</p>
+      </div>
+
+      <div class="tip-card">
+        <h3 class="tip-card-title">
+          <span class="tip-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg></span>
+          Arrange your own transport
+        </h3>
+        <p>Drive yourself, take public transport, or use a rideshare. Don't rely on your date for a lift, especially on the first meeting. Having your own way home means you can leave whenever you choose.</p>
+      </div>
+
+      <div class="tip-card">
+        <h3 class="tip-card-title">
+          <span class="tip-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></span>
+          Stay sober and alert
+        </h3>
+        <p>Keep a clear head, especially on early dates. If you choose to drink, keep it moderate and always watch your drink. Never leave your drink unattended or accept a drink from someone you don't know well.</p>
+      </div>
+
+      <div class="tip-card">
+        <h3 class="tip-card-title">
+          <span class="tip-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg></span>
+          Trust your instincts
+        </h3>
+        <p>If something feels off — during messaging or in person — trust that feeling. You are never obligated to stay, to be polite at the expense of your comfort, or to give someone a second chance. Your safety and wellbeing always come first.</p>
+      </div>
+    </div>
+
+    <div class="tip-section">
+      <h2 class="tip-section-title">Online Safety</h2>
+
+      <div class="tip-card">
+        <h3 class="tip-card-title">
+          <span class="tip-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></span>
+          Protect your personal information
+        </h3>
+        <p>Don't share your home address, workplace address, financial details, or other sensitive information with someone you haven't met in person. Be cautious about sharing your social media handles or phone number before you've built some trust.</p>
+      </div>
+
+      <div class="tip-card">
+        <h3 class="tip-card-title">
+          <span class="tip-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span>
+          Never send money
+        </h3>
+        <p>Do not send money, gift cards, cryptocurrency, or financial information to anyone you've met on the Platform, regardless of the reason they give. Requests for money are one of the most common signs of a scam. If someone asks you for money, report them immediately.</p>
+      </div>
+
+      <div class="tip-card">
+        <h3 class="tip-card-title">
+          <span class="tip-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></span>
+          Watch for red flags
+        </h3>
+        <p>Be alert to warning signs: someone who avoids answering questions about themselves, pushes to move off the Platform very quickly, sends inconsistent or copied-sounding messages, makes you feel guilty for setting boundaries, or whose profile seems too good to be true. Trust your judgement.</p>
+      </div>
+    </div>
+
+    <div class="tip-section">
+      <h2 class="tip-section-title">Using Ethos Safely</h2>
+
+      <div class="tip-card">
+        <h3 class="tip-card-title">
+          <span class="tip-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/></svg></span>
+          Report and block
+        </h3>
+        <p>If someone makes you feel uncomfortable, harasses you, or behaves inappropriately, use the report feature in the app. You can also block users — blocking is mutual and permanent, and the other person will not be notified. We review all reports and take action to keep the community safe.</p>
+      </div>
+
+      <div class="tip-card">
+        <h3 class="tip-card-title">
+          <span class="tip-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span>
+          Keep conversations on the Platform
+        </h3>
+        <p>Ethos is designed to help you get to know someone before you meet. Use the in-app messaging until you feel comfortable sharing other contact details. Conversations on the Platform give you the ability to report and block if needed — once you move to another channel, we can't help as easily.</p>
+      </div>
+    </div>
+
+    <div class="report-section">
+      <h3>Need to report something?</h3>
+      <p>If you've experienced something concerning on or off the Platform, or if you're worried about another user's safety, please reach out. We take every report seriously.</p>
+      <p><a href="mailto:support@ethosapp.co">support@ethosapp.co</a></p>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 Ethos Labs Pty Ltd &middot; <a href="https://ethosapp.co" style="color: var(--color-gold); text-decoration: none;">ethosapp.co</a></p>
+  </footer>
+
+</body>
+</html>
