@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About – Ethos</title>
+  <meta name="description" content="Ethos is a values-based matchmaking platform for people who are intentional about finding their person.">
+  
+  <link rel="icon" type="image/png" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+  <link rel="apple-touch-icon" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --color-cream: #f5f2ed;
+      --color-card: #f9f7f4;
+      --color-input-border: #e8e4de;
+      --color-gold: #b5a178;
+      --color-gold-hover: #a6926b;
+      --color-text: #3d3630;
+      --color-text-light: #6b5f54;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Source Sans 3', -apple-system, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body { font-family: var(--font-sans); color: var(--color-text); background: var(--color-cream); line-height: 1.6; }
+    .header { background: var(--color-cream); padding: 1rem 2.5rem; border-bottom: 1px solid var(--color-input-border); }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; max-width: 800px; margin: 0 auto; }
+    .logo { display: flex; align-items: center; gap: 0.625rem; text-decoration: none; color: var(--color-text); }
+    .logo-img { height: 32px; width: auto; }
+    .logo-text { font-family: var(--font-serif); font-size: 1.375rem; font-weight: 600; letter-spacing: 0.01em; }
+    .back-link { font-family: var(--font-serif); font-size: 0.9375rem; color: var(--color-gold); text-decoration: none; transition: color 0.2s; }
+    .back-link:hover { color: var(--color-gold-hover); }
+    .content { max-width: 800px; margin: 0 auto; padding: 3rem 2.5rem 4rem; }
+    .page-label { font-family: var(--font-sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-gold); margin-bottom: 0.75rem; }
+    .page-title { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 500; color: var(--color-text); line-height: 1.15; margin-bottom: 2.5rem; }
+    .prose p { font-family: var(--font-serif); font-size: 1.0625rem; color: var(--color-text); line-height: 1.75; margin-bottom: 1.25rem; }
+    .prose h2 { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 600; color: var(--color-text); margin: 2.5rem 0 0.75rem; padding-top: 1.5rem; border-top: 1px solid var(--color-input-border); }
+    .prose strong { font-weight: 600; }
+    .prose a { color: var(--color-gold); text-decoration: none; }
+    .prose a:hover { text-decoration: underline; color: var(--color-gold-hover); }
+    .cta-section { background: var(--color-card); border: 1px solid var(--color-input-border); border-radius: 10px; padding: 2rem 1.75rem; text-align: center; margin-top: 2.5rem; }
+    .cta-section h3 { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.5rem; }
+    .cta-section p { font-family: var(--font-serif); font-size: 1rem; color: var(--color-text-light); margin-bottom: 1rem; }
+    .cta-btn { display: inline-block; padding: 0.875rem 2rem; font-family: var(--font-serif); font-size: 1rem; font-weight: 600; color: #fff; background: var(--color-gold); border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+    .cta-btn:hover { background: var(--color-gold-hover); }
+    .footer { text-align: center; padding: 2rem; border-top: 1px solid var(--color-input-border); }
+    .footer p { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light); }
+    @media (max-width: 600px) { .header { padding: 0.875rem 1.5rem; } .content { padding: 2rem 1.5rem 3rem; } .logo-img { height: 28px; } .logo-text { font-size: 1.25rem; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <img src="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png" alt="Ethos" class="logo-img">
+        <span class="logo-text">Ethos</span>
+      </a>
+      <a href="/" class="back-link">&larr; Back to home</a>
+    </div>
+  </header>
+
+  <main class="content">
+    <p class="page-label">Our Story</p>
+    <h1 class="page-title">Made for the intentional.</h1>
+
+    <div class="prose">
+      <p>Ethos was born from a simple frustration: the modern approach to finding a life partner is broken. Swiping reduces people to photos. Algorithms optimise for engagement, not compatibility. And the people who are most serious about finding their person are often the least well-served.</p>
+
+      <p>We believe that what makes two people truly compatible isn't how they look in a photo — it's how they see the world. Their values, their life goals, the way they approach relationships. The things you only discover after months of getting to know someone, condensed into a system that surfaces them from the start.</p>
+
+      <h2>How Ethos is different</h2>
+
+      <p><strong>Values first.</strong> Every Ethos member completes a compatibility questionnaire that explores core values, life goals, lifestyle preferences, and relationship approach. Your compatibility scores with other members are based on genuine alignment — not demographics, not swiping patterns.</p>
+
+      <p><strong>Matchmaking, not swiping.</strong> Ethos doesn't give you an infinite feed to scroll through. We show you a curated set of compatible people and encourage real conversations. Quality over quantity, every time.</p>
+
+      <p><strong>Built for commitment.</strong> Ethos is designed for people who know what they want. Whether you're ready for marriage or looking for a serious, long-term relationship, this is a space for people who are intentional about their future.</p>
+
+      <h2>Our commitment</h2>
+
+      <p>We respect your time, your data, and your trust. We don't sell your information. We don't show you ads. We don't use dark patterns to keep you hooked. We succeed when you find your person and leave — and we think that's exactly how it should be.</p>
+
+      <p>Ethos is built and operated by Ethos Labs Pty Ltd, based in Sydney, Australia.</p>
+
+      <div class="cta-section">
+        <h3>Ready to find your person?</h3>
+        <p>Join the waitlist for early access.</p>
+        <a href="/" class="cta-btn">Join the Waitlist</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 Ethos Labs Pty Ltd &middot; <a href="https://ethosapp.co" style="color: var(--color-gold); text-decoration: none;">ethosapp.co</a></p>
+  </footer>
+</body>
+</html>
