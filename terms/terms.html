@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service – Ethos</title>
+  <meta name="description" content="Ethos Terms of Service – the rules and guidelines for using our matchmaking platform.">
+  
+  <link rel="icon" type="image/png" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+  <link rel="apple-touch-icon" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --color-cream: #f5f2ed;
+      --color-card: #f9f7f4;
+      --color-input-border: #e8e4de;
+      --color-gold: #b5a178;
+      --color-gold-hover: #a6926b;
+      --color-text: #3d3630;
+      --color-text-light: #6b5f54;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Source Sans 3', -apple-system, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--color-text);
+      background: var(--color-cream);
+      line-height: 1.6;
+    }
+
+    .header {
+      background: var(--color-cream);
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid var(--color-input-border);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      text-decoration: none;
+      color: var(--color-text);
+    }
+
+    .logo-img { height: 32px; width: auto; }
+
+    .logo-text {
+      font-family: var(--font-serif);
+      font-size: 1.375rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .back-link {
+      font-family: var(--font-serif);
+      font-size: 0.9375rem;
+      color: var(--color-gold);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--color-gold-hover); }
+
+    .content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 3rem 2.5rem 4rem;
+    }
+
+    .page-label {
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: 0.75rem;
+    }
+
+    .page-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 500;
+      color: var(--color-text);
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+    }
+
+    .effective-date {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      color: var(--color-text-light);
+      margin-bottom: 2.5rem;
+    }
+
+    .prose h2 {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 2.5rem 0 0.75rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--color-input-border);
+    }
+
+    .prose h2:first-child {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+
+    .prose h3 {
+      font-family: var(--font-serif);
+      font-size: 1.1875rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 1.75rem 0 0.5rem;
+    }
+
+    .prose p {
+      font-family: var(--font-serif);
+      font-size: 1.0625rem;
+      color: var(--color-text);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .prose ul {
+      margin: 0.75rem 0 1.25rem 1.5rem;
+      list-style: none;
+    }
+
+    .prose ul li {
+      font-family: var(--font-serif);
+      font-size: 1.0625rem;
+      color: var(--color-text);
+      line-height: 1.7;
+      margin-bottom: 0.5rem;
+      position: relative;
+      padding-left: 1rem;
+    }
+
+    .prose ul li::before {
+      content: '\2022';
+      color: var(--color-gold);
+      position: absolute;
+      left: 0;
+    }
+
+    .prose strong { font-weight: 600; color: var(--color-text); }
+
+    .prose a { color: var(--color-gold); text-decoration: none; }
+    .prose a:hover { text-decoration: underline; color: var(--color-gold-hover); }
+
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--color-input-border);
+    }
+
+    .footer p {
+      font-family: var(--font-serif);
+      font-size: 0.875rem;
+      color: var(--color-text-light);
+    }
+
+    @media (max-width: 600px) {
+      .header { padding: 0.875rem 1.5rem; }
+      .content { padding: 2rem 1.5rem 3rem; }
+      .logo-img { height: 28px; }
+      .logo-text { font-size: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <img src="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png" alt="Ethos" class="logo-img">
+        <span class="logo-text">Ethos</span>
+      </a>
+      <a href="/" class="back-link">&larr; Back to home</a>
+    </div>
+  </header>
+
+  <main class="content">
+    <p class="page-label">Legal</p>
+    <h1 class="page-title">Terms of Service</h1>
+    <p class="effective-date">Effective 12 February 2026</p>
+
+    <div class="prose">
+
+      <h2>1. Introduction and Acceptance</h2>
+      <p>Welcome to Ethos. These Terms of Service (<strong>"Terms"</strong>) constitute a legally binding agreement between you and Ethos Labs Pty Ltd (ABN 20 694 353 332) (<strong>"Ethos"</strong>, <strong>"we"</strong>, <strong>"us"</strong>, or <strong>"our"</strong>) governing your access to and use of the Ethos matchmaking platform, including our website at ethosapp.co, our mobile applications, and all related services (collectively, the <strong>"Platform"</strong>).</p>
+      <p>By creating an account, accessing, or using the Platform, you agree to be bound by these Terms and our <a href="/privacy">Privacy Policy</a>, which is incorporated by reference. If you do not agree to these Terms, you must not use the Platform.</p>
+      <p>We may update these Terms from time to time. We will notify you of material changes by posting the updated Terms on the Platform and, where appropriate, via email or in-app notification at least 14 days before the changes take effect. Your continued use of the Platform after the effective date constitutes acceptance of the updated Terms. If you do not agree with any changes, you must stop using the Platform and may delete your account.</p>
+
+      <h2>2. Eligibility</h2>
+      <p>To create an account and use the Platform, you must meet all of the following requirements:</p>
+      <ul>
+        <li>You are at least 18 years old</li>
+        <li>You are legally capable of entering into a binding contract</li>
+        <li>You are not prohibited by law from using the Platform or services of this nature</li>
+        <li>You have not previously been removed, suspended, or banned from the Platform by us</li>
+        <li>You do not have more than one account on the Platform</li>
+        <li>You have not been convicted of, or pled no contest to, any offence involving violence, threats of violence, or sexual misconduct</li>
+        <li>You are not required to register as a sex offender in any jurisdiction</li>
+      </ul>
+      <p>By using the Platform, you represent and warrant that all of the above are true. If at any time you no longer meet these requirements, your right to use the Platform is automatically revoked, and you must delete your account immediately.</p>
+
+      <h2>3. Your Account</h2>
+
+      <h3>3.1 Account creation</h3>
+      <p>You must provide accurate, current, and complete information when creating your account, including your real name, valid email address, date of birth, and gender. You agree to keep this information up to date. You authenticate via a one-time verification code sent to your email address.</p>
+
+      <h3>3.2 Account security</h3>
+      <p>You are responsible for maintaining the security of your account and the email address associated with it. You must not share your account with anyone or allow others to access your account. You are responsible for all activity that occurs under your account. If you become aware of any unauthorised access to your account, you must notify us immediately at <a href="mailto:support@ethosapp.co">support@ethosapp.co</a>.</p>
+
+      <h3>3.3 One account per person</h3>
+      <p>You may only maintain one account on the Platform. Creating multiple accounts may result in the suspension or termination of all your accounts.</p>
+
+      <h2>4. How Ethos Works</h2>
+
+      <h3>4.1 Compatibility questionnaire</h3>
+      <p>Ethos uses a values-based compatibility questionnaire to understand your core values, life goals, lifestyle preferences, and relationship approach. Your responses are used to generate compatibility scores with other users. You should answer honestly and thoughtfully; inaccurate responses will affect the quality of your matches.</p>
+
+      <h3>4.2 Matching and compatibility scores</h3>
+      <p>Ethos generates compatibility scores algorithmically based on the alignment of your questionnaire responses with those of other users. These scores are intended as a guide to help you discover compatible partners. They do not guarantee compatibility, relationship success, or any particular outcome. You are free to connect with any user regardless of your compatibility score with them.</p>
+      <p>Your specific questionnaire responses are never shared with other users. Only aggregated compatibility scores and category-level indicators are displayed.</p>
+
+      <h3>4.3 Location-based features</h3>
+      <p>Ethos uses location information to show you matches in your area and to power date planning features such as venue suggestions. Location features are provided with the assistance of the Google Maps Platform. Your use of these features is subject to <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>.</p>
+
+      <h3>4.4 No guarantees</h3>
+      <p>Ethos is a platform that facilitates introductions between users. We do not guarantee any number of matches, the quality or compatibility of any match, that any user will communicate with you, or that use of the Platform will result in a relationship or marriage. We do not conduct background checks or verify the identity, history, or intentions of users.</p>
+
+      <h2>5. Your Conduct and Community Guidelines</h2>
+      <p>Ethos is built for people who are intentional about finding a life partner. We expect all users to treat one another with respect and honesty. By using the Platform, you agree to the following:</p>
+
+      <h3>5.1 You agree to</h3>
+      <ul>
+        <li>Treat all users with courtesy and respect, both on and off the Platform</li>
+        <li>Be honest and authentic in your profile, photos, and communications</li>
+        <li>Use at least one photo that clearly shows your face</li>
+        <li>Comply with all applicable laws and regulations</li>
+        <li>Report any inappropriate behaviour, harassment, or safety concerns to us</li>
+      </ul>
+
+      <h3>5.2 You agree not to</h3>
+      <ul>
+        <li>Misrepresent your identity, age, occupation, or any other information about yourself</li>
+        <li>Harass, bully, stalk, intimidate, threaten, defame, or harm any person</li>
+        <li>Send unsolicited commercial messages, spam, or promotional content</li>
+        <li>Solicit money, gifts, or financial information from other users</li>
+        <li>Use the Platform for any commercial purpose, advertising, or solicitation not authorised by us</li>
+        <li>Use the Platform to engage in or facilitate any illegal activity</li>
+        <li>Impersonate any person or entity, or misrepresent your affiliation with any person or entity</li>
+        <li>Upload or share content that is obscene, pornographic, violent, hateful, discriminatory, defamatory, or otherwise offensive</li>
+        <li>Upload or share content that infringes the intellectual property or privacy rights of any third party</li>
+        <li>Upload or share content that was not created by you or that you do not have the right to share</li>
+        <li>Share another user's personal information, messages, or photos outside the Platform without their consent</li>
+        <li>Use automated tools, bots, scrapers, or any other means to access, collect data from, or interact with the Platform</li>
+        <li>Attempt to reverse engineer, decompile, or disassemble any part of the Platform</li>
+        <li>Interfere with or disrupt the Platform, its servers, or connected networks</li>
+        <li>Upload viruses, malicious code, or any material designed to compromise the security of the Platform</li>
+        <li>Create a new account after we have suspended or terminated your account, unless we give express written permission</li>
+        <li>Submit false, misleading, or bad-faith reports about other users</li>
+      </ul>
+
+      <h3>5.3 Enforcement</h3>
+      <p>We reserve the right to investigate and take action against conduct that violates these Terms, including issuing warnings, restricting features, suspending accounts, or permanently banning users. Serious or repeated violations, including harassment, threats, hate speech, or illegal activity, will result in immediate account termination. We may take action based on conduct that occurs on or off the Platform if we reasonably believe it affects the safety of our community.</p>
+      <p>We are not obligated to disclose the specific reason for enforcement action if doing so could compromise the safety or privacy of other users. If you believe action was taken against your account in error, you may contact us at <a href="mailto:support@ethosapp.co">support@ethosapp.co</a> to request a review.</p>
+
+      <h3>5.4 Safety tips</h3>
+      <p>While we work hard to create a respectful and safe environment, your safety when meeting someone in person is ultimately in your hands. We strongly encourage you to review our <a href="/safety">Safety Tips</a> before arranging to meet anyone you have connected with on the Platform. Key guidance includes: always meet in a public place for your first few dates, tell a friend or family member your plans, arrange your own transport, stay sober and alert, and trust your instincts. If something feels wrong, leave and report it. If you are ever in immediate danger, contact your local emergency services.</p>
+
+      <h2>6. Your Content</h2>
+
+      <h3>6.1 Ownership</h3>
+      <p>You retain ownership of the content you create and share on the Platform (<strong>"Your Content"</strong>), including your profile text, photos, messages, and questionnaire responses.</p>
+
+      <h3>6.2 Licence you grant to Ethos</h3>
+      <p>By creating an account and sharing content on the Platform, you grant Ethos a worldwide, non-exclusive, royalty-free, transferable, sub-licensable licence to host, store, use, copy, display, reproduce, adapt, modify, and distribute Your Content in connection with operating, providing, and improving the Platform. This licence exists for as long as your account is active and for a reasonable period thereafter to allow for account deletion processing. We will not use Your Content in advertising or marketing materials without your separate consent.</p>
+
+      <h3>6.3 Your responsibility</h3>
+      <p>You are solely responsible for Your Content. You represent and warrant that you have all necessary rights to share Your Content and that it does not violate these Terms, any applicable law, or the rights of any third party. Do not share anything you would not want other users or the public to see.</p>
+
+      <h3>6.4 Content moderation</h3>
+      <p>We reserve the right to review, remove, or restrict access to any content on the Platform at our sole discretion, including content that we believe violates these Terms or may be harmful to our community. We are not obligated to monitor or review all content, but we may use a combination of automated tools and human review to enforce our content standards.</p>
+
+      <h2>7. Other Users' Content</h2>
+      <p>Other users' content (<strong>"Member Content"</strong>) belongs to them. You may view and interact with Member Content as intended by the Platform, but you may not copy, reproduce, distribute, or use Member Content for any purpose outside of the Platform without the content owner's permission. You may not use Member Content for commercial purposes, to harass or harm any person, or in any way that violates these Terms.</p>
+      <p>We are not responsible for the accuracy, completeness, or reliability of Member Content. Other users are solely responsible for their own content and conduct. You should exercise your own judgement when interacting with other users and their content.</p>
+
+      <h2>8. Ethos Content and Intellectual Property</h2>
+      <p>The Platform and all content provided by Ethos, including text, graphics, logos, icons, images, software, and the design and layout of the Platform (<strong>"Ethos Content"</strong>), are owned by or licensed to Ethos and are protected by copyright, trademark, and other intellectual property laws.</p>
+      <p>We grant you a limited, personal, non-exclusive, non-transferable, non-sublicensable, revocable licence to access and use the Platform and Ethos Content for your personal, non-commercial use, subject to these Terms. This licence is automatically revoked if you violate these Terms. All rights not expressly granted are reserved by Ethos.</p>
+      <p>The Ethos name, logo, and all related names, logos, product and service names, designs, and slogans are trademarks of Ethos Labs Pty Ltd. You may not use them without our prior written permission.</p>
+
+      <h2>9. Subscriptions and Payments</h2>
+
+      <h3>9.1 Free and paid features</h3>
+      <p>Ethos may offer certain features of the Platform at no charge and other features or services for a fee. We reserve the right to change which features are free and which require payment, and to introduce, modify, or discontinue features at any time.</p>
+
+      <h3>9.2 Subscriptions</h3>
+      <p>If you purchase a subscription, you agree to pay the applicable fees as displayed at the time of purchase. Subscriptions automatically renew at the end of each billing period unless you cancel before the renewal date. The terms of your subscription, including pricing and billing frequency, will be disclosed at the time of purchase.</p>
+
+      <h3>9.3 Payment processing</h3>
+      <p>Payments may be processed through Stripe (for direct purchases), the Apple App Store, or the Google Play Store. Your payment is subject to the terms and privacy policies of the applicable payment processor. We do not store your payment credentials.</p>
+
+      <h3>9.4 App Store and Google Play subscriptions</h3>
+      <p>If you subscribe through the Apple App Store or Google Play Store, your subscription is managed by Apple or Google respectively. You must cancel through your Apple ID or Google Play account settings. Refunds for app store purchases are handled by Apple or Google, not by Ethos.</p>
+
+      <h3>9.5 Cancellation</h3>
+      <p>You may cancel your subscription at any time. Cancellation takes effect at the end of your current billing period; you will continue to have access to paid features until then. Cancelling your subscription does not delete your account or remove your profile from the Platform.</p>
+
+      <h3>9.6 Refunds</h3>
+      <p>All purchases are generally final and non-refundable, except where required by applicable law, including Australian Consumer Law. If you are an Australian consumer, nothing in these Terms limits or excludes any consumer guarantees under the Australian Consumer Law.</p>
+
+      <h3>9.7 Price changes</h3>
+      <p>We may change subscription prices from time to time. We will notify you of any price change at least 14 days before it takes effect. If you do not agree to a price change, you may cancel your subscription before the new price takes effect.</p>
+
+      <h2>10. Reporting and Copyright</h2>
+
+      <h3>10.1 Reporting misconduct</h3>
+      <p>If you encounter content or behaviour that violates these Terms, is inappropriate, or makes you feel unsafe, please report it immediately through the reporting feature in the Platform or by contacting us at <a href="mailto:support@ethosapp.co">support@ethosapp.co</a>. We take all reports seriously and will review them promptly.</p>
+      <p>Submitting false, misleading, or bad-faith reports may result in enforcement action against your account.</p>
+
+      <h3>10.2 Copyright complaints</h3>
+      <p>If you believe that content on the Platform infringes your copyright, please contact us at <a href="mailto:support@ethosapp.co">support@ethosapp.co</a> with the following information: (a) a description of the copyrighted work you claim has been infringed; (b) a description of where the infringing material is located on the Platform; (c) your contact information; (d) a statement that you have a good-faith belief that the use is not authorised by the copyright owner; and (e) a statement, under penalty of perjury, that the information in your notice is accurate and that you are the copyright owner or authorised to act on their behalf.</p>
+      <p>We will review all valid copyright complaints and may remove or disable access to the allegedly infringing content. We may terminate the accounts of repeat infringers.</p>
+
+      <h2>11. Third-Party Services and Links</h2>
+      <p>The Platform may contain links to or integrations with third-party websites, applications, or services, including the Google Maps Platform, payment processors, and app distribution platforms. These third-party services are not operated or controlled by Ethos, and their use is subject to their own terms and privacy policies. We are not responsible for the content, availability, or practices of any third-party service.</p>
+
+      <h2>12. Account Termination</h2>
+
+      <h3>12.1 Termination by you</h3>
+      <p>You may delete your account at any time through the Platform's account settings. If you have an active subscription through an app store, you must also cancel it through your Apple ID or Google Play account settings to avoid further charges. Deleting your account does not automatically cancel app store subscriptions.</p>
+
+      <h3>12.2 Termination by Ethos</h3>
+      <p>We reserve the right to suspend or terminate your account at any time, with or without notice, if we reasonably believe that you have violated these Terms, misused the Platform, or behaved in a way that may harm other users or the Platform. We may also terminate accounts that have been inactive for an extended period.</p>
+
+      <h3>12.3 Effect of termination</h3>
+      <p>Upon termination of your account, your right to use the Platform ceases immediately. These Terms will continue to apply to any obligations that arose before termination, including Sections 6 (Your Content), 13 (Disclaimers), 14 (Limitation of Liability), 15 (Indemnification), and 16 (Dispute Resolution). Your data will be handled in accordance with our <a href="/privacy">Privacy Policy</a>.</p>
+
+      <h2>13. Disclaimers</h2>
+      <p>To the maximum extent permitted by applicable law, the Platform is provided on an <strong>"as is"</strong> and <strong>"as available"</strong> basis. We make no warranties or representations, express or implied, about the Platform, including any implied warranties of merchantability, fitness for a particular purpose, or non-infringement.</p>
+      <p>Without limiting the foregoing, we do not warrant that: (a) the Platform will be uninterrupted, secure, or error-free; (b) any defects will be corrected; (c) the Platform or any content will be accurate, complete, or current; or (d) the Platform will meet your expectations or requirements.</p>
+      <p>We do not represent or warrant the conduct, identity, intentions, legitimacy, or veracity of any user. You are solely responsible for your interactions with other users, both on and off the Platform. We strongly encourage you to exercise caution and good judgement when communicating with or meeting other users.</p>
+      <p><strong>Australian Consumer Law:</strong> Nothing in these Terms excludes, restricts, or modifies any consumer guarantee, right, or remedy conferred on you by the Australian Consumer Law (Schedule 2 of the Competition and Consumer Act 2010 (Cth)) or any other applicable law that cannot be excluded, restricted, or modified by agreement.</p>
+
+      <h2>14. Limitation of Liability</h2>
+      <p>To the maximum extent permitted by applicable law, Ethos, its affiliates, directors, officers, employees, and agents will not be liable for any indirect, incidental, special, consequential, punitive, or exemplary damages, including loss of profits, data, goodwill, or other intangible losses, arising from or relating to: (a) your access to or use of, or inability to access or use, the Platform; (b) the conduct or content of any user or third party on or through the Platform; or (c) any unauthorised access to, use of, or alteration of your content or information.</p>
+      <p>To the maximum extent permitted by applicable law, our total aggregate liability to you for all claims arising from or relating to the Platform or these Terms will not exceed the greater of: (a) the amount you paid to Ethos in the 12 months immediately preceding the event giving rise to the claim; or (b) AUD $100.</p>
+      <p><strong>Australian Consumer Law:</strong> Where our liability cannot be excluded under Australian Consumer Law, our liability is limited, at our option, to the re-supply of the services or the payment of the cost of having the services supplied again.</p>
+
+      <h2>15. Indemnification</h2>
+      <p>To the extent permitted by applicable law, you agree to indemnify, defend, and hold harmless Ethos, its affiliates, directors, officers, employees, and agents from and against any claims, liabilities, damages, losses, costs, and expenses (including reasonable legal fees) arising from or relating to: (a) your use of the Platform; (b) Your Content; (c) your violation of these Terms; (d) your violation of any rights of any other person or entity; or (e) your conduct in connection with the Platform.</p>
+
+      <h2>16. Dispute Resolution</h2>
+
+      <h3>16.1 Informal resolution</h3>
+      <p>If you have a dispute with us, we encourage you to contact us first at <a href="mailto:support@ethosapp.co">support@ethosapp.co</a> so we can try to resolve it informally. Most concerns can be resolved quickly and to your satisfaction through our support team.</p>
+
+      <h3>16.2 Governing law</h3>
+      <p>These Terms are governed by and construed in accordance with the laws of New South Wales, Australia, without regard to conflict of law principles. For users in the European Union or European Economic Area, this choice of law does not deprive you of the protection afforded by mandatory consumer protection laws in your country of residence.</p>
+
+      <h3>16.3 Jurisdiction</h3>
+      <p>Subject to any applicable consumer protection laws that may give you the right to bring proceedings in your local courts, any dispute arising from or relating to these Terms or the Platform will be subject to the exclusive jurisdiction of the courts of New South Wales, Australia.</p>
+
+      <h3>16.4 Class action waiver</h3>
+      <p>To the maximum extent permitted by applicable law, you agree that any dispute resolution proceedings will be conducted on an individual basis and not as part of a class, consolidated, or representative action. This clause does not apply where prohibited by law, including for users in the European Union or European Economic Area.</p>
+
+      <h2>17. General Provisions</h2>
+
+      <h3>17.1 Entire agreement</h3>
+      <p>These Terms, together with our <a href="/privacy">Privacy Policy</a> and any additional terms disclosed at the time of purchase, constitute the entire agreement between you and Ethos regarding the Platform and supersede all prior agreements and understandings.</p>
+
+      <h3>17.2 Severability</h3>
+      <p>If any provision of these Terms is found to be invalid, illegal, or unenforceable by a court of competent jurisdiction, that provision will be modified to the minimum extent necessary to make it valid and enforceable, or if it cannot be modified, it will be severed from these Terms. The remaining provisions will continue in full force and effect.</p>
+
+      <h3>17.3 No waiver</h3>
+      <p>Our failure to enforce any right or provision of these Terms does not constitute a waiver of that right or provision.</p>
+
+      <h3>17.4 Assignment</h3>
+      <p>You may not assign or transfer your rights or obligations under these Terms without our prior written consent. We may assign or transfer our rights and obligations under these Terms without restriction.</p>
+
+      <h3>17.5 No agency</h3>
+      <p>Nothing in these Terms creates any agency, partnership, joint venture, or employment relationship between you and Ethos. You may not make any representations on behalf of Ethos.</p>
+
+      <h3>17.6 Survival</h3>
+      <p>Sections of these Terms that by their nature should survive termination will survive, including Sections 6, 7, 8, 13, 14, 15, 16, and 17.</p>
+
+      <h2>18. Contact Us</h2>
+      <p>If you have any questions about these Terms, please contact us:</p>
+      <p><strong>Ethos Labs Pty Ltd</strong><br>
+      ABN 20 694 353 332<br>
+      Email: <a href="mailto:support@ethosapp.co">support@ethosapp.co</a><br>
+      Website: <a href="https://ethosapp.co">ethosapp.co</a></p>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 Ethos Labs Pty Ltd &middot; <a href="https://ethosapp.co" style="color: var(--color-gold); text-decoration: none;">ethosapp.co</a></p>
+  </footer>
+
+</body>
+</html>
