@@ -46,8 +46,9 @@
     .cta-section { background: var(--color-card); border: 1px solid var(--color-input-border); border-radius: 10px; padding: 2rem 1.75rem; text-align: center; margin-top: 2.5rem; }
     .cta-section h3 { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.5rem; }
     .cta-section p { font-family: var(--font-serif); font-size: 1rem; color: var(--color-text-light); margin-bottom: 1rem; }
-    .cta-btn { display: inline-block; padding: 0.875rem 2rem; font-family: var(--font-serif); font-size: 1rem; font-weight: 600; color: #fff; background: var(--color-gold); border-radius: 8px; text-decoration: none; transition: background 0.2s; }
-    .cta-btn:hover { background: var(--color-gold-hover); }
+    .prose a.cta-btn, a.cta-btn { display: inline-block; padding: 1rem 2rem; font-family: var(--font-serif); font-size: 1.0625rem; font-weight: 600; color: #ffffff !important; background: var(--color-gold); border-radius: 8px; text-decoration: none !important; transition: background 0.2s, transform 0.15s; }
+    .prose a.cta-btn:hover, a.cta-btn:hover { background: var(--color-gold-hover); color: #ffffff !important; text-decoration: none !important; }
+    .cta-btn:active { transform: scale(0.99); }
     .footer { text-align: center; padding: 2rem; border-top: 1px solid var(--color-input-border); }
     .footer p { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light); }
     @media (max-width: 600px) { .header { padding: 0.875rem 1.5rem; } .content { padding: 2rem 1.5rem 3rem; } .logo-img { height: 28px; } .logo-text { font-size: 1.25rem; } }
