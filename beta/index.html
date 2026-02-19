@@ -502,6 +502,7 @@
   </script>
   <script>
     const VALIDATE_URL = 'https://ecdxgzpjgdosueacomwn.supabase.co/functions/v1/validate-beta-code';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVjZHhnenBqZ2Rvc3VlYWNvbXduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MTkyNzIsImV4cCI6MjA3NTE5NTI3Mn0.eY34mu5D2-4u_albqMVlH8yVvnwLTlRUgFv-9YBRA58';
 
     const form = document.getElementById('betaForm');
     const formMessage = document.getElementById('formMessage');
@@ -524,7 +525,11 @@
       try {
         const response = await fetch(VALIDATE_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+          },
           body: JSON.stringify({ code })
         });
 

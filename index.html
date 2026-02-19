@@ -890,6 +890,11 @@
                 <div class="city-dropdown" id="cityDropdown"></div>
               </div>
               
+              <!-- Honeypot - hidden from real users, bots fill it -->
+              <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
+                <input type="text" name="website" id="honeypot" tabindex="-1" autocomplete="off">
+              </div>
+
               <button type="submit" class="submit-btn" id="submitBtn">
                 Join Early Access
               </button>
@@ -966,19 +971,34 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
+      // Honeypot check — bots fill the hidden field
+      const honeypot = document.getElementById('honeypot');
+      if (honeypot && honeypot.value) {
+        // Fake success for bots
+        formMessage.textContent = 'You\'re on the list! We\'ll be in touch.';
+        formMessage.className = 'form-message success';
+        formMessage.style.display = 'block';
+        return;
+      }
+
       // Disable button and show loading state
       submitBtn.disabled = true;
       submitBtn.textContent = 'Joining...';
       formMessage.className = 'form-message';
       formMessage.style.display = 'none';
       
+      // Strip HTML tags from inputs
+      function sanitize(str) {
+        return str ? str.replace(/<[^>]*>/g, '').trim() : '';
+      }
+
       // Get form data
       const formData = new FormData(form);
       const data = {
-        name: formData.get('name').trim(),
+        name: sanitize(formData.get('name')),
         email: formData.get('email').trim().toLowerCase(),
         gender: formData.get('gender'),
-        city: formData.get('city').trim()
+        city: sanitize(formData.get('city'))
       };
       
       try {
