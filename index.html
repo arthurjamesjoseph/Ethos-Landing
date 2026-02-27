@@ -909,7 +909,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <p class="success-text">We'll be in touch soon with early access details. Thank you for your interest in Ethos.</p>
+              <p class="success-text" id="successText">We'll be in touch soon with early access details. Thank you for your interest in Ethos.</p>
               
               <div class="share-divider"></div>
               <p class="share-label">Know someone who should be on this list?</p>
@@ -1014,7 +1014,23 @@
         });
         
         if (response.ok) {
-          // Success - show success state
+          // Update success text for auto-send cities
+          const autoSendCities = new Set([
+            'Dubai, UAE','Singapore','London, United Kingdom','Toronto, Canada',
+            'New York, United States','San Francisco, United States','Sydney, Australia',
+            'Melbourne, Australia','Vancouver, Canada','Doha, Qatar','Abu Dhabi, UAE',
+            'Kuwait City, Kuwait','Riyadh, Saudi Arabia','Kuala Lumpur, Malaysia',
+            'Muscat, Oman','Bangalore, India','Mumbai, India','Delhi, India',
+            'Hyderabad, India','Chennai, India','Pune, India','Kolkata, India',
+            'Ahmedabad, India','Hong Kong','Los Angeles, United States',
+            'Chicago, United States','San Jose, United States','Seattle, United States',
+            'Washington DC, United States','Jeddah, Saudi Arabia'
+          ]);
+          if (autoSendCities.has(data.city)) {
+            document.getElementById('successText').textContent =
+              'Check your inbox — we\'ve sent you early access details. Thank you for your interest in Ethos.';
+          }
+          // Show success state
           formCard.classList.add('submitted');
         } else if (response.status === 409) {
           // Duplicate email
