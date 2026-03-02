@@ -1,4 +1,7 @@
 {
+  "redirects": [
+    { "source": "/beta", "destination": "/earlyaccess", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/(.*)",
