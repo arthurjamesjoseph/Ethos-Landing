@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blog – Ethos</title>
-  <meta name="description" content="Insights on intentional relationships, values-based matchmaking, and building meaningful connections.">
-  
+  <title>Journal – Ethos</title>
+  <meta name="description" content="Thoughts on intentional relationships, values-based matchmaking, and building something that does some good.">
+
   <link rel="icon" type="image/png" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
   <link rel="apple-touch-icon" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
-  
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --color-cream: #f5f2ed;
@@ -25,26 +25,32 @@
       --font-serif: 'Cormorant Garamond', Georgia, serif;
       --font-sans: 'Source Sans 3', -apple-system, sans-serif;
     }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 16px; -webkit-font-smoothing: antialiased; }
-    body { font-family: var(--font-sans); color: var(--color-text); background: var(--color-cream); line-height: 1.6; }
-    .header { background: var(--color-cream); padding: 1rem 2.5rem; border-bottom: 1px solid var(--color-input-border); }
+    body {
+      font-family: var(--font-sans);
+      color: var(--color-text);
+      background: var(--color-cream);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(245, 242, 237, 0.92);
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid var(--color-input-border);
+      backdrop-filter: blur(8px);
+    }
     .header-inner { display: flex; align-items: center; justify-content: space-between; }
     .logo { display: flex; align-items: center; gap: 0.625rem; text-decoration: none; color: var(--color-text); }
     .logo-img { height: 32px; width: auto; }
     .logo-text { font-family: var(--font-serif); font-size: 1.375rem; font-weight: 600; letter-spacing: 0.01em; }
-    .back-link { font-family: var(--font-serif); font-size: 0.9375rem; color: var(--color-gold); text-decoration: none; transition: color 0.2s; }
-    .back-link:hover { color: var(--color-gold-hover); }
-    .content { max-width: 800px; margin: 0 auto; padding: 3rem 2.5rem 4rem; text-align: center; }
-    .page-label { font-family: var(--font-sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-gold); margin-bottom: 0.75rem; }
-    .page-title { font-family: var(--font-serif); font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 500; color: var(--color-text); line-height: 1.15; margin-bottom: 1.5rem; }
-    .coming-soon { font-family: var(--font-serif); font-size: 1.125rem; color: var(--color-text-light); line-height: 1.65; max-width: 480px; margin: 0 auto 2rem; }
-    .divider { width: 60px; height: 1px; background: var(--color-gold); margin: 2rem auto; opacity: 0.5; }
-    .hint { font-family: var(--font-serif); font-size: 1rem; color: var(--color-text-light); font-style: italic; }
-    .footer { text-align: center; padding: 2rem; border-top: 1px solid var(--color-input-border); }
-    .footer p { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light); }
-    @media (max-width: 600px) { .header { padding: 0.875rem 1.5rem; } .content { padding: 2rem 1.5rem 3rem; } .logo-img { height: 28px; } .logo-text { font-size: 1.25rem; } }
-    /* Hamburger Menu */
+
+    /* Hamburger */
     .menu-toggle { background: none; border: none; cursor: pointer; padding: 0.5rem; display: flex; flex-direction: column; gap: 5px; z-index: 1001; }
     .menu-toggle span { display: block; width: 22px; height: 1.5px; background: var(--color-text); border-radius: 1px; transition: transform 0.3s ease, opacity 0.3s ease; }
     .menu-toggle.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
@@ -61,10 +67,186 @@
     .menu-footer { margin-top: auto; padding-top: 1.5rem; }
     .menu-contact { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light); line-height: 1.6; }
     .menu-contact a { color: var(--color-gold); text-decoration: none; }
-    .menu-contact a:hover { text-decoration: underline; }
+
+    /* Page header */
+    .page-header {
+      text-align: center;
+      padding: 3.5rem 2rem 2.5rem;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    .page-label {
+      font-family: var(--font-sans);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+
+    .page-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 500;
+      color: var(--color-text);
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+
+    .page-desc {
+      font-family: var(--font-serif);
+      font-size: 1.0625rem;
+      color: var(--color-text-light);
+      font-style: italic;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    /* Divider */
+    .gold-divider {
+      width: 48px;
+      height: 1px;
+      background: var(--color-gold);
+      margin: 2rem auto;
+      opacity: 0.4;
+    }
+
+    /* Posts grid */
+    .posts-wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 2rem 5rem;
+      flex: 1;
+    }
+
+    /* Featured post card */
+    .post-card-featured {
+      display: block;
+      text-decoration: none;
+      background: var(--color-card);
+      border: 1px solid var(--color-input-border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: box-shadow 0.25s, transform 0.25s;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.6s ease 0.15s forwards;
+    }
+
+    .post-card-featured:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+
+    .post-card-inner {
+      padding: 2.5rem 2.5rem 2rem;
+    }
+
+    .post-tag {
+      font-family: var(--font-sans);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .post-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.625rem, 3.5vw, 2.25rem);
+      font-weight: 500;
+      color: var(--color-text);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .post-excerpt {
+      font-family: var(--font-serif);
+      font-size: 1.0625rem;
+      color: var(--color-text-light);
+      line-height: 1.65;
+      margin-bottom: 1.75rem;
+    }
+
+    .post-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--color-input-border);
+    }
+
+    .post-byline {
+      font-family: var(--font-serif);
+      font-size: 0.875rem;
+      color: var(--color-text-light);
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+    }
+
+    .byline-dot {
+      width: 3px; height: 3px;
+      background: var(--color-gold);
+      border-radius: 50%;
+      opacity: 0.5;
+    }
+
+    .read-link {
+      font-family: var(--font-serif);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--color-gold);
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      transition: gap 0.2s, color 0.2s;
+    }
+
+    .post-card-featured:hover .read-link {
+      gap: 0.625rem;
+      color: var(--color-gold-hover);
+    }
+
+    /* More posts placeholder */
+    .more-soon {
+      text-align: center;
+      padding: 2.5rem 0 0;
+      opacity: 0;
+      animation: fadeUp 0.6s ease 0.3s forwards;
+    }
+
+    .more-soon p {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      color: var(--color-text-light);
+      font-style: italic;
+    }
+
+    /* Footer */
+    .footer { text-align: center; padding: 2rem; border-top: 1px solid var(--color-input-border); }
+    .footer p { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light); }
+
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 600px) {
+      .header { padding: 0.875rem 1.25rem; }
+      .posts-wrapper { padding: 0 1.25rem 4rem; }
+      .post-card-inner { padding: 1.75rem 1.5rem 1.5rem; }
+      .logo-img { height: 28px; }
+      .logo-text { font-size: 1.25rem; }
+    }
   </style>
 </head>
 <body>
+
   <header class="header">
     <div class="header-inner">
       <a href="/" class="logo">
@@ -72,47 +254,65 @@
         <span class="logo-text">Ethos</span>
       </a>
       <button class="menu-toggle" id="menuToggle" aria-label="Menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </header>
 
-    <!-- Menu Overlay -->
-    <div class="menu-overlay" id="menuOverlay"></div>
+  <div class="menu-overlay" id="menuOverlay"></div>
+  <nav class="menu-drawer" id="menuDrawer">
+    <div class="menu-nav">
+      <a href="/" class="menu-link">Home</a>
+      <a href="/about" class="menu-link">Our Ethos</a>
+      <a href="/blog" class="menu-link">Blog</a>
+      <a href="/safety" class="menu-link">Safety Tips</a>
+      <a href="/privacy" class="menu-link">Privacy Policy</a>
+      <a href="/terms" class="menu-link">Terms of Service</a>
+      <a href="/contact" class="menu-link">Contact Us</a>
+    </div>
+    <div class="menu-footer">
+      <p class="menu-contact">
+        Questions? Reach us at<br>
+        <a href="/cdn-cgi/l/email-protection#ff8c8a8f8f908d8bbf9a8b97908c9e8f8fd19c90"><span class="__cf_email__" data-cfemail="36454346465944427653425e5945574646185559">[email&#160;protected]</span></a>
+      </p>
+    </div>
+  </nav>
 
-    <!-- Menu Drawer -->
-    <nav class="menu-drawer" id="menuDrawer">
-      <div class="menu-nav">
-        <a href="/" class="menu-link">Home</a>
-        <a href="/about" class="menu-link">Our Ethos</a>
-        <a href="/blog" class="menu-link">Blog</a>
-        <a href="/safety" class="menu-link">Safety Tips</a>
-        <a href="/privacy" class="menu-link">Privacy Policy</a>
-        <a href="/terms" class="menu-link">Terms of Service</a>
-        <a href="/contact" class="menu-link">Contact Us</a>
-      </div>
-      <div class="menu-footer">
-        <p class="menu-contact">
-          Questions? Reach us at<br>
-          <a href="mailto:support@ethosapp.co">support@ethosapp.co</a>
-        </p>
-      </div>
-    </nav>
-
-  <main class="content">
-    <p class="page-label">Journal</p>
+  <div class="page-header">
+    <span class="page-label">Journal</span>
     <h1 class="page-title">The Ethos Blog</h1>
-    <p class="coming-soon">We've been too busy building the app to write about it. We'll get to it.</p>
-    <div class="divider"></div>
-    <p class="hint">Check back soon.</p>
+    <p class="page-desc">On dating, relationships, and why we're building something different.</p>
+  </div>
+
+  <div class="gold-divider"></div>
+
+  <main class="posts-wrapper">
+    <a href="/blog/dating-apps-suck" class="post-card-featured">
+      <div class="post-card-inner">
+        <span class="post-tag">Founder's Note &nbsp;·&nbsp; March 2026</span>
+        <h2 class="post-title">Dating Apps Suck</h2>
+        <p class="post-excerpt">"Dating apps suck." You hear it everywhere. And the craziest part? They're designed to be. Here's why we built something different.</p>
+        <div class="post-footer">
+          <div class="post-byline">
+            <span>Arthur</span>
+            <span class="byline-dot"></span>
+            <span>March 2026</span>
+          </div>
+          <span class="read-link">Read &rarr;</span>
+        </div>
+      </div>
+    </a>
+
+    <div class="more-soon">
+      <p>More to come.</p>
+    </div>
   </main>
 
   <footer class="footer">
     <p>&copy; 2026 Ethos Labs Pty Ltd &middot; <a href="https://ethosapp.co" style="color: var(--color-gold); text-decoration: none;">ethosapp.co</a></p>
   </footer>
-  <script>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     const menuToggle = document.getElementById('menuToggle');
     const menuDrawer = document.getElementById('menuDrawer');
     const menuOverlay = document.getElementById('menuOverlay');
@@ -122,11 +322,4 @@
       menuOverlay.classList.toggle('active');
       document.body.style.overflow = menuDrawer.classList.contains('active') ? 'hidden' : '';
     }
-    menuToggle.addEventListener('click', toggleMenu);
-    menuOverlay.addEventListener('click', toggleMenu);
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && menuDrawer.classList.contains('active')) toggleMenu();
-    });
-  </script>
-</body>
-</html>
+    menuToggle.addEventListener('click'
