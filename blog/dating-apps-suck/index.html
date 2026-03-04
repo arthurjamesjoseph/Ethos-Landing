@@ -469,4 +469,14 @@
       menuOverlay.classList.toggle('active');
       document.body.style.overflow = menuDrawer.classList.contains('active') ? 'hidden' : '';
     }
-    menuToggle.addEventListener('click'
+    menuToggle.addEventListener('click', toggleMenu);
+    menuOverlay.addEventListener('click', toggleMenu);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menuDrawer.classList.contains('active')) {
+        toggleMenu();
+      }
+    });
+  </script>
+</body>
+</html>
