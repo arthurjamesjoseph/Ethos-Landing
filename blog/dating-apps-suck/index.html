@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dating Apps Suck – Ethos Journal</title>
+  <meta name="description" content="Somewhere along the way the idea of online introductions turned into a chessboard of dopamine hits and dark patterns. That's the problem Ethos was built to solve.">
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://ethosapp.co/blog/dating-apps-suck">
+  <meta property="og:title" content="Dating Apps Suck – Ethos Journal">
+  <meta property="og:description" content="Somewhere along the way the idea of online introductions turned into a chessboard of dopamine hits and dark patterns.">
+  <meta property="og:image" content="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+
+  <link rel="icon" type="image/png" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+  <link rel="apple-touch-icon" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-cream: #f5f2ed;
+      --color-card: #f9f7f4;
+      --color-input-border: #e8e4de;
+      --color-gold: #b5a178;
+      --color-gold-hover: #a6926b;
+      --color-gold-light: rgba(181, 161, 120, 0.15);
+      --color-text: #3d3630;
+      --color-text-light: #6b5f54;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Source Sans 3', -apple-system, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--color-text);
+      background: var(--color-cream);
+      line-height: 1.6;
+      /* Subtle grain texture */
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: var(--color-gold);
+      width: 0%;
+      z-index: 1002;
+      transition: width 0.1s linear;
+    }
+
+    /* Header */
+    .header {
+      background: var(--color-cream);
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid var(--color-input-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+      background: rgba(245, 242, 237, 0.92);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      text-decoration: none;
+      color: var(--color-text);
+    }
+
+    .logo-img { height: 32px; width: auto; }
+
+    .logo-text {
+      font-family: var(--font-serif);
+      font-size: 1.375rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .back-link {
+      font-family: var(--font-serif);
+      font-size: 0.9375rem;
+      color: var(--color-gold);
+      text-decoration: none;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+
+    .back-link:hover { color: var(--color-gold-hover); }
+
+    /* Hamburger */
+    .menu-toggle {
+      background: none; border: none; cursor: pointer;
+      padding: 0.5rem; display: flex; flex-direction: column;
+      gap: 5px; z-index: 1001;
+    }
+    .menu-toggle span {
+      display: block; width: 22px; height: 1.5px;
+      background: var(--color-text); border-radius: 1px;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .menu-toggle.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .menu-toggle.active span:nth-child(2) { opacity: 0; }
+    .menu-toggle.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    .menu-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(45, 45, 45, 0.80); z-index: 999;
+      opacity: 0; visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .menu-overlay.active { opacity: 1; visibility: visible; }
+    .menu-drawer {
+      position: fixed; top: 0; right: 0; width: 300px;
+      max-width: 85vw; height: 100%; background: var(--color-cream);
+      z-index: 1000; transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex; flex-direction: column; padding: 5rem 2rem 2rem;
+    }
+    .menu-drawer.active { transform: translateX(0); }
+    .menu-nav { display: flex; flex-direction: column; gap: 0.25rem; }
+    .menu-link {
+      font-family: var(--font-serif); font-size: 1.25rem; font-weight: 500;
+      color: var(--color-text); text-decoration: none; padding: 0.875rem 0;
+      border-bottom: 1px solid var(--color-input-border);
+      transition: color 0.2s; display: block;
+    }
+    .menu-link:hover { color: var(--color-gold); }
+    .menu-link:first-child { border-top: 1px solid var(--color-input-border); }
+    .menu-footer { margin-top: auto; padding-top: 1.5rem; }
+    .menu-contact { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light); line-height: 1.6; }
+    .menu-contact a { color: var(--color-gold); text-decoration: none; }
+
+    /* Article layout */
+    .article-wrapper {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+
+    /* Article header */
+    .article-meta {
+      text-align: center;
+      margin-bottom: 3rem;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeUp 0.7s ease forwards;
+    }
+
+    .article-label {
+      font-family: var(--font-sans);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: 1.25rem;
+      display: block;
+    }
+
+    .article-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.5rem, 6vw, 3.75rem);
+      font-weight: 500;
+      line-height: 1.05;
+      color: var(--color-text);
+      letter-spacing: -0.02em;
+      margin-bottom: 1.75rem;
+    }
+
+    .article-byline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      font-family: var(--font-serif);
+      font-size: 0.9375rem;
+      color: var(--color-text-light);
+    }
+
+    .byline-dot {
+      width: 3px;
+      height: 3px;
+      background: var(--color-gold);
+      border-radius: 50%;
+      opacity: 0.6;
+    }
+
+    /* Ornamental divider */
+    .ornament {
+      text-align: center;
+      margin: 2.5rem 0;
+      color: var(--color-gold);
+      font-size: 0.75rem;
+      letter-spacing: 0.5em;
+      opacity: 0.6;
+    }
+
+    /* Drop cap */
+    .article-body p:first-child::first-letter {
+      font-family: var(--font-serif);
+      font-size: 4.5rem;
+      font-weight: 600;
+      line-height: 0.75;
+      float: left;
+      margin-right: 0.08em;
+      margin-top: 0.1em;
+      color: var(--color-gold);
+    }
+
+    /* Article body */
+    .article-body {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.7s ease 0.2s forwards;
+    }
+
+    .article-body p {
+      font-family: var(--font-serif);
+      font-size: clamp(1.0625rem, 2vw, 1.1875rem);
+      line-height: 1.75;
+      color: var(--color-text);
+      margin-bottom: 1.75em;
+    }
+
+    /* Pull quote */
+    .pull-quote {
+      margin: 2.5rem -1rem 2.5rem -2rem;
+      padding: 0.5rem 1.5rem 0.5rem 2rem;
+      border-left: 2px solid var(--color-gold);
+    }
+
+    .pull-quote p {
+      font-family: var(--font-serif) !important;
+      font-size: clamp(1.25rem, 3vw, 1.5rem) !important;
+      font-style: italic;
+      line-height: 1.5 !important;
+      color: var(--color-text) !important;
+      margin-bottom: 0 !important;
+    }
+
+    /* Section break ornament */
+    .section-break {
+      text-align: center;
+      margin: 2.75rem 0;
+      color: var(--color-gold);
+      font-size: 1rem;
+      letter-spacing: 0.6em;
+      opacity: 0.5;
+    }
+
+    /* CTA strip */
+    .article-cta {
+      margin-top: 4rem;
+      padding: 2.5rem 2rem;
+      background: var(--color-card);
+      border: 1px solid var(--color-input-border);
+      border-radius: 12px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.7s ease 0.4s forwards;
+    }
+
+    .cta-label {
+      font-family: var(--font-sans);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .cta-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.375rem, 3vw, 1.75rem);
+      font-weight: 500;
+      color: var(--color-text);
+      margin-bottom: 0.625rem;
+      line-height: 1.2;
+    }
+
+    .cta-sub {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      color: var(--color-text-light);
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      padding: 0.875rem 2.25rem;
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      background: var(--color-gold);
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .cta-btn:hover {
+      background: var(--color-gold-hover);
+      transform: translateY(-1px);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--color-input-border);
+      margin-top: 2rem;
+    }
+
+    .footer p {
+      font-family: var(--font-serif);
+      font-size: 0.875rem;
+      color: var(--color-text-light);
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .header { padding: 0.875rem 1.25rem; }
+      .article-wrapper { padding: 2.5rem 1.25rem 4rem; }
+      .pull-quote { margin-left: -0.5rem; margin-right: 0; }
+      .logo-img { height: 28px; }
+      .logo-text { font-size: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar" id="progressBar"></div>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <img src="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png" alt="Ethos" class="logo-img">
+        <span class="logo-text">Ethos</span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="menu-overlay" id="menuOverlay"></div>
+  <nav class="menu-drawer" id="menuDrawer">
+    <div class="menu-nav">
+      <a href="/" class="menu-link">Home</a>
+      <a href="/about" class="menu-link">Our Ethos</a>
+      <a href="/blog" class="menu-link">Blog</a>
+      <a href="/safety" class="menu-link">Safety Tips</a>
+      <a href="/privacy" class="menu-link">Privacy Policy</a>
+      <a href="/terms" class="menu-link">Terms of Service</a>
+      <a href="/contact" class="menu-link">Contact Us</a>
+    </div>
+    <div class="menu-footer">
+      <p class="menu-contact">
+        Questions? Reach us at<br>
+        <a href="/cdn-cgi/l/email-protection#24575154544b56506441504c4b574554540a474b"><span class="__cf_email__" data-cfemail="87f4f2f7f7e8f5f3c7e2f3efe8f4e6f7f7a9e4e8">[email&#160;protected]</span></a>
+      </p>
+    </div>
+  </nav>
+
+  <main>
+    <article class="article-wrapper">
+
+      <header class="article-meta">
+        <span class="article-label">Journal</span>
+        <h1 class="article-title">Dating Apps Suck</h1>
+        <div class="article-byline">
+          <span>Arthur</span>
+          <span class="byline-dot"></span>
+          <span>March 2026</span>
+        </div>
+      </header>
+
+      <div class="ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+      <div class="article-body">
+
+        <p>"Dating apps suck." You hear it everywhere - friends with swipe fatigue, social media rants, the person on the train that's a tad too loud on their phone while oversharing their personal life. And the craziest part? They're designed to be.</p>
+
+        <p>Take a deep dive into the rabbit hole, and you'll soon realise somewhere along the way the idea of online introductions turned into a chessboard of dopamine hits and dark patterns designed for retention and revenue. Where if you're not paying, you're the product. And if you're not succeeding, the big apps are.</p>
+
+        <p>And I always felt that's a shame. There are a lot of hopeful people out there just looking to find their person, and there's so much genuine opportunity that could come from online. Imagine this - someone out there that doesn't live in your neighbourhood, doesn't share any mutual friends, or mutual hobbies, and as much as you'd love a meet-cute with them at Trader Joe's or Waitrose, you're more likely to be drafted for WWIII right now. But if worlds collided, you know, that could change the trajectory of your entire life. And that person is out there right now, just neither of you know it yet. Which is where online could really shine. Not as a place to date, but as the bridge that leads to the first hello.</p>
+
+        <div class="section-break">✦</div>
+
+        <p>There's a lot that dating apps and matrimony sites get wrong. Sometimes doing too little, and sometimes too much. Where there's an opportunity to connect people on the things that actually count - like what they value, how they live, what they dream to do someday. They instead focus on mundane prompts, expensive gimmicks, and an illusion of options.</p>
+
+        <p>And where there's the opportunity to step back and let a relationship sprout - like encouraging you to close the app and meet in person. They'd rather have you behind a screen, weeks of texting multiple people endlessly, and stuck on a platform gamified to keep you there. But that's not dating. And I think most people want dating back - like heading to a new café and ordering a cortado, taking a sunny Sunday stroll through the farmers markets together, or dining at restaurants down a side street in a new city you both only found because you got a little lost. The real side of dating.</p>
+
+        <div class="section-break">✦</div>
+
+        <p>So that's the goal of it all. Help people connect with more like-minded people so they can find their person, and do it by bringing back dating - as opposed to just building "another dating app".</p>
+
+        <div class="pull-quote">
+          <p>Skip the gamification. Skip the gimmicks. Just make something that does some good.</p>
+        </div>
+
+        <p>Because you don't need retention tricks if people are finding success and telling their friends about it. And you don't need dark patterns if the product actually delivers on its promise. That's the ethos I wanted to build around. And that's why I called it Ethos.</p>
+
+        <p style="margin-top: 2.5rem; color: var(--color-text-light);">- Arthur</p>
+
+      </div>
+
+      <div class="article-cta">
+        <span class="cta-label">Early Access</span>
+        <h2 class="cta-title">Ready to find your person?</h2>
+        <p class="cta-sub">Join the waitlist. No gimmicks, no dark patterns.</p>
+        <a href="/" class="cta-btn">Join Early Access</a>
+      </div>
+
+    </article>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 Ethos Labs Pty Ltd &middot; <a href="https://ethosapp.co" style="color: var(--color-gold); text-decoration: none;">ethosapp.co</a></p>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // Reading progress bar
+    const progressBar = document.getElementById('progressBar');
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      progressBar.style.width = progress + '%';
+    });
+
+    // Menu
+    const menuToggle = document.getElementById('menuToggle');
+    const menuDrawer = document.getElementById('menuDrawer');
+    const menuOverlay = document.getElementById('menuOverlay');
+    function toggleMenu() {
+      menuToggle.classList.toggle('active');
+      menuDrawer.classList.toggle('active');
+      menuOverlay.classList.toggle('active');
+      document.body.style.overflow = menuDrawer.classList.contains('active') ? 'hidden' : '';
+    }
+    menuToggle.addEventListener('click'
