@@ -1146,7 +1146,7 @@
           }
           // Fire Meta Pixel Lead event
           if (typeof fbq === 'function') {
-            fbq('track', 'Lead', { content_name: 'Waitlist Signup' });
+            fbq('track', 'CompleteRegistration', { content_name: 'Waitlist Signup' });
           }
           // Show success state
           formCard.classList.add('submitted');
