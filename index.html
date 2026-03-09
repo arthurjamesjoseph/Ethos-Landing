@@ -515,6 +515,11 @@
       color: var(--color-text-light);
       font-style: italic;
     }
+
+    .city-suburb-arrow {
+      color: var(--color-text-light);
+      font-size: 0.8125rem;
+    }
     
     .submit-btn:hover {
       background: var(--color-gold-hover);
@@ -984,7 +989,7 @@
                   class="form-input" 
                   name="city" 
                   id="cityInput"
-                  placeholder="Start typing your city..."
+                  placeholder="Search for your nearest city..."
                   autocomplete="off"
                   required
                 >
@@ -1077,11 +1082,46 @@
     const SUPABASE_URL = 'https://ecdxgzpjgdosueacomwn.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_7Ef8xN852RGoSgFYiFJ6Sw_QMVIFzfX';
     
+    // Session tracking for conversion analytics
+    const SESSION_ID = sessionStorage.getItem('ethos_sid') || (() => {
+      const sid = crypto.randomUUID();
+      sessionStorage.setItem('ethos_sid', sid);
+      return sid;
+    })();
+
+    function trackEvent(eventType, metadata = {}) {
+      fetch(`${SUPABASE_URL}/rest/v1/landing_events`, {
+        method: 'POST',
+        keepalive: true, // survives page navigation
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          session_id: SESSION_ID,
+          event_type: eventType,
+          metadata
+        })
+      }).catch(() => {}); // fire-and-forget, never block UX
+    }
+
+    // Track blog/journal clicks (use keepalive fetch so it survives navigation)
+    document.querySelectorAll('.journal-strip-link-wrap').forEach(link => {
+      link.addEventListener('click', () => {
+        trackEvent('blog_click', { href: link.getAttribute('href') });
+      });
+    });
+
+    // Track page view
+    trackEvent('page_view', { referrer: document.referrer || null });
+
     const form = document.getElementById('waitlistForm');
     const formCard = document.getElementById('formCard');
     const formMessage = document.getElementById('formMessage');
     const submitBtn = document.getElementById('submitBtn');
-    
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -1108,13 +1148,34 @@
 
       // Get form data
       const formData = new FormData(form);
+      const rawCity = sanitize(formData.get('city'));
+
+      // Validate city: check suburb map first, then city list
+      const cityLower = rawCity.toLowerCase();
+      let resolvedCity = null;
+      if (SUBURB_LOOKUP[cityLower]) {
+        resolvedCity = SUBURB_LOOKUP[cityLower][0].metro;
+      } else if (CITY_LOOKUP[cityLower]) {
+        resolvedCity = CITY_LOOKUP[cityLower];
+      }
+
+      if (!resolvedCity) {
+        formMessage.textContent = 'We couldn\u2019t find that city. Please pick one from the dropdown suggestions.';
+        formMessage.className = 'form-message error';
+        formMessage.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Join the waitlist';
+        cityInput.focus();
+        return;
+      }
+
       const data = {
         name: sanitize(formData.get('name')),
         email: formData.get('email').trim().toLowerCase(),
         gender: formData.get('gender'),
-        city: sanitize(formData.get('city'))
+        city: resolvedCity
       };
-      
+
       try {
         const response = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
           method: 'POST',
@@ -1148,6 +1209,8 @@
           if (typeof fbq === 'function') {
             fbq('track', 'CompleteRegistration', { content_name: 'Waitlist Signup' });
           }
+          // Track successful signup
+          trackEvent('waitlist_signup', { city: data.city });
           // Show success state
           formCard.classList.add('submitted');
         } else if (response.status === 409) {
@@ -1319,43 +1382,203 @@
       ["Havana, Cuba", 313], ["San Juan, Puerto Rico", 314], ["Kingston, Jamaica", 315], ["Nassau, Bahamas", 316],
       ["Marrakech, Morocco", 317], ["Suva, Fiji", 318], ["Port Moresby, Papua New Guinea", 319]
     ];
-    
+
+    // Suburb/neighborhood → metro city mapping (array of pairs to allow duplicates)
+    const SUBURB_TO_METRO = [
+      // Canada – Toronto
+      ["Mississauga", "Toronto, Canada"], ["Brampton", "Toronto, Canada"], ["Markham", "Toronto, Canada"],
+      ["Vaughan", "Toronto, Canada"], ["Richmond Hill", "Toronto, Canada"], ["Scarborough", "Toronto, Canada"],
+      ["Etobicoke", "Toronto, Canada"], ["North York", "Toronto, Canada"], ["Oakville", "Toronto, Canada"],
+      ["Burlington", "Toronto, Canada"], ["Oshawa", "Toronto, Canada"], ["Pickering", "Toronto, Canada"],
+      ["Ajax", "Toronto, Canada"], ["Whitby", "Toronto, Canada"], ["Milton", "Toronto, Canada"],
+      ["Newmarket", "Toronto, Canada"], ["Aurora", "Toronto, Canada"], ["King City", "Toronto, Canada"],
+      ["Caledon", "Toronto, Canada"], ["Halton Hills", "Toronto, Canada"],
+      // Canada – Vancouver
+      ["Surrey", "Vancouver, Canada"], ["Burnaby", "Vancouver, Canada"], ["Richmond", "Vancouver, Canada"],
+      ["Coquitlam", "Vancouver, Canada"], ["New Westminster", "Vancouver, Canada"],
+      ["North Vancouver", "Vancouver, Canada"], ["West Vancouver", "Vancouver, Canada"],
+      ["Langley", "Vancouver, Canada"], ["Delta", "Vancouver, Canada"], ["Abbotsford", "Vancouver, Canada"],
+      ["Port Moody", "Vancouver, Canada"], ["Port Coquitlam", "Vancouver, Canada"],
+      ["White Rock", "Vancouver, Canada"], ["Maple Ridge", "Vancouver, Canada"], ["Pitt Meadows", "Vancouver, Canada"],
+      // Canada – Montreal
+      ["Laval", "Montreal, Canada"], ["Longueuil", "Montreal, Canada"], ["Brossard", "Montreal, Canada"],
+      ["Terrebonne", "Montreal, Canada"], ["Repentigny", "Montreal, Canada"],
+      ["Dollard-des-Ormeaux", "Montreal, Canada"], ["Pointe-Claire", "Montreal, Canada"], ["Dorval", "Montreal, Canada"],
+      // Canada – Calgary
+      ["Airdrie", "Calgary, Canada"], ["Okotoks", "Calgary, Canada"], ["Cochrane", "Calgary, Canada"], ["Chestermere", "Calgary, Canada"],
+      // Canada – Edmonton
+      ["St. Albert", "Edmonton, Canada"], ["Sherwood Park", "Edmonton, Canada"],
+      ["Spruce Grove", "Edmonton, Canada"], ["Leduc", "Edmonton, Canada"], ["Fort Saskatchewan", "Edmonton, Canada"],
+      // Canada – Ottawa
+      ["Gatineau", "Ottawa, Canada"], ["Kanata", "Ottawa, Canada"], ["Orleans", "Ottawa, Canada"], ["Barrhaven", "Ottawa, Canada"],
+      // US – New York
+      ["Brooklyn", "New York, United States"], ["Queens", "New York, United States"], ["Bronx", "New York, United States"],
+      ["Staten Island", "New York, United States"], ["Manhattan", "New York, United States"],
+      ["Jersey City", "New York, United States"], ["Hoboken", "New York, United States"], ["Newark", "New York, United States"],
+      ["Yonkers", "New York, United States"], ["White Plains", "New York, United States"],
+      ["Stamford", "New York, United States"], ["New Rochelle", "New York, United States"],
+      // US – Los Angeles
+      ["Pasadena", "Los Angeles, United States"], ["Glendale", "Los Angeles, United States"],
+      ["Burbank", "Los Angeles, United States"], ["Santa Monica", "Los Angeles, United States"],
+      ["Long Beach", "Los Angeles, United States"], ["Torrance", "Los Angeles, United States"],
+      ["Irvine", "Los Angeles, United States"], ["Anaheim", "Los Angeles, United States"],
+      ["Huntington Beach", "Los Angeles, United States"], ["Costa Mesa", "Los Angeles, United States"],
+      ["Fullerton", "Los Angeles, United States"], ["Garden Grove", "Los Angeles, United States"],
+      ["Ontario", "Los Angeles, United States"], ["Riverside", "Los Angeles, United States"],
+      ["Pomona", "Los Angeles, United States"], ["Rancho Cucamonga", "Los Angeles, United States"],
+      // US – San Francisco
+      ["Oakland", "San Francisco, United States"], ["San Jose", "San Francisco, United States"],
+      ["Berkeley", "San Francisco, United States"], ["Palo Alto", "San Francisco, United States"],
+      ["Mountain View", "San Francisco, United States"], ["Sunnyvale", "San Francisco, United States"],
+      ["Santa Clara", "San Francisco, United States"], ["Fremont", "San Francisco, United States"],
+      ["Hayward", "San Francisco, United States"], ["Redwood City", "San Francisco, United States"],
+      ["Daly City", "San Francisco, United States"], ["San Mateo", "San Francisco, United States"],
+      ["Cupertino", "San Francisco, United States"], ["Milpitas", "San Francisco, United States"],
+      // US – Chicago
+      ["Evanston", "Chicago, United States"], ["Naperville", "Chicago, United States"],
+      ["Schaumburg", "Chicago, United States"], ["Oak Park", "Chicago, United States"],
+      ["Skokie", "Chicago, United States"], ["Arlington Heights", "Chicago, United States"],
+      ["Cicero", "Chicago, United States"], ["Joliet", "Chicago, United States"], ["Aurora", "Chicago, United States"],
+      // US – Seattle
+      ["Bellevue", "Seattle, United States"], ["Redmond", "Seattle, United States"],
+      ["Kirkland", "Seattle, United States"], ["Renton", "Seattle, United States"],
+      ["Tacoma", "Seattle, United States"], ["Everett", "Seattle, United States"],
+      ["Bothell", "Seattle, United States"], ["Issaquah", "Seattle, United States"], ["Kent", "Seattle, United States"],
+      // US – Washington DC
+      ["Arlington", "Washington DC, United States"], ["Alexandria", "Washington DC, United States"],
+      ["Bethesda", "Washington DC, United States"], ["Silver Spring", "Washington DC, United States"],
+      ["Fairfax", "Washington DC, United States"], ["Tysons", "Washington DC, United States"],
+      ["Reston", "Washington DC, United States"], ["McLean", "Washington DC, United States"],
+      ["Rockville", "Washington DC, United States"],
+      // UK – London
+      ["Westminster", "London, United Kingdom"], ["Camden", "London, United Kingdom"],
+      ["Greenwich", "London, United Kingdom"], ["Hackney", "London, United Kingdom"],
+      ["Islington", "London, United Kingdom"], ["Croydon", "London, United Kingdom"],
+      ["Ealing", "London, United Kingdom"], ["Hounslow", "London, United Kingdom"],
+      ["Barnet", "London, United Kingdom"], ["Bromley", "London, United Kingdom"],
+      ["Enfield", "London, United Kingdom"], ["Harrow", "London, United Kingdom"],
+      ["Kingston", "London, United Kingdom"], ["Richmond", "London, United Kingdom"],
+      ["Sutton", "London, United Kingdom"], ["Bexley", "London, United Kingdom"],
+      ["Walthamstow", "London, United Kingdom"], ["Woolwich", "London, United Kingdom"],
+      ["Stratford", "London, United Kingdom"],
+      // Australia – Sydney
+      ["Parramatta", "Sydney, Australia"], ["Bondi", "Sydney, Australia"], ["Manly", "Sydney, Australia"],
+      ["Chatswood", "Sydney, Australia"], ["Penrith", "Sydney, Australia"], ["Liverpool", "Sydney, Australia"],
+      ["Blacktown", "Sydney, Australia"], ["Campbelltown", "Sydney, Australia"],
+      ["Bankstown", "Sydney, Australia"], ["Hurstville", "Sydney, Australia"],
+      // Australia – Melbourne
+      ["St Kilda", "Melbourne, Australia"], ["South Yarra", "Melbourne, Australia"],
+      ["Fitzroy", "Melbourne, Australia"], ["Carlton", "Melbourne, Australia"],
+      ["Brunswick", "Melbourne, Australia"], ["Footscray", "Melbourne, Australia"],
+      ["Box Hill", "Melbourne, Australia"], ["Dandenong", "Melbourne, Australia"],
+      ["Frankston", "Melbourne, Australia"], ["Ringwood", "Melbourne, Australia"],
+      // Middle East
+      ["Sharjah", "Dubai, UAE"], ["Ajman", "Dubai, UAE"],
+      ["Al Ain", "Abu Dhabi, UAE"],
+      ["Kharj", "Riyadh, Saudi Arabia"],
+      ["Makkah", "Jeddah, Saudi Arabia"], ["Madinah", "Jeddah, Saudi Arabia"],
+      // Asia
+      ["Jurong", "Singapore"], ["Tampines", "Singapore"], ["Woodlands", "Singapore"],
+      ["Ang Mo Kio", "Singapore"], ["Bedok", "Singapore"], ["Toa Payoh", "Singapore"],
+      ["Kowloon", "Hong Kong"], ["Tsuen Wan", "Hong Kong"], ["Sha Tin", "Hong Kong"], ["Tuen Mun", "Hong Kong"],
+      ["Petaling Jaya", "Kuala Lumpur, Malaysia"], ["Shah Alam", "Kuala Lumpur, Malaysia"],
+      ["Subang Jaya", "Kuala Lumpur, Malaysia"], ["Klang", "Kuala Lumpur, Malaysia"],
+      ["Cyberjaya", "Kuala Lumpur, Malaysia"], ["Putrajaya", "Kuala Lumpur, Malaysia"],
+      // India
+      ["Navi Mumbai", "Mumbai, India"], ["Thane", "Mumbai, India"],
+      ["Noida", "Delhi, India"], ["Gurgaon", "Delhi, India"], ["Gurugram", "Delhi, India"],
+      ["Faridabad", "Delhi, India"], ["Ghaziabad", "Delhi, India"],
+      ["Whitefield", "Bangalore, India"], ["Electronic City", "Bangalore, India"], ["Mysore Road", "Bangalore, India"],
+      ["Tambaram", "Chennai, India"], ["Porur", "Chennai, India"], ["Avadi", "Chennai, India"],
+      ["Secunderabad", "Hyderabad, India"], ["Kukatpally", "Hyderabad, India"],
+      ["Howrah", "Kolkata, India"], ["Salt Lake", "Kolkata, India"], ["Rajarhat", "Kolkata, India"],
+      ["Pimpri-Chinchwad", "Pune, India"], ["Hinjewadi", "Pune, India"]
+    ];
+
+    // Build a lowercase lookup for suburb validation (maps suburb → array of metros)
+    const SUBURB_LOOKUP = {};
+    for (const [suburb, metro] of SUBURB_TO_METRO) {
+      const key = suburb.toLowerCase();
+      if (!SUBURB_LOOKUP[key]) SUBURB_LOOKUP[key] = [];
+      SUBURB_LOOKUP[key].push({ suburb, metro });
+    }
+
+    // Build a set of all suburb names (lowercase) for suppressing CITIES_RANKED duplicates
+    const SUBURB_NAMES = new Set(SUBURB_TO_METRO.map(([s]) => s.toLowerCase()));
+
+    // Build a lowercase lookup set for valid city names
+    const CITY_LOOKUP = {};
+    for (const [city] of CITIES_RANKED) {
+      CITY_LOOKUP[city.toLowerCase()] = city;
+    }
+
     function fetchCities(query) {
       const lowerQuery = query.toLowerCase();
-      
-      // Filter matching cities
-      const matches = CITIES_RANKED.filter(([city]) => 
-        city.toLowerCase().includes(lowerQuery)
-      );
-      
-      // Sort: "starts with" matches first (by rank), then "contains" matches (by rank)
-      matches.sort(([cityA, rankA], [cityB, rankB]) => {
-        const aStarts = cityA.toLowerCase().startsWith(lowerQuery);
-        const bStarts = cityB.toLowerCase().startsWith(lowerQuery);
-        
-        if (aStarts && !bStarts) return -1;
-        if (!aStarts && bStarts) return 1;
-        return rankA - rankB;
+
+      // Collect results as { display, value, rank, startsWith }
+      const results = [];
+      const seenSuburbMetros = new Set(); // dedup suburbs pointing to same metro
+
+      // Search CITIES_RANKED (skip entries that have a suburb override)
+      for (const [city, rank] of CITIES_RANKED) {
+        if (city.toLowerCase().includes(lowerQuery)) {
+          // Extract base name (before comma) and check if it's a suburb
+          const baseName = city.split(',')[0].toLowerCase();
+          if (SUBURB_NAMES.has(baseName)) continue; // suburb mapping takes priority
+          results.push({
+            display: city,
+            value: city,
+            rank,
+            startsWith: city.toLowerCase().startsWith(lowerQuery)
+          });
+        }
+      }
+
+      // Search suburbs
+      const seenCityValues = new Set(results.map(r => r.value));
+      for (const [suburb, metro] of SUBURB_TO_METRO) {
+        if (suburb.toLowerCase().includes(lowerQuery)) {
+          // Show suburb→metro redirect, dedup by metro+suburb combo display
+          const key = suburb + '→' + metro;
+          if (!seenSuburbMetros.has(key)) {
+            seenSuburbMetros.add(key);
+            // If metro already in results as a direct city match, skip the redirect
+            if (seenCityValues.has(metro)) continue;
+            results.push({
+              display: `<span class="city-suburb-arrow">${suburb} → </span>${metro}`,
+              value: metro,
+              rank: 0,
+              startsWith: suburb.toLowerCase().startsWith(lowerQuery)
+            });
+          }
+        }
+      }
+
+      // Sort: "starts with" first, then by rank
+      results.sort((a, b) => {
+        if (a.startsWith && !b.startsWith) return -1;
+        if (!a.startsWith && b.startsWith) return 1;
+        return a.rank - b.rank;
       });
-      
+
       // Take top 7
-      displayCities(matches.slice(0, 7).map(([city]) => city));
+      displayCities(results.slice(0, 7));
     }
     
-    function displayCities(cities) {
-      if (cities.length === 0) {
-        cityDropdown.innerHTML = '<div class="city-loading">Type your city or select from suggestions</div>';
+    function displayCities(results) {
+      if (results.length === 0) {
+        cityDropdown.innerHTML = '<div class="city-loading">No matching cities found. Try a nearby major city.</div>';
         cityDropdown.classList.add('active');
         return;
       }
-      
+
       selectedIndex = -1;
-      cityDropdown.innerHTML = cities.map((city, index) => {
-        return `<div class="city-option" data-index="${index}" data-value="${city}">${city}</div>`;
+      cityDropdown.innerHTML = results.map((r, index) => {
+        return `<div class="city-option" data-index="${index}" data-value="${r.value}">${r.display}</div>`;
       }).join('');
-      
+
       cityDropdown.classList.add('active');
-      
+
       // Add click handlers
       cityDropdown.querySelectorAll('.city-option').forEach(option => {
         option.addEventListener('click', () => {
