@@ -622,6 +622,36 @@
       line-height: 1.5;
       margin-bottom: 1.25rem;
     }
+
+    .setup-profile-btn {
+      display: none;
+      width: 100%;
+      padding: 0.875rem 1rem;
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--color-white);
+      background: var(--color-gold);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      margin-bottom: 1.25rem;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .setup-profile-btn:hover {
+      background: var(--color-gold-hover);
+    }
+
+    .setup-profile-btn:active {
+      transform: scale(0.99);
+    }
+
+    .form-card.submitted .setup-profile-btn.visible {
+      display: block;
+    }
     
     /* Share Section */
     .share-divider {
@@ -1016,11 +1046,13 @@
                 </svg>
               </div>
               <p class="success-text" id="successText">We'll be in touch soon with early access details. Thank you for your interest in Ethos.</p>
-              
+
+              <a href="https://app.ethosapp.co" class="setup-profile-btn" id="setupProfileBtn">Set up your profile</a>
+
               <div class="share-divider"></div>
               <p class="share-label">Know someone who should be on this list?</p>
               
-              <button class="share-btn-primary" id="shareBtn" onclick="handleShare()">
+              <button class="share-btn-secondary" id="shareBtn" onclick="handleShare()">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13" />
                 </svg>
@@ -1202,8 +1234,9 @@
             'Washington DC, United States','Jeddah, Saudi Arabia'
           ]);
           if (autoSendCities.has(data.city)) {
-            document.getElementById('successText').textContent =
-              'Check your inbox for your early access details. Thank you for your interest in Ethos.';
+            document.getElementById('successText').innerHTML =
+              'Check your inbox for your early access details.<br>You can also set up your account using the link below.<br>Thank you for your interest in Ethos.';
+            document.getElementById('setupProfileBtn').classList.add('visible');
           }
           // Fire Meta Pixel Lead event
           if (typeof fbq === 'function') {
