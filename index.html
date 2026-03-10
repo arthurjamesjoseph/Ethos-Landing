@@ -732,7 +732,59 @@
       color: var(--color-success);
       border-color: var(--color-success);
     }
-    
+
+    .ig-follow-section {
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(181, 161, 120, 0.18);
+      text-align: center;
+    }
+
+    .ig-follow-label {
+      font-family: var(--font-serif);
+      font-size: 0.85rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 0.625rem;
+    }
+
+    .ig-follow-btn {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-family: var(--font-serif);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--color-gold);
+      background: transparent;
+      border: 1.5px solid var(--color-gold);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .ig-follow-btn:hover {
+      background: rgba(181, 161, 120, 0.08);
+    }
+
+    .ig-follow-btn .ig-icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    .ig-follow-btn .ig-icon rect,
+    .ig-follow-btn .ig-icon circle {
+      stroke: url(#igGradient);
+    }
+
+    .ig-follow-btn .ig-icon .ig-dot {
+      fill: url(#igGradient);
+      stroke: none;
+    }
+
     /* Desktop large screens */
     @media (min-width: 1200px) {
       .form-container {
@@ -1065,6 +1117,25 @@
                 </svg>
                 Copy link
               </button>
+
+              <div class="ig-follow-section">
+                <p class="ig-follow-label">Follow us on Instagram for city updates</p>
+                <a href="https://www.instagram.com/ethosapp.co/" target="_blank" rel="noopener noreferrer" class="ig-follow-btn">
+                  <svg class="ig-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <defs>
+                      <linearGradient id="igGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#fcb045"/>
+                        <stop offset="50%" stop-color="#fd1d1d"/>
+                        <stop offset="100%" stop-color="#833ab4"/>
+                      </linearGradient>
+                    </defs>
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                    <circle cx="12" cy="12" r="5"/>
+                    <circle class="ig-dot" cx="17.5" cy="6.5" r="1.5"/>
+                  </svg>
+                  Follow @ethosapp.co
+                </a>
+              </div>
             </div>
           </div>
         </div>
