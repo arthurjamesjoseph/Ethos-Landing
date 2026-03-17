@@ -1359,9 +1359,12 @@
           }
           // Track successful signup
           trackEvent('waitlist_signup', { city: data.city });
-          // Fire Reddit Pixel conversion event with email match key
+          // Fire Reddit Pixel conversion event with email match key + dedup ID
           if (typeof rdt === 'function') {
-            rdt('track', 'SignUp', { email: data.email });
+            rdt('track', 'SignUp', {
+              email: data.email,
+              conversionId: 'ethos_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+            });
           }
           // Show success state
           formCard.classList.add('submitted');
