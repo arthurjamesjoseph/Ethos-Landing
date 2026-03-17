@@ -35,6 +35,19 @@
   /></noscript>
   <!-- End Meta Pixel Code -->
 
+  <!-- Reddit Pixel Code -->
+  <script>
+  !function(w,d){if(!w.rdt){var p=w.rdt=function(){p.sendEvent?
+  p.sendEvent.apply(p,arguments):p.callQueue.push(arguments)};
+  p.callQueue=[];var t=d.createElement("script");t.src=
+  "https://www.redditstatic.com/ads/pixel.js";t.async=!0;var
+  s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}}
+  (window,document);
+  rdt('init','a2_iogwimx2fqoq');
+  rdt('track', 'PageVisit');
+  </script>
+  <!-- End Reddit Pixel Code -->
+
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
   <link rel="apple-touch-icon" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
@@ -1346,6 +1359,10 @@
           }
           // Track successful signup
           trackEvent('waitlist_signup', { city: data.city });
+          // Fire Reddit Pixel conversion event
+          if (typeof rdt === 'function') {
+            rdt('track', 'SignUp');
+          }
           // Show success state
           formCard.classList.add('submitted');
         } else if (response.status === 409) {
