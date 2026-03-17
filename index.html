@@ -43,7 +43,7 @@
   "https://www.redditstatic.com/ads/pixel.js";t.async=!0;var
   s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}}
   (window,document);
-  rdt('init','a2_iogwimx2fqoq');
+  rdt('init','a2_iogwimx2fqoq', {optOut: false, useDecimalCurrencyValues: true});
   rdt('track', 'PageVisit');
   </script>
   <!-- End Reddit Pixel Code -->
@@ -1359,9 +1359,9 @@
           }
           // Track successful signup
           trackEvent('waitlist_signup', { city: data.city });
-          // Fire Reddit Pixel conversion event
+          // Fire Reddit Pixel conversion event with email match key
           if (typeof rdt === 'function') {
-            rdt('track', 'SignUp');
+            rdt('track', 'SignUp', { email: data.email });
           }
           // Show success state
           formCard.classList.add('submitted');
