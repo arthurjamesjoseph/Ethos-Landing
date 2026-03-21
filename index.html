@@ -1504,20 +1504,18 @@
       };
 
       try {
-        // Fire waitlist insert + OTP in parallel
-        const [waitlistRes, otpResult] = await Promise.all([
-          fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'apikey': SUPABASE_ANON_KEY,
-              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-              'Prefer': 'return=minimal'
-            },
-            body: JSON.stringify(signupData)
-          }),
-          sendOtp(signupData.email)
-        ]);
+        // Insert waitlist FIRST — the handle_new_user() trigger reads this row
+        // when OTP creates the auth user, so it must exist before OTP is sent.
+        const waitlistRes = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify(signupData)
+        });
 
         // Track signup regardless of duplicate
         if (waitlistRes.ok || waitlistRes.status === 409) {
@@ -1533,6 +1531,9 @@
             });
           }
         }
+
+        // THEN send OTP — this may create the auth user (firing handle_new_user trigger)
+        const otpResult = await sendOtp(signupData.email);
 
         if (otpResult.ok) {
           showOtpScreen(signupData.email);
