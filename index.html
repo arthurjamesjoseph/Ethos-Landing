@@ -1598,6 +1598,23 @@
     otpInputs.forEach((input, index) => {
       input.addEventListener('input', (e) => {
         const val = e.target.value.replace(/\D/g, '');
+
+        // Mobile OTP autofill can dump all 6 digits into one input
+        if (val.length > 1) {
+          const digits = val.slice(0, 6 - index);
+          digits.split('').forEach((char, i) => {
+            if (otpInputs[index + i]) {
+              otpInputs[index + i].value = char;
+              otpInputs[index + i].classList.add('filled');
+            }
+          });
+          const nextIdx = Math.min(index + digits.length, 5);
+          otpInputs[nextIdx].focus();
+          const code = Array.from(otpInputs).map(i => i.value).join('');
+          if (code.length === 6) verifyOtp(code);
+          return;
+        }
+
         e.target.value = val.charAt(0) || '';
 
         if (val && index < 5) {
