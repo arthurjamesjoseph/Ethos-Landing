@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How It Works – Ethos</title>
+  <meta name="description" content="An intentional and considered way to meet. Here's how Ethos works — from matches to plans.">
+
+  <link rel="icon" type="image/png" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+  <link rel="apple-touch-icon" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-cream: #f5f2ed;
+      --color-card: #f9f7f4;
+      --color-input-border: #e8e4de;
+      --color-gold: #b5a178;
+      --color-gold-hover: #a6926b;
+      --color-text: #3d3630;
+      --color-text-light: #6b5f54;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Source Sans 3', -apple-system, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body { font-family: var(--font-sans); color: var(--color-text); background: var(--color-cream); line-height: 1.6; }
+    .header { background: var(--color-cream); padding: 1rem 2.5rem; border-bottom: 1px solid var(--color-input-border); }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: center; gap: 0.625rem; text-decoration: none; color: var(--color-text); }
+    .logo-img { height: 32px; width: auto; }
+    .logo-text { font-family: var(--font-serif); font-size: 1.375rem; font-weight: 600; letter-spacing: 0.01em; }
+
+    .content { max-width: 640px; margin: 0 auto; padding: 3.5rem 1.75rem 4rem; }
+
+    .intro { text-align: center; margin-bottom: 3.5rem; }
+    .page-label { font-family: var(--font-sans); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-gold); margin-bottom: 1rem; }
+    .page-title { font-family: var(--font-serif); font-size: clamp(2rem, 4.5vw, 2.25rem); font-weight: 500; color: var(--color-text); line-height: 1.15; letter-spacing: -0.01em; margin-bottom: 1.25rem; }
+    .rule { display: block; width: 2.5rem; height: 1px; background: var(--color-gold); margin: 0 auto; }
+
+    .sections { display: flex; flex-direction: column; gap: 3rem; }
+    .step-head { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .step-icon { display: inline-flex; width: 2.75rem; height: 2.75rem; align-items: center; justify-content: center; border-radius: 999px; border: 1px solid rgba(181, 161, 120, 0.4); background: rgba(181, 161, 120, 0.05); flex-shrink: 0; }
+    .step-icon svg { width: 1.125rem; height: 1.125rem; color: var(--color-gold); }
+    .step-title-row { display: flex; align-items: baseline; gap: 0.75rem; }
+    .step-number { font-family: var(--font-serif); font-size: 0.875rem; font-style: italic; color: var(--color-gold); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+    .step-title { font-family: var(--font-serif); font-size: 1.625rem; font-weight: 500; line-height: 1.2; color: var(--color-text); letter-spacing: -0.01em; }
+    .step-body { font-family: var(--font-serif); font-size: 1.0625rem; line-height: 1.75; color: rgba(61, 54, 48, 0.85); padding-left: 3.75rem; }
+
+    .closing { margin-top: 4rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+    .closing p { text-align: center; font-family: var(--font-serif); font-size: 0.95rem; color: var(--color-text-light); line-height: 1.6; max-width: 20rem; }
+    .closing a { color: var(--color-gold); text-decoration: none; }
+    .closing a:hover { text-decoration: underline; }
+
+    .footer { text-align: center; padding: 2rem; border-top: 1px solid var(--color-input-border); }
+    .footer p { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light); }
+    .footer a { color: var(--color-gold); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      .header { padding: 0.875rem 1.5rem; }
+      .content { padding: 2.5rem 1.5rem 3rem; }
+      .logo-img { height: 28px; }
+      .logo-text { font-size: 1.25rem; }
+      .step-body { padding-left: 0; }
+      .step-title { font-size: 1.5rem; }
+    }
+
+    /* Hamburger Menu */
+    .menu-toggle { background: none; border: none; cursor: pointer; padding: 0.5rem; display: flex; flex-direction: column; gap: 5px; z-index: 1001; }
+    .menu-toggle span { display: block; width: 22px; height: 1.5px; background: var(--color-text); border-radius: 1px; transition: transform 0.3s ease, opacity 0.3s ease; }
+    .menu-toggle.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .menu-toggle.active span:nth-child(2) { opacity: 0; }
+    .menu-toggle.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    .menu-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(45, 45, 45, 0.80); z-index: 999; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+    .menu-overlay.active { opacity: 1; visibility: visible; }
+    .menu-drawer { position: fixed; top: 0; right: 0; width: 300px; max-width: 85vw; height: 100%; background: var(--color-cream); z-index: 1000; transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; padding: 5rem 2rem 2rem; }
+    .menu-drawer.active { transform: translateX(0); }
+    .menu-nav { display: flex; flex-direction: column; gap: 0.25rem; }
+    .menu-link { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 500; color: var(--color-text); text-decoration: none; padding: 0.875rem 0; border-bottom: 1px solid var(--color-input-border); transition: color 0.2s; display: block; }
+    .menu-link:hover { color: var(--color-gold); }
+    .menu-link:first-child { border-top: 1px solid var(--color-input-border); }
+    .menu-footer { margin-top: auto; padding-top: 1.5rem; }
+    .menu-contact { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light); line-height: 1.6; }
+    .menu-contact a { color: var(--color-gold); text-decoration: none; }
+    .menu-contact a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <img src="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png" alt="Ethos" class="logo-img">
+        <span class="logo-text">Ethos</span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Menu Overlay -->
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <!-- Menu Drawer -->
+  <nav class="menu-drawer" id="menuDrawer">
+    <div class="menu-nav">
+      <a href="/" class="menu-link">Home</a>
+      <a href="/about" class="menu-link">Our Ethos</a>
+      <a href="/how-it-works" class="menu-link">How It Works</a>
+      <a href="/blog" class="menu-link">Blog</a>
+      <a href="/safety" class="menu-link">Safety Tips</a>
+      <a href="/privacy" class="menu-link">Privacy Policy</a>
+      <a href="/terms" class="menu-link">Terms of Service</a>
+      <a href="/contact" class="menu-link">Contact Us</a>
+    </div>
+    <div class="menu-footer">
+      <p class="menu-contact">
+        Questions? Reach us at<br>
+        <a href="mailto:support@ethosapp.co">support@ethosapp.co</a>
+      </p>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="intro">
+      <p class="page-label">How It Works</p>
+      <h1 class="page-title">An intentional and<br>considered way to meet.</h1>
+      <span class="rule"></span>
+    </div>
+
+    <div class="sections">
+      <section>
+        <div class="step-head">
+          <span class="step-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+            </svg>
+          </span>
+          <div class="step-title-row">
+            <span class="step-number">01</span>
+            <h2 class="step-title">Matches</h2>
+          </div>
+        </div>
+        <p class="step-body">You receive your top 10 most compatible people — toggle between your city, country, or worldwide. Your list is shaped by your compatibility answers and the basics you share about yourself.</p>
+      </section>
+
+      <section>
+        <div class="step-head">
+          <span class="step-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 10h2"/>
+              <path d="M16 14h2"/>
+              <path d="M6.17 15a3 3 0 0 1 5.66 0"/>
+              <circle cx="9" cy="11" r="2"/>
+              <rect x="2" y="5" width="20" height="14" rx="2"/>
+            </svg>
+          </span>
+          <div class="step-title-row">
+            <span class="step-number">02</span>
+            <h2 class="step-title">Profiles</h2>
+          </div>
+        </div>
+        <p class="step-body">Tap any match to view their profile and your compatibility score. From here, you can invite them to a first date (a coffee or a phone call), or remove them from your list. You can remove up to two people per week, and anyone removed is replaced with someone new on Sunday.</p>
+      </section>
+
+      <section>
+        <div class="step-head">
+          <span class="step-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="16" x="2" y="4" rx="2"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+          </span>
+          <div class="step-title-row">
+            <span class="step-number">03</span>
+            <h2 class="step-title">Invites</h2>
+          </div>
+        </div>
+        <p class="step-body">All your invites — sent and received — live here. Accept or decline at any time.</p>
+      </section>
+
+      <section>
+        <div class="step-head">
+          <span class="step-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 2v4"/>
+              <path d="M16 2v4"/>
+              <rect width="18" height="18" x="3" y="4" rx="2"/>
+              <path d="M3 10h18"/>
+            </svg>
+          </span>
+          <div class="step-title-row">
+            <span class="step-number">04</span>
+            <h2 class="step-title">Plans</h2>
+          </div>
+        </div>
+        <p class="step-body">Accepted invites become plans. You can have up to three first dates active at a time. From the second date onwards, Ethos focuses you on one person — because intentional dating takes presence. You can end any connection at any time and return to your matches.</p>
+      </section>
+
+      <section>
+        <div class="step-head">
+          <span class="step-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </span>
+          <div class="step-title-row">
+            <span class="step-number">05</span>
+            <h2 class="step-title">Profile</h2>
+          </div>
+        </div>
+        <p class="step-body">Manage your basics, filters, compatibility answers, availability, and account settings — all in one place.</p>
+      </section>
+    </div>
+
+    <div class="closing">
+      <span class="rule"></span>
+      <p>Need any support? You can contact us at <a href="mailto:support@ethosapp.co">support@ethosapp.co</a>.</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 Ethos Labs Pty Ltd &middot; <a href="https://ethosapp.co">ethosapp.co</a></p>
+  </footer>
+
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const menuDrawer = document.getElementById('menuDrawer');
+    const menuOverlay = document.getElementById('menuOverlay');
+    function toggleMenu() {
+      menuToggle.classList.toggle('active');
+      menuDrawer.classList.toggle('active');
+      menuOverlay.classList.toggle('active');
+      document.body.style.overflow = menuDrawer.classList.contains('active') ? 'hidden' : '';
+    }
+    menuToggle.addEventListener('click', toggleMenu);
+    menuOverlay.addEventListener('click', toggleMenu);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menuDrawer.classList.contains('active')) toggleMenu();
+    });
+  </script>
+</body>
+</html>
