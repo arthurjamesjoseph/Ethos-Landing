@@ -1974,7 +1974,8 @@
           // Redirect to app with session
           // Profile data (first_name, last_name, gender, living_in) is pre-seeded
           // server-side by handle_new_user() trigger from the waitlist row
-          const redirectUrl = `https://app.ethosapp.co/welcome#access_token=${data.access_token}&refresh_token=${data.refresh_token}&type=signup`;
+          const redirectBase = currentMode === 'signin' ? 'https://app.ethosapp.co/matches' : 'https://app.ethosapp.co/welcome';
+          const redirectUrl = `${redirectBase}#access_token=${data.access_token}&refresh_token=${data.refresh_token}&type=signup`;
           window.location.href = redirectUrl;
         } else {
           // Verification failed
