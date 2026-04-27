@@ -393,7 +393,162 @@
       text-align: center;
       margin-bottom: 1.5rem;
     }
-    
+
+    /* Mode Toggle (Join / Sign In) */
+    .mode-toggle {
+      display: flex;
+      background: var(--color-input-bg);
+      border: 1px solid var(--color-input-border);
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .mode-toggle-btn {
+      flex: 1;
+      padding: 0.625rem 0.75rem;
+      font-family: var(--font-serif);
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--color-text-light);
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color 0.2s, background 0.2s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .mode-toggle-btn.active {
+      color: var(--color-white);
+      background: var(--color-gold);
+    }
+
+    .mode-toggle-btn:not(.active):hover {
+      color: var(--color-text);
+    }
+
+    /* Live cities line */
+    .hero-badges {
+      margin-top: 0.875rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.375rem;
+    }
+
+    .live-cities {
+      font-family: var(--font-serif);
+      font-size: clamp(0.875rem, 1.2vw, 1rem);
+      font-weight: 500;
+      color: var(--color-white);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.15);
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #7fb07f;
+      box-shadow: 0 0 0 3px rgba(127, 176, 127, 0.25);
+      animation: live-pulse 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes live-pulse {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(127, 176, 127, 0.25); }
+      50% { box-shadow: 0 0 0 6px rgba(127, 176, 127, 0.1); }
+    }
+
+    .soon-cities {
+      font-family: var(--font-serif);
+      font-size: clamp(0.8125rem, 1.1vw, 0.9375rem);
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.85);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.15);
+    }
+
+    .soon-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.45);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+      flex-shrink: 0;
+    }
+
+    /* Sign-in specific */
+    .signin-form {
+      display: none;
+    }
+
+    .form-card.mode-signin .waitlist-form,
+    .form-card.mode-signin .form-subtitle,
+    .form-card.mode-signin .form-scarcity {
+      display: none;
+    }
+
+    .form-card.mode-signin .signin-form {
+      display: block;
+    }
+
+    .form-card.mode-signin .form-title {
+      margin-bottom: 1.5rem;
+    }
+
+    .signin-subtitle {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--color-text-light);
+      text-align: center;
+      margin-top: -0.875rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .signin-switch-note {
+      font-family: var(--font-serif);
+      font-size: 0.875rem;
+      color: var(--color-text-light);
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .signin-switch-link {
+      color: var(--color-gold);
+      text-decoration: none;
+      font-weight: 500;
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-size: inherit;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .signin-switch-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Hide toggle/signin elements in OTP or success states */
+    .form-card.verifying .mode-toggle,
+    .form-card.submitted .mode-toggle {
+      display: none;
+    }
+
+    .form-card.verifying .signin-form,
+    .form-card.submitted .signin-form {
+      display: none;
+    }
+
     /* Form Elements */
     .form-group {
       margin-bottom: 1.125rem;
@@ -1216,11 +1371,20 @@
         <div class="headline-container">
           <h1 class="headline">Made for the<br>intentional.</h1>
           <p class="subheadline">For those wanting to find their person.</p>
+          <div class="hero-badges">
+            <span class="live-cities"><span class="live-dot"></span>Now live in Mumbai &amp; Bangalore</span>
+            <span class="soon-cities"><span class="soon-dot"></span>Coming to Toronto, London, New York, Sydney, Delhi &amp; more</span>
+          </div>
         </div>
         
         <div class="form-container">
           <div class="form-card" id="formCard">
-            <h2 class="form-title">Join for Early Access</h2>
+            <div class="mode-toggle" id="modeToggle" role="tablist">
+              <button type="button" class="mode-toggle-btn active" id="modeJoinBtn" data-mode="join" role="tab" aria-selected="true">Join Early Access</button>
+              <button type="button" class="mode-toggle-btn" id="modeSigninBtn" data-mode="signin" role="tab" aria-selected="false">Sign In</button>
+            </div>
+
+            <h2 class="form-title" id="formTitle">Join for Early Access</h2>
             <p class="form-subtitle">Priority access and launch updates.</p>
             <p class="form-scarcity">Early access is limited.</p>
             
@@ -1295,20 +1459,46 @@
               </button>
               
               <p class="privacy-note">We respect your privacy. No spam. Ever.</p>
-              <p class="signin-note">Already have an account? <a href="https://app.ethosapp.co" class="signin-link">Sign in</a></p>
             </form>
-            
+
+            <form class="signin-form" id="signinForm">
+              <p class="signin-subtitle">Welcome back. Enter your email to sign in.</p>
+
+              <div class="form-group">
+                <label class="form-label">
+                  Email<span class="required">*</span>
+                </label>
+                <input
+                  type="email"
+                  class="form-input"
+                  name="email"
+                  id="signinEmail"
+                  placeholder="your@email.com"
+                  autocomplete="email"
+                  required
+                >
+              </div>
+
+              <button type="submit" class="submit-btn" id="signinBtn">
+                Send sign-in code
+              </button>
+
+              <p class="signin-switch-note">
+                New here? <button type="button" class="signin-switch-link" id="switchToJoinLink">Join Early Access</button>
+              </p>
+            </form>
+
             <div class="otp-content" id="otpContent">
-              <h3 class="otp-title">Let's get you started</h3>
+              <h3 class="otp-title" id="otpTitle">Let's get you started</h3>
               <p class="otp-subtitle">We've sent a verification code to</p>
               <p class="otp-email" id="otpEmail"></p>
               <div class="otp-inputs" id="otpInputs">
                 <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="0" autocomplete="one-time-code">
-                <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="1">
-                <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="2">
-                <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="3">
-                <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="4">
-                <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="5">
+                <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="1" autocomplete="one-time-code">
+                <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="2" autocomplete="one-time-code">
+                <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="3" autocomplete="one-time-code">
+                <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="4" autocomplete="one-time-code">
+                <input type="text" inputmode="numeric" maxlength="1" class="otp-input" data-index="5" autocomplete="one-time-code">
               </div>
               <p class="otp-error" id="otpError"></p>
               <p class="otp-verifying-text" id="otpVerifying" style="display:none;">Verifying...</p>
@@ -1452,9 +1642,107 @@
     const formCard = document.getElementById('formCard');
     const formMessage = document.getElementById('formMessage');
     const submitBtn = document.getElementById('submitBtn');
+    const signinForm = document.getElementById('signinForm');
+    const signinBtn = document.getElementById('signinBtn');
+    const signinEmail = document.getElementById('signinEmail');
+    const formTitle = document.getElementById('formTitle');
+    const otpTitle = document.getElementById('otpTitle');
+    const modeJoinBtn = document.getElementById('modeJoinBtn');
+    const modeSigninBtn = document.getElementById('modeSigninBtn');
 
     // Store signup data for OTP flow
     let signupData = null;
+
+    // Current mode: 'join' or 'signin'
+    let currentMode = 'join';
+
+    // --- Mode toggle ---
+    function setMode(mode) {
+      if (mode === currentMode) return;
+      currentMode = mode;
+
+      formMessage.style.display = 'none';
+      formMessage.className = 'form-message';
+      formMessage.textContent = '';
+
+      if (mode === 'signin') {
+        formCard.classList.add('mode-signin');
+        modeSigninBtn.classList.add('active');
+        modeSigninBtn.setAttribute('aria-selected', 'true');
+        modeJoinBtn.classList.remove('active');
+        modeJoinBtn.setAttribute('aria-selected', 'false');
+        formTitle.textContent = 'Welcome back';
+      } else {
+        formCard.classList.remove('mode-signin');
+        modeJoinBtn.classList.add('active');
+        modeJoinBtn.setAttribute('aria-selected', 'true');
+        modeSigninBtn.classList.remove('active');
+        modeSigninBtn.setAttribute('aria-selected', 'false');
+        formTitle.textContent = 'Join for Early Access';
+      }
+
+      trackEvent('mode_toggle', { mode });
+    }
+
+    modeJoinBtn.addEventListener('click', () => setMode('join'));
+    modeSigninBtn.addEventListener('click', () => setMode('signin'));
+
+    document.getElementById('switchToJoinLink').addEventListener('click', () => setMode('join'));
+
+    // --- Sign-in form submit ---
+    signinForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = signinEmail.value.trim().toLowerCase();
+      if (!email) return;
+
+      signinBtn.disabled = true;
+      signinBtn.textContent = 'Sending...';
+      formMessage.style.display = 'none';
+      formMessage.className = 'form-message';
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/auth/v1/otp`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY
+          },
+          body: JSON.stringify({
+            email: email,
+            create_user: false
+          })
+        });
+
+        if (res.ok) {
+          signupData = { email: email };
+          otpTitle.textContent = 'Welcome back';
+          showOtpScreen(email);
+          trackEvent('signin_otp_sent', {});
+        } else {
+          const data = await res.json().catch(() => ({}));
+          const msg = (data.msg || data.error_description || '').toLowerCase();
+          if (msg.includes('not found') || msg.includes('signup') || msg.includes('signups not allowed') || res.status === 422 || res.status === 400) {
+            formMessage.innerHTML = 'No account found for that email. <button type="button" class="signin-switch-link" style="text-decoration:underline" onclick="document.getElementById(\'modeJoinBtn\').click()">Join Early Access</button> instead?';
+            formMessage.className = 'form-message error';
+            formMessage.style.display = 'block';
+            trackEvent('signin_not_found', {});
+          } else {
+            formMessage.textContent = 'Unable to send sign-in code. Please try again.';
+            formMessage.className = 'form-message error';
+            formMessage.style.display = 'block';
+          }
+        }
+      } catch (err) {
+        console.error('Sign-in error:', err);
+        formMessage.textContent = 'Unable to connect. Please check your internet and try again.';
+        formMessage.className = 'form-message error';
+        formMessage.style.display = 'block';
+      }
+
+      signinBtn.disabled = false;
+      signinBtn.textContent = 'Send sign-in code';
+    });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -1537,6 +1825,7 @@
         const otpResult = await sendOtp(signupData.email);
 
         if (otpResult.ok) {
+          otpTitle.textContent = "Let's get you started";
           showOtpScreen(signupData.email);
         } else {
           // OTP failed — show regular success with profile link as fallback
