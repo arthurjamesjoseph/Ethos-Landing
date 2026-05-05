@@ -242,6 +242,103 @@
 
     .report-section a:hover { text-decoration: underline; }
 
+    /* Child Safety Standards (standout sub-section) */
+    .child-safety-section {
+      margin-top: 4rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--color-input-border);
+    }
+
+    .child-safety-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+      font-weight: 500;
+      color: var(--color-text);
+      line-height: 1.2;
+      margin: 0 0 0.5rem;
+    }
+
+    .effective-date {
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      color: var(--color-text-light);
+      margin-bottom: 2rem;
+    }
+
+    .prose h2 {
+      font-family: var(--font-serif);
+      font-size: 1.375rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 2.25rem 0 0.75rem;
+    }
+
+    .prose p {
+      font-family: var(--font-serif);
+      font-size: 1.0625rem;
+      color: var(--color-text);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .prose ul,
+    .prose ol {
+      margin: 0.75rem 0 1.25rem 1.5rem;
+      padding: 0;
+      list-style: none;
+      counter-reset: prose-counter;
+    }
+
+    .prose ul li,
+    .prose ol li {
+      font-family: var(--font-serif);
+      font-size: 1.0625rem;
+      color: var(--color-text);
+      line-height: 1.7;
+      margin-bottom: 0.5rem;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+
+    .prose ul li::before {
+      content: '\2022';
+      color: var(--color-gold);
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .prose ol li {
+      counter-increment: prose-counter;
+    }
+
+    .prose ol li::before {
+      content: counter(prose-counter) '.';
+      color: var(--color-gold);
+      font-weight: 600;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .prose strong { font-weight: 600; color: var(--color-text); }
+    .prose em { font-style: italic; }
+
+    .prose a {
+      color: var(--color-gold);
+      text-decoration: none;
+    }
+
+    .prose a:hover {
+      text-decoration: underline;
+    }
+
+    .prose hr {
+      border: none;
+      border-top: 1px solid var(--color-input-border);
+      margin: 2rem 0;
+    }
+
     .footer {
       text-align: center;
       padding: 2rem;
@@ -329,7 +426,14 @@
 
     <div class="emergency-banner">
       <p class="emergency-banner-title">In immediate danger?</p>
-      <p>If you are ever in a situation where you feel unsafe, leave immediately and call emergency services. In Australia, call <strong>000</strong>. In the US, call <strong>911</strong>. In the UK, call <strong>999</strong>. In the EU, call <strong>112</strong>.</p>
+      <p style="margin-bottom: 0.5rem;">If you are ever in a situation where you feel unsafe, leave immediately and call emergency services:</p>
+      <ul style="font-family: var(--font-serif); font-size: 1rem; color: var(--color-text); line-height: 1.65; padding-left: 1.25rem; margin: 0;">
+        <li>Australia &mdash; <strong>000</strong></li>
+        <li>United States &mdash; <strong>911</strong></li>
+        <li>United Kingdom &mdash; <strong>999</strong></li>
+        <li>European Union &mdash; <strong>112</strong></li>
+        <li>India &mdash; <strong>112</strong></li>
+      </ul>
     </div>
 
     <div class="tip-section">
@@ -423,6 +527,75 @@
         <p>Ethos is designed to help you get to know someone before you meet. Use the in-app messaging until you feel comfortable sharing other contact details. Conversations on the Platform give you the ability to report and block if needed — once you move to another channel, we can't help as easily.</p>
       </div>
     </div>
+
+    <section class="child-safety-section">
+      <p class="page-label">Legal</p>
+      <h2 class="child-safety-title">Child Safety Standards</h2>
+      <p class="effective-date">Last updated: 5 May 2026</p>
+
+      <div class="prose">
+        <p>Ethos is a relationship-focused dating and connection app operated by Ethos Labs Pty Ltd. We take child safety extremely seriously. This page sets out our published standards for preventing child sexual abuse and exploitation (CSAE) on Ethos, in line with Google Play&rsquo;s Child Safety Standards policy and applicable child-safety laws.</p>
+
+        <h2>1. Zero-tolerance policy</h2>
+        <p>Ethos has a zero-tolerance policy toward child sexual abuse and exploitation (CSAE) and child sexual abuse material (CSAM). The following are strictly prohibited on Ethos:</p>
+        <ul>
+          <li>Any content that sexualises, exploits, or endangers a minor (any person under the age of 18).</li>
+          <li>The creation, sharing, solicitation, possession, or transmission of CSAM in any form, including AI-generated, computer-generated, animated, or drawn depictions of minors.</li>
+          <li>Grooming, sextortion, or any attempt to engage a minor in sexual conversation, contact, or activity.</li>
+          <li>Use of Ethos by anyone under the age of 18. Ethos is an 18+ app and we enforce this through age verification at sign-up, ID-based identity verification, and ongoing review of user-reported accounts.</li>
+        </ul>
+        <p>Any account engaged in any of the above will be permanently banned, and reports involving CSAM will be escalated to law enforcement and the appropriate national reporting body without delay.</p>
+
+        <h2>2. Child safety point of contact</h2>
+        <p>For child-safety reports, regulator enquiries, or law-enforcement requests relating to CSAE on Ethos, contact:</p>
+        <p><em>Email:</em> <a href="mailto:support@ethosapp.co">support@ethosapp.co</a><br>
+           <em>Postal:</em> Ethos Labs Pty Ltd, [registered office address]</p>
+        <p>This mailbox is monitored by Ethos Labs Pty Ltd and reviewed daily. Urgent reports relating to imminent harm to a child will be actioned within 24 hours.</p>
+
+        <h2>3. In-app reporting mechanism</h2>
+        <p>Every Ethos user profile, message thread, and connection includes a <em>Block &amp; Report</em> action. Users can report any user or content for, among other reasons:</p>
+        <ul>
+          <li>Suspected minor account</li>
+          <li>Sexual content involving a minor</li>
+          <li>Grooming or sexually inappropriate behaviour</li>
+          <li>Solicitation of CSAM</li>
+        </ul>
+        <p>All reports are received in our admin moderation queue and reviewed by Ethos Labs Pty Ltd within 24 hours. Reports flagged as involving a minor are prioritised for immediate review.</p>
+
+        <h2>4. CSAM handling and law-enforcement reporting</h2>
+        <p>When CSAM or suspected CSAE is identified &mdash; whether through a user report, automated detection, or proactive moderation &mdash; Ethos Labs Pty Ltd will:</p>
+        <ol>
+          <li><em>Remove</em> the content from the platform immediately.</li>
+          <li><em>Disable</em> the offending account, blocking re-registration via the same identity, device, and payment instrument.</li>
+          <li><em>Preserve</em> the relevant records (user identifiers, content, timestamps, IP and device data) in line with applicable evidence-preservation obligations.</li>
+          <li><em>Report</em> the incident to the appropriate national authority &mdash; including the National Center for Missing &amp; Exploited Children (NCMEC) CyberTipline in the United States, the Internet Watch Foundation (IWF) in the United Kingdom, the eSafety Commissioner in Australia, and any other competent authority for the jurisdictions involved.</li>
+          <li><em>Cooperate</em> fully with any subsequent law-enforcement investigation, including production of preserved records under valid legal process.</li>
+        </ol>
+
+        <h2>5. Age assurance</h2>
+        <p>Ethos is an 18+ service. To enforce this we require:</p>
+        <ul>
+          <li>A self-declared date of birth at sign-up, with hard rejection for any user under 18.</li>
+          <li>Identity and selfie verification before a profile becomes visible to other users.</li>
+          <li>Ongoing manual review of any account reported as a suspected minor, with provisional suspension pending review.</li>
+        </ul>
+        <p>Accounts where the user is found to be under 18 are deleted, and the underlying identity blocked from re-registration.</p>
+
+        <h2>6. Compliance with applicable child-safety laws and regulations</h2>
+        <p>Ethos Labs Pty Ltd complies with all applicable child-safety laws and regulations in the jurisdictions in which Ethos is offered, including but not limited to:</p>
+        <ul>
+          <li><em>United States</em> &mdash; 18 U.S.C. &sect; 2258A (mandatory CyberTipline reporting), the PROTECT Act, COPPA.</li>
+          <li><em>United Kingdom</em> &mdash; the Online Safety Act 2023, IWF protocols.</li>
+          <li><em>Australia</em> &mdash; the Online Safety Act 2021 and the Basic Online Safety Expectations.</li>
+          <li><em>European Union</em> &mdash; the Digital Services Act and applicable national equivalents.</li>
+        </ul>
+        <p>We review these standards at least annually and update them as regulations evolve.</p>
+
+        <hr>
+
+        <p>If you believe a child is in immediate danger, contact your local emergency services first, then report to Ethos via <a href="mailto:support@ethosapp.co">support@ethosapp.co</a>.</p>
+      </div>
+    </section>
 
     <div class="report-section">
       <h3>Need to report something?</h3>
