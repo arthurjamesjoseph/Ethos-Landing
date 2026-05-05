@@ -34,6 +34,11 @@
       font-size: 16px;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+    }
+
+    :target {
+      scroll-margin-top: 1.5rem;
     }
 
     body {
@@ -242,6 +247,67 @@
 
     .report-section a:hover { text-decoration: underline; }
 
+    /* Table of contents */
+    .toc {
+      background: var(--color-card);
+      border: 1px solid var(--color-input-border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc-title {
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: 0.75rem;
+    }
+
+    .toc ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .toc > ul > li {
+      font-family: var(--font-serif);
+      font-size: 1.0625rem;
+      line-height: 1.6;
+      margin-bottom: 0.25rem;
+    }
+
+    .toc ul ul {
+      margin: 0.25rem 0 0.75rem 1rem;
+      padding-left: 0.75rem;
+      border-left: 1px solid var(--color-input-border);
+    }
+
+    .toc ul ul li {
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      color: var(--color-text-light);
+      line-height: 1.55;
+      margin-bottom: 0.15rem;
+    }
+
+    .toc a {
+      color: var(--color-text);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    .toc ul ul a {
+      color: var(--color-text-light);
+    }
+
+    .toc a:hover {
+      color: var(--color-gold);
+      text-decoration: underline;
+    }
+
     /* Child Safety Standards (standout sub-section) */
     .child-safety-section {
       margin-top: 4rem;
@@ -258,11 +324,17 @@
       margin: 0 0 0.5rem;
     }
 
-    .effective-date {
+    .child-safety-meta {
       font-family: var(--font-serif);
       font-size: 0.95rem;
       color: var(--color-text-light);
+      line-height: 1.7;
       margin-bottom: 2rem;
+    }
+
+    .child-safety-meta em {
+      font-style: italic;
+      color: var(--color-text);
     }
 
     .prose h2 {
@@ -436,8 +508,28 @@
       </ul>
     </div>
 
+    <nav class="toc" aria-label="On this page">
+      <p class="toc-title">Jump to</p>
+      <ul>
+        <li><a href="#meeting-in-person">Meeting in Person</a></li>
+        <li><a href="#online-safety">Online Safety</a></li>
+        <li><a href="#using-ethos-safely">Using Ethos Safely</a></li>
+        <li>
+          <a href="#child-safety">Child Safety Standards</a>
+          <ul>
+            <li><a href="#zero-tolerance">Zero-tolerance policy</a></li>
+            <li><a href="#point-of-contact">Child safety point of contact</a></li>
+            <li><a href="#in-app-reporting">In-app reporting mechanism</a></li>
+            <li><a href="#csam-handling">CSAM handling and law-enforcement reporting</a></li>
+            <li><a href="#age-assurance">Age assurance</a></li>
+            <li><a href="#compliance">Compliance with child-safety laws</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+
     <div class="tip-section">
-      <h2 class="tip-section-title">Meeting in Person</h2>
+      <h2 id="meeting-in-person" class="tip-section-title">Meeting in Person</h2>
 
       <div class="tip-card">
         <h3 class="tip-card-title">
@@ -481,7 +573,7 @@
     </div>
 
     <div class="tip-section">
-      <h2 class="tip-section-title">Online Safety</h2>
+      <h2 id="online-safety" class="tip-section-title">Online Safety</h2>
 
       <div class="tip-card">
         <h3 class="tip-card-title">
@@ -509,7 +601,7 @@
     </div>
 
     <div class="tip-section">
-      <h2 class="tip-section-title">Using Ethos Safely</h2>
+      <h2 id="using-ethos-safely" class="tip-section-title">Using Ethos Safely</h2>
 
       <div class="tip-card">
         <h3 class="tip-card-title">
@@ -528,15 +620,19 @@
       </div>
     </div>
 
-    <section class="child-safety-section">
+    <section id="child-safety" class="child-safety-section">
       <p class="page-label">Legal</p>
       <h2 class="child-safety-title">Child Safety Standards</h2>
-      <p class="effective-date">Last updated: 5 May 2026</p>
+      <p class="child-safety-meta">
+        <em>App:</em> Ethos<br>
+        <em>Developer:</em> Ethos Labs Pty Ltd<br>
+        <em>Last updated:</em> 5 May 2026
+      </p>
 
       <div class="prose">
         <p>Ethos is a relationship-focused dating and connection app operated by Ethos Labs Pty Ltd. We take child safety extremely seriously. This page sets out our published standards for preventing child sexual abuse and exploitation (CSAE) on Ethos, in line with Google Play&rsquo;s Child Safety Standards policy and applicable child-safety laws.</p>
 
-        <h2>1. Zero-tolerance policy</h2>
+        <h2 id="zero-tolerance">1. Zero-tolerance policy</h2>
         <p>Ethos has a zero-tolerance policy toward child sexual abuse and exploitation (CSAE) and child sexual abuse material (CSAM). The following are strictly prohibited on Ethos:</p>
         <ul>
           <li>Any content that sexualises, exploits, or endangers a minor (any person under the age of 18).</li>
@@ -546,13 +642,13 @@
         </ul>
         <p>Any account engaged in any of the above will be permanently banned, and reports involving CSAM will be escalated to law enforcement and the appropriate national reporting body without delay.</p>
 
-        <h2>2. Child safety point of contact</h2>
+        <h2 id="point-of-contact">2. Child safety point of contact</h2>
         <p>For child-safety reports, regulator enquiries, or law-enforcement requests relating to CSAE on Ethos, contact:</p>
         <p><em>Email:</em> <a href="mailto:support@ethosapp.co">support@ethosapp.co</a><br>
            <em>Postal:</em> Ethos Labs Pty Ltd, [registered office address]</p>
         <p>This mailbox is monitored by Ethos Labs Pty Ltd and reviewed daily. Urgent reports relating to imminent harm to a child will be actioned within 24 hours.</p>
 
-        <h2>3. In-app reporting mechanism</h2>
+        <h2 id="in-app-reporting">3. In-app reporting mechanism</h2>
         <p>Every Ethos user profile, message thread, and connection includes a <em>Block &amp; Report</em> action. Users can report any user or content for, among other reasons:</p>
         <ul>
           <li>Suspected minor account</li>
@@ -562,7 +658,7 @@
         </ul>
         <p>All reports are received in our admin moderation queue and reviewed by Ethos Labs Pty Ltd within 24 hours. Reports flagged as involving a minor are prioritised for immediate review.</p>
 
-        <h2>4. CSAM handling and law-enforcement reporting</h2>
+        <h2 id="csam-handling">4. CSAM handling and law-enforcement reporting</h2>
         <p>When CSAM or suspected CSAE is identified &mdash; whether through a user report, automated detection, or proactive moderation &mdash; Ethos Labs Pty Ltd will:</p>
         <ol>
           <li><em>Remove</em> the content from the platform immediately.</li>
@@ -572,7 +668,7 @@
           <li><em>Cooperate</em> fully with any subsequent law-enforcement investigation, including production of preserved records under valid legal process.</li>
         </ol>
 
-        <h2>5. Age assurance</h2>
+        <h2 id="age-assurance">5. Age assurance</h2>
         <p>Ethos is an 18+ service. To enforce this we require:</p>
         <ul>
           <li>A self-declared date of birth at sign-up, with hard rejection for any user under 18.</li>
@@ -581,7 +677,7 @@
         </ul>
         <p>Accounts where the user is found to be under 18 are deleted, and the underlying identity blocked from re-registration.</p>
 
-        <h2>6. Compliance with applicable child-safety laws and regulations</h2>
+        <h2 id="compliance">6. Compliance with applicable child-safety laws and regulations</h2>
         <p>Ethos Labs Pty Ltd complies with all applicable child-safety laws and regulations in the jurisdictions in which Ethos is offered, including but not limited to:</p>
         <ul>
           <li><em>United States</em> &mdash; 18 U.S.C. &sect; 2258A (mandatory CyberTipline reporting), the PROTECT Act, COPPA.</li>
