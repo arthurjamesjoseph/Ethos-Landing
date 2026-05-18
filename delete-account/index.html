@@ -236,14 +236,14 @@
     .prose a:hover { text-decoration: underline; }
 
     /* Step list — in-app instructions */
-    .steps {
+    .prose ol.steps {
       counter-reset: step-counter;
       list-style: none;
       margin: 1.25rem 0 1.5rem;
       padding: 0;
     }
 
-    .steps li {
+    .prose ol.steps li {
       font-family: var(--font-serif);
       font-size: 1.0625rem;
       color: var(--color-text);
@@ -253,9 +253,9 @@
       min-height: 2.25rem;
     }
 
-    .steps li:last-child { padding-bottom: 0; }
+    .prose ol.steps li:last-child { padding-bottom: 0; }
 
-    .steps li::before {
+    .prose ol.steps li::before {
       counter-increment: step-counter;
       content: counter(step-counter);
       position: absolute;
@@ -274,7 +274,7 @@
       font-weight: 600;
     }
 
-    .steps li:not(:last-child)::after {
+    .prose ol.steps li:not(:last-child)::after {
       content: '';
       position: absolute;
       left: 0.96875rem;
@@ -284,7 +284,7 @@
       background: var(--color-input-border);
     }
 
-    .steps strong { font-weight: 600; color: var(--color-text); }
+    .prose ol.steps strong { font-weight: 600; color: var(--color-text); }
 
     /* Callout box */
     .callout {
@@ -380,6 +380,7 @@
       <a href="/privacy" class="menu-link">Privacy Policy</a>
       <a href="/terms" class="menu-link">Terms of Service</a>
       <a href="/contact" class="menu-link">Contact Us</a>
+      <a href="/delete-account" class="menu-link">Delete Account</a>
     </div>
     <div class="menu-footer">
       <p class="menu-contact">
@@ -435,7 +436,7 @@
       <div class="callout">
         <p>Send an email to:</p>
         <p class="callout-email"><a href="mailto:support@ethosapp.co?subject=Account%20deletion%20request">support@ethosapp.co</a></p>
-        <p>Use the subject line <strong>&ldquo;Account deletion request&rdquo;</strong> and send it from the email address linked to your Ethos account, or include the phone number / email address you used to sign up so we can locate your account.</p>
+        <p>Use the subject line <strong>&ldquo;Account deletion request&rdquo;</strong> and send it from the email address linked to your Ethos account, or include the email address you used to sign up so we can locate your account.</p>
       </div>
 
       <p>We will verify that the request comes from the account owner before we proceed — this protects you from someone else deleting your account. If we cannot verify your identity, we may ask for additional confirmation or decline the request to keep your account secure. Once verified, your account is deleted on the same basis as an in-app deletion, within the timeframe set out in section 5.</p>
@@ -444,17 +445,15 @@
       <p>When your account is deleted, we permanently remove your personal data from Ethos, including:</p>
       <ul>
         <li>Your profile and all personal information &mdash; name, date of birth, gender, city, bio, and other profile details.</li>
-        <li>Your photos and any identity-verification photos or documents you submitted.</li>
+        <li>Your profile photos.</li>
         <li>Your compatibility quiz answers, submissions, and computed compatibility scores.</li>
         <li>Your partner preferences and discovery settings.</li>
         <li>Your matches, date invites, and date plans.</li>
         <li>Your messages and conversations.</li>
-        <li>Reports you have filed, blocks you have set, and any cooldown records associated with you.</li>
         <li>Referral codes and referral claims linked to your account.</li>
         <li>Founding-member, city-waitlist, and launch-readiness records linked to your account.</li>
         <li>Your in-app subscription record and your login / authentication credentials.</li>
       </ul>
-      <p>Where data cannot be deleted instantly (for example, copies held in encrypted system backups), it is purged on a rolling cycle and fully removed within the timeframe in section 5.</p>
       <p><strong>Note on app-store subscriptions:</strong> if you have a paid subscription, deleting your Ethos account does not automatically cancel billing with Apple or Google. Cancel the subscription separately in your <strong>Apple Account &rarr; Subscriptions</strong> or <strong>Google Play &rarr; Subscriptions</strong> settings to stop future charges.</p>
 
       <h2 id="what-is-retained">4. What we retain, and why</h2>
