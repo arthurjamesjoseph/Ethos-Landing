@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delete Your Account – Ethos</title>
+  <meta name="description" content="How to delete your Ethos account and associated data, what is removed, what is retained, and how long deletion takes.">
+  <link rel="canonical" href="https://ethosapp.co/delete-account">
+
+  <link rel="icon" type="image/png" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+  <link rel="apple-touch-icon" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-cream: #f5f2ed;
+      --color-card: #f9f7f4;
+      --color-input-border: #e8e4de;
+      --color-gold: #b5a178;
+      --color-gold-hover: #a6926b;
+      --color-text: #3d3630;
+      --color-text-light: #6b5f54;
+      --color-white: #ffffff;
+      --color-error: #c45c4a;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Source Sans 3', -apple-system, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+    }
+
+    :target { scroll-margin-top: 1.5rem; }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--color-text);
+      background: var(--color-cream);
+      line-height: 1.6;
+    }
+
+    .header {
+      background: var(--color-cream);
+      padding: 1rem 2.5rem;
+      border-bottom: 1px solid var(--color-input-border);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      text-decoration: none;
+      color: var(--color-text);
+    }
+
+    .logo-img { height: 32px; width: auto; }
+
+    .logo-text {
+      font-family: var(--font-serif);
+      font-size: 1.375rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 3rem 2.5rem 4rem;
+    }
+
+    .page-label {
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: 0.75rem;
+    }
+
+    .page-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 500;
+      color: var(--color-text);
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+      font-family: var(--font-serif);
+      font-size: 1.125rem;
+      color: var(--color-text-light);
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    /* App / developer identification */
+    .identity {
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      color: var(--color-text-light);
+      line-height: 1.7;
+      background: var(--color-card);
+      border: 1px solid var(--color-input-border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .identity em {
+      font-style: normal;
+      font-weight: 600;
+      color: var(--color-text);
+    }
+
+    /* Table of contents */
+    .toc {
+      background: var(--color-card);
+      border: 1px solid var(--color-input-border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .toc-title {
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-gold);
+      margin-bottom: 0.75rem;
+    }
+
+    .toc ul { list-style: none; padding: 0; margin: 0; }
+
+    .toc li {
+      font-family: var(--font-serif);
+      font-size: 1.0625rem;
+      line-height: 1.6;
+      margin-bottom: 0.25rem;
+    }
+
+    .toc a {
+      color: var(--color-text);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    .toc a:hover { color: var(--color-gold); text-decoration: underline; }
+
+    /* Prose */
+    .prose h2 {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 2.5rem 0 0.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--color-input-border);
+    }
+
+    .prose h3 {
+      font-family: var(--font-serif);
+      font-size: 1.1875rem;
+      font-weight: 600;
+      color: var(--color-text);
+      margin: 1.75rem 0 0.5rem;
+    }
+
+    .prose p {
+      font-family: var(--font-serif);
+      font-size: 1.0625rem;
+      color: var(--color-text);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .prose ul,
+    .prose ol {
+      margin: 0.75rem 0 1.25rem 1.5rem;
+      padding: 0;
+      list-style: none;
+      counter-reset: prose-counter;
+    }
+
+    .prose ul li,
+    .prose ol li {
+      font-family: var(--font-serif);
+      font-size: 1.0625rem;
+      color: var(--color-text);
+      line-height: 1.7;
+      margin-bottom: 0.5rem;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+
+    .prose ul li::before {
+      content: '\2022';
+      color: var(--color-gold);
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .prose ol li { counter-increment: prose-counter; }
+
+    .prose ol li::before {
+      content: counter(prose-counter) '.';
+      color: var(--color-gold);
+      font-weight: 600;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .prose strong { font-weight: 600; color: var(--color-text); }
+    .prose em { font-style: italic; }
+
+    .prose a { color: var(--color-gold); text-decoration: none; }
+    .prose a:hover { text-decoration: underline; }
+
+    /* Step list — in-app instructions */
+    .steps {
+      counter-reset: step-counter;
+      list-style: none;
+      margin: 1.25rem 0 1.5rem;
+      padding: 0;
+    }
+
+    .steps li {
+      font-family: var(--font-serif);
+      font-size: 1.0625rem;
+      color: var(--color-text);
+      line-height: 1.6;
+      position: relative;
+      padding: 0 0 1rem 3rem;
+      min-height: 2.25rem;
+    }
+
+    .steps li:last-child { padding-bottom: 0; }
+
+    .steps li::before {
+      counter-increment: step-counter;
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--color-gold);
+      color: var(--color-white);
+      border-radius: 50%;
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      font-weight: 600;
+    }
+
+    .steps li:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 0.96875rem;
+      top: 2rem;
+      bottom: 0.25rem;
+      width: 1.5px;
+      background: var(--color-input-border);
+    }
+
+    .steps strong { font-weight: 600; color: var(--color-text); }
+
+    /* Callout box */
+    .callout {
+      background: var(--color-card);
+      border: 1px solid var(--color-input-border);
+      border-left: 3px solid var(--color-gold);
+      border-radius: 10px;
+      padding: 1.5rem 1.75rem;
+      margin: 1.25rem 0 1.5rem;
+    }
+
+    .callout p { margin-bottom: 0.75rem; }
+    .callout p:last-child { margin-bottom: 0; }
+
+    .callout .callout-email {
+      font-family: var(--font-sans);
+      font-size: 1.0625rem;
+      font-weight: 600;
+    }
+
+    .callout .callout-email a { color: var(--color-gold); text-decoration: none; }
+    .callout .callout-email a:hover { text-decoration: underline; }
+
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--color-input-border);
+    }
+
+    .footer p {
+      font-family: var(--font-serif);
+      font-size: 0.875rem;
+      color: var(--color-text-light);
+    }
+
+    .footer a { color: var(--color-gold); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      .header { padding: 0.875rem 1.5rem; }
+      .content { padding: 2rem 1.5rem 3rem; }
+      .logo-img { height: 28px; }
+      .logo-text { font-size: 1.25rem; }
+      .callout { padding: 1.25rem 1.25rem; }
+    }
+
+    /* Hamburger Menu */
+    .menu-toggle { background: none; border: none; cursor: pointer; padding: 0.5rem; display: flex; flex-direction: column; gap: 5px; z-index: 1001; }
+    .menu-toggle span { display: block; width: 22px; height: 1.5px; background: var(--color-text); border-radius: 1px; transition: transform 0.3s ease, opacity 0.3s ease; }
+    .menu-toggle.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .menu-toggle.active span:nth-child(2) { opacity: 0; }
+    .menu-toggle.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    .menu-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(45, 45, 45, 0.80); z-index: 999; opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; }
+    .menu-overlay.active { opacity: 1; visibility: visible; }
+    .menu-drawer { position: fixed; top: 0; right: 0; width: 300px; max-width: 85vw; height: 100%; background: var(--color-cream); z-index: 1000; transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; padding: 5rem 2rem 2rem; }
+    .menu-drawer.active { transform: translateX(0); }
+    .menu-nav { display: flex; flex-direction: column; gap: 0.25rem; }
+    .menu-link { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 500; color: var(--color-text); text-decoration: none; padding: 0.875rem 0; border-bottom: 1px solid var(--color-input-border); transition: color 0.2s; display: block; }
+    .menu-link:hover { color: var(--color-gold); }
+    .menu-link:first-child { border-top: 1px solid var(--color-input-border); }
+    .menu-footer { margin-top: auto; padding-top: 1.5rem; }
+    .menu-contact { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light); line-height: 1.6; }
+    .menu-contact a { color: var(--color-gold); text-decoration: none; }
+    .menu-contact a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <img src="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png" alt="Ethos" class="logo-img">
+        <span class="logo-text">Ethos</span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Menu Overlay -->
+  <div class="menu-overlay" id="menuOverlay"></div>
+
+  <!-- Menu Drawer -->
+  <nav class="menu-drawer" id="menuDrawer">
+    <div class="menu-nav">
+      <a href="/" class="menu-link">Home</a>
+      <a href="/about" class="menu-link">Our Ethos</a>
+      <a href="/how-it-works" class="menu-link">How It Works</a>
+      <a href="/blog" class="menu-link">Blog</a>
+      <a href="/safety" class="menu-link">Safety</a>
+      <a href="/privacy" class="menu-link">Privacy Policy</a>
+      <a href="/terms" class="menu-link">Terms of Service</a>
+      <a href="/contact" class="menu-link">Contact Us</a>
+    </div>
+    <div class="menu-footer">
+      <p class="menu-contact">
+        Questions? Reach us at<br>
+        <a href="mailto:support@ethosapp.co">support@ethosapp.co</a>
+      </p>
+    </div>
+  </nav>
+
+  <main class="content">
+    <p class="page-label">Account</p>
+    <h1 class="page-title">Delete Your Account</h1>
+    <p class="page-subtitle">You can delete your Ethos account and associated personal data at any time — from inside the app, or by emailing us if you no longer have the app installed. This page explains how to do it, what is removed, what we keep, and how long it takes.</p>
+
+    <div class="identity">
+      <em>App:</em> Ethos &mdash; relationship-focused matchmaking app<br>
+      <em>Developer:</em> Ethos Labs Pty Ltd<br>
+      <em>Account &amp; data deletion contact:</em> <a href="mailto:support@ethosapp.co" style="color: var(--color-gold); text-decoration: none;">support@ethosapp.co</a><br>
+      <em>Last updated:</em> 18 May 2026
+    </div>
+
+    <nav class="toc" aria-label="On this page">
+      <p class="toc-title">On this page</p>
+      <ul>
+        <li><a href="#in-app">1. Delete your account from inside the Ethos app</a></li>
+        <li><a href="#by-email">2. Delete your account without the app</a></li>
+        <li><a href="#what-is-deleted">3. What gets deleted</a></li>
+        <li><a href="#what-is-retained">4. What we retain, and why</a></li>
+        <li><a href="#timeframe">5. How long deletion takes</a></li>
+        <li><a href="#questions">6. Questions</a></li>
+      </ul>
+    </nav>
+
+    <div class="prose">
+      <h2 id="in-app">1. Delete your account from inside the Ethos app</h2>
+      <p>The fastest way to delete your account is directly within the Ethos app:</p>
+
+      <ol class="steps">
+        <li>Open the <strong>Ethos</strong> app and sign in to your account.</li>
+        <li>Go to the <strong>Profile</strong> tab and tap the <strong>Settings</strong> (gear) icon at the top of the screen.</li>
+        <li>Tap <strong>Account Settings</strong>.</li>
+        <li>Tap <strong>Delete account</strong>.</li>
+        <li>Read the confirmation notice explaining that deletion is permanent, then tap <strong>Continue</strong>.</li>
+        <li>Select a reason for leaving (and add any optional feedback), then tap <strong>Delete Permanently</strong>.</li>
+      </ol>
+
+      <p>Your account and personal data are then deleted as described below. This action is permanent and cannot be undone — there is no recovery or reactivation period.</p>
+      <p>If you only want to take a break, you can instead use <strong>Pause account</strong> on the same Account Settings screen, which hides your profile without deleting anything.</p>
+
+      <h2 id="by-email">2. Delete your account without the app</h2>
+      <p>If you have uninstalled the Ethos app, no longer have access to it, or simply prefer not to use the in-app flow, you can request deletion by email:</p>
+
+      <div class="callout">
+        <p>Send an email to:</p>
+        <p class="callout-email"><a href="mailto:support@ethosapp.co?subject=Account%20deletion%20request">support@ethosapp.co</a></p>
+        <p>Use the subject line <strong>&ldquo;Account deletion request&rdquo;</strong> and send it from the email address linked to your Ethos account, or include the phone number / email address you used to sign up so we can locate your account.</p>
+      </div>
+
+      <p>We will verify that the request comes from the account owner before we proceed — this protects you from someone else deleting your account. If we cannot verify your identity, we may ask for additional confirmation or decline the request to keep your account secure. Once verified, your account is deleted on the same basis as an in-app deletion, within the timeframe set out in section 5.</p>
+
+      <h2 id="what-is-deleted">3. What gets deleted</h2>
+      <p>When your account is deleted, we permanently remove your personal data from Ethos, including:</p>
+      <ul>
+        <li>Your profile and all personal information &mdash; name, date of birth, gender, city, bio, and other profile details.</li>
+        <li>Your photos and any identity-verification photos or documents you submitted.</li>
+        <li>Your compatibility quiz answers, submissions, and computed compatibility scores.</li>
+        <li>Your partner preferences and discovery settings.</li>
+        <li>Your matches, date invites, and date plans.</li>
+        <li>Your messages and conversations.</li>
+        <li>Reports you have filed, blocks you have set, and any cooldown records associated with you.</li>
+        <li>Referral codes and referral claims linked to your account.</li>
+        <li>Founding-member, city-waitlist, and launch-readiness records linked to your account.</li>
+        <li>Your in-app subscription record and your login / authentication credentials.</li>
+      </ul>
+      <p>Where data cannot be deleted instantly (for example, copies held in encrypted system backups), it is purged on a rolling cycle and fully removed within the timeframe in section 5.</p>
+      <p><strong>Note on app-store subscriptions:</strong> if you have a paid subscription, deleting your Ethos account does not automatically cancel billing with Apple or Google. Cancel the subscription separately in your <strong>Apple Account &rarr; Subscriptions</strong> or <strong>Google Play &rarr; Subscriptions</strong> settings to stop future charges.</p>
+
+      <h2 id="what-is-retained">4. What we retain, and why</h2>
+      <p>We delete or anonymise your personal information after deletion. A limited set of records is retained only where we have a legal obligation or a legitimate, narrowly-scoped need:</p>
+      <ul>
+        <li><strong>Transaction and billing records</strong> &mdash; retained for up to <strong>seven years</strong> to comply with applicable tax, accounting, and audit laws. Payments are processed by Apple and Google; their own purchase records are governed by their policies.</li>
+        <li><strong>De-identified analytics</strong> &mdash; we keep aggregated, de-identified information about how matches and dates performed (for example, broad demographic and outcome statistics). This data contains <strong>no name, email, photo, or free-text</strong> and cannot be linked back to you; it may be kept indefinitely for research and product improvement.</li>
+        <li><strong>A record of the deletion</strong> &mdash; the date your account was deleted and the reason or feedback you optionally provide, used to understand why members leave and to improve Ethos.</li>
+        <li><strong>Safety, fraud, and legal-hold records</strong> &mdash; where required to comply with the law or to protect our community, we preserve specific records, including: information needed to respond to a law-enforcement request or a child-safety (CSAE/CSAM) investigation, and records of serious policy violations needed to enforce bans and prevent a banned user from re-registering. These records are kept only for as long as the relevant legal obligation or safety purpose requires.</li>
+      </ul>
+      <p>For full detail on how we handle personal data, see our <a href="/privacy">Privacy Policy</a>.</p>
+
+      <h2 id="timeframe">5. How long deletion takes</h2>
+      <p>When you confirm deletion in the app, your profile and personal data are removed from the live service <strong>immediately</strong> — your profile stops appearing to other members and you can no longer be contacted on Ethos.</p>
+      <p>Deletion is then completed across all of our systems, including backups, <strong>within 30 days</strong>. For requests made by email, the 30-day period begins once we have verified that you are the account owner.</p>
+      <p>Records covered by the legal, safety, and accounting exceptions in section 4 are retained only for their required retention periods, after which they are deleted or anonymised.</p>
+
+      <h2 id="questions">6. Questions</h2>
+      <p>If you have any questions about deleting your account, or about how Ethos handles your data, contact Ethos Labs Pty Ltd at <a href="mailto:support@ethosapp.co">support@ethosapp.co</a>. We aim to respond to all enquiries within 30 days.</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 Ethos Labs Pty Ltd &middot; <a href="https://ethosapp.co">ethosapp.co</a></p>
+  </footer>
+
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const menuDrawer = document.getElementById('menuDrawer');
+    const menuOverlay = document.getElementById('menuOverlay');
+    function toggleMenu() {
+      menuToggle.classList.toggle('active');
+      menuDrawer.classList.toggle('active');
+      menuOverlay.classList.toggle('active');
+      document.body.style.overflow = menuDrawer.classList.contains('active') ? 'hidden' : '';
+    }
+    menuToggle.addEventListener('click', toggleMenu);
+    menuOverlay.addEventListener('click', toggleMenu);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menuDrawer.classList.contains('active')) toggleMenu();
+    });
+  </script>
+</body>
+</html>
