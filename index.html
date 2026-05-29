@@ -1341,7 +1341,8 @@
       align-items: center;
       transition: transform 0.2s ease, opacity 0.2s ease;
     }
-    .app-badge img {
+    .app-badge img,
+    .app-badge .badge-svg {
       height: 52px;
       width: auto;
       display: block;
@@ -1455,7 +1456,8 @@
       line-height: 1.5;
       margin-bottom: 1.5rem;
     }
-    .android-popup-badge img {
+    .android-popup-badge img,
+    .android-popup-badge .badge-svg {
       height: 56px;
       width: auto;
       display: block;
@@ -1730,13 +1732,28 @@
         <a href="https://play.google.com/store/apps/details?id=com.ethoslabs.app"
            target="_blank" rel="noopener noreferrer"
            class="app-badge" id="footerPlayBadge" aria-label="Get it on Google Play">
-          <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
-               alt="Get it on Google Play">
+          <svg class="badge-svg" viewBox="0 0 180 53" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Get it on Google Play">
+            <rect x="0.5" y="0.5" width="179" height="52" rx="9" fill="#000" stroke="#A6A6A6"/>
+            <g transform="translate(16,12)">
+              <polygon points="8,14 0,14 0,0" fill="#00C3FF"/>
+              <polygon points="8,14 0,28 0,14" fill="#00E676"/>
+              <polygon points="8,14 0,0 24,14" fill="#FF3D47"/>
+              <polygon points="8,14 24,14 0,28" fill="#FFCE00"/>
+            </g>
+            <text x="52" y="21" fill="#fff" font-family="'Source Sans 3',Arial,sans-serif" font-size="9" letter-spacing="0.6">GET IT ON</text>
+            <text x="51" y="41" fill="#fff" font-family="'Source Sans 3',Arial,sans-serif" font-size="19" font-weight="600">Google Play</text>
+          </svg>
         </a>
         <span class="app-badge is-coming-soon" aria-label="Download on the App Store — coming soon">
           <span class="coming-soon-tag">Coming soon</span>
-          <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
-               alt="Download on the App Store — coming soon">
+          <svg class="badge-svg" viewBox="0 0 180 53" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Download on the App Store — coming soon">
+            <rect x="0.5" y="0.5" width="179" height="52" rx="9" fill="#000" stroke="#A6A6A6"/>
+            <g transform="translate(15,13) scale(1.05)">
+              <path fill="#fff" d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 14.25 3.51 5.88 9.05 5.6c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 5.5C11.88 3.26 13.71 1.42 15.8 1.24c.29 2.58-2.34 4.5-3.77 4.26z"/>
+            </g>
+            <text x="52" y="21" fill="#fff" font-family="'Source Sans 3',Arial,sans-serif" font-size="9" letter-spacing="0.4">Download on the</text>
+            <text x="51" y="41" fill="#fff" font-family="'Source Sans 3',Arial,sans-serif" font-size="19" font-weight="600">App Store</text>
+          </svg>
         </span>
       </div>
       <p class="app-footer-copy">&copy; 2026 Ethos Labs Pty Ltd &middot; <a href="https://ethosapp.co">ethosapp.co</a></p>
@@ -1758,8 +1775,17 @@
       <a href="https://play.google.com/store/apps/details?id=com.ethoslabs.app"
          target="_blank" rel="noopener noreferrer"
          class="android-popup-badge" id="androidPopupCta" aria-label="Get it on Google Play">
-        <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
-             alt="Get it on Google Play">
+        <svg class="badge-svg" viewBox="0 0 180 53" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Get it on Google Play">
+          <rect x="0.5" y="0.5" width="179" height="52" rx="9" fill="#000" stroke="#A6A6A6"/>
+          <g transform="translate(16,12)">
+            <polygon points="8,14 0,14 0,0" fill="#00C3FF"/>
+            <polygon points="8,14 0,28 0,14" fill="#00E676"/>
+            <polygon points="8,14 0,0 24,14" fill="#FF3D47"/>
+            <polygon points="8,14 24,14 0,28" fill="#FFCE00"/>
+          </g>
+          <text x="52" y="21" fill="#fff" font-family="'Source Sans 3',Arial,sans-serif" font-size="9" letter-spacing="0.6">GET IT ON</text>
+          <text x="51" y="41" fill="#fff" font-family="'Source Sans 3',Arial,sans-serif" font-size="19" font-weight="600">Google Play</text>
+        </svg>
       </a>
     </div>
   </div>
