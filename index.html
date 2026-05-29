@@ -1311,6 +1311,156 @@
         display: none;
       }
     }
+
+    /* App Store Footer */
+    .app-footer {
+      border-top: 1px solid var(--color-input-border);
+      padding: 3rem 1.5rem 3.5rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .app-footer-heading {
+      font-family: var(--font-serif);
+      font-size: 1.625rem;
+      font-weight: 500;
+      color: var(--color-text);
+      letter-spacing: -0.01em;
+    }
+    .app-badges {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .app-badge {
+      display: inline-flex;
+      align-items: center;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .app-badge img {
+      height: 52px;
+      width: auto;
+      display: block;
+    }
+    .app-badge:not(.is-coming-soon):hover {
+      transform: translateY(-2px);
+    }
+    .app-badge.is-coming-soon {
+      position: relative;
+      opacity: 0.55;
+      cursor: default;
+    }
+    .app-badge .coming-soon-tag {
+      position: absolute;
+      top: -10px;
+      right: -6px;
+      background: var(--color-gold);
+      color: var(--color-white);
+      font-family: var(--font-sans);
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.15rem 0.4rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .app-footer-copy {
+      font-family: var(--font-serif);
+      font-size: 0.875rem;
+      color: var(--color-text-light);
+      margin-top: 0.5rem;
+    }
+    .app-footer-copy a {
+      color: var(--color-gold);
+      text-decoration: none;
+    }
+
+    /* Android Download Popup */
+    .android-popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(45, 45, 45, 0.80);
+      z-index: 1100;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .android-popup-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .android-popup {
+      background: var(--color-cream);
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 420px;
+      padding: 2rem 1.5rem 2rem;
+      text-align: center;
+      position: relative;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.18);
+    }
+    .android-popup-overlay.active .android-popup {
+      transform: translateY(0);
+    }
+    .android-popup-close {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      color: var(--color-text-light);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s ease;
+    }
+    .android-popup-close:hover {
+      background: var(--color-input-border);
+    }
+    .android-popup-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      object-fit: cover;
+      margin: 0 auto 1rem;
+      display: block;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+    .android-popup-title {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: var(--color-text);
+      margin-bottom: 0.5rem;
+    }
+    .android-popup-text {
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+      color: var(--color-text-light);
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+    .android-popup-badge img {
+      height: 56px;
+      width: auto;
+      display: block;
+      margin: 0 auto;
+    }
   </style>
 </head>
 <body>
@@ -1573,6 +1723,45 @@
       </a>
     </section>
 
+    <!-- App Store Footer -->
+    <footer class="app-footer">
+      <h2 class="app-footer-heading">Get the Ethos app</h2>
+      <div class="app-badges">
+        <a href="https://play.google.com/store/apps/details?id=com.ethoslabs.app"
+           target="_blank" rel="noopener noreferrer"
+           class="app-badge" id="footerPlayBadge" aria-label="Get it on Google Play">
+          <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+               alt="Get it on Google Play">
+        </a>
+        <span class="app-badge is-coming-soon" aria-label="Download on the App Store — coming soon">
+          <span class="coming-soon-tag">Coming soon</span>
+          <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
+               alt="Download on the App Store — coming soon">
+        </span>
+      </div>
+      <p class="app-footer-copy">&copy; 2026 Ethos Labs Pty Ltd &middot; <a href="https://ethosapp.co">ethosapp.co</a></p>
+    </footer>
+
+  </div>
+
+  <!-- Android Download Popup -->
+  <div class="android-popup-overlay" id="androidPopupOverlay">
+    <div class="android-popup" role="dialog" aria-modal="true" aria-labelledby="androidPopupTitle">
+      <button class="android-popup-close" id="androidPopupClose" aria-label="Close">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:20px;height:20px"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
+      <img class="android-popup-icon"
+           src="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png"
+           alt="Ethos">
+      <h3 class="android-popup-title" id="androidPopupTitle">Ethos is on Android</h3>
+      <p class="android-popup-text">Matchmaking, not swiping. Download the app and take Ethos with you.</p>
+      <a href="https://play.google.com/store/apps/details?id=com.ethoslabs.app"
+         target="_blank" rel="noopener noreferrer"
+         class="android-popup-badge" id="androidPopupCta" aria-label="Get it on Google Play">
+        <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+             alt="Get it on Google Play">
+      </a>
+    </div>
   </div>
   
   <script>
@@ -1597,6 +1786,50 @@
         toggleMenu();
       }
     });
+
+    // Android app download popup
+    (function () {
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      if (!isAndroid) return;
+
+      // Only show once per browser so we don't nag returning visitors
+      if (localStorage.getItem('ethos_android_popup_dismissed') === '1') return;
+
+      const overlay = document.getElementById('androidPopupOverlay');
+      const closeBtn = document.getElementById('androidPopupClose');
+      const cta = document.getElementById('androidPopupCta');
+      if (!overlay) return;
+
+      function dismissPopup() {
+        overlay.classList.remove('active');
+        localStorage.setItem('ethos_android_popup_dismissed', '1');
+      }
+
+      // Briefly delay so the popup feels intentional, not jarring
+      setTimeout(() => overlay.classList.add('active'), 1200);
+
+      closeBtn.addEventListener('click', dismissPopup);
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) dismissPopup();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('active')) dismissPopup();
+      });
+      cta.addEventListener('click', () => {
+        if (typeof trackEvent === 'function') trackEvent('android_app_click', { source: 'popup' });
+        localStorage.setItem('ethos_android_popup_dismissed', '1');
+      });
+    })();
+
+    // Track footer Play Store clicks
+    (function () {
+      const footerPlay = document.getElementById('footerPlayBadge');
+      if (footerPlay) {
+        footerPlay.addEventListener('click', () => {
+          if (typeof trackEvent === 'function') trackEvent('android_app_click', { source: 'footer' });
+        });
+      }
+    })();
   </script>
 
   <script>
