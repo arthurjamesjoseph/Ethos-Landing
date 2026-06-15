@@ -1767,15 +1767,15 @@
             <p class="fm-hero-lead">Limited Founding Member slots remaining</p>
             <div class="fm-hero-counters">
               <div class="fm-hero-counter">
-                <span class="fm-count" data-city="Mumbai, India" data-start="149" data-baseline="546">149</span>
+                <span class="fm-count" data-city="Mumbai, India">&mdash;</span>
                 <span class="fm-hero-city">Mumbai</span>
               </div>
               <div class="fm-hero-counter">
-                <span class="fm-count" data-city="Bangalore, India" data-start="167" data-baseline="517">167</span>
+                <span class="fm-count" data-city="Bangalore, India">&mdash;</span>
                 <span class="fm-hero-city">Bangalore</span>
               </div>
               <div class="fm-hero-counter">
-                <span class="fm-count" data-city="Delhi, India" data-start="182" data-baseline="526">182</span>
+                <span class="fm-count" data-city="Delhi, India">&mdash;</span>
                 <span class="fm-hero-city">Delhi</span>
               </div>
             </div>
@@ -1801,15 +1801,15 @@
               <p class="fm-benefit">Founding Members get <span class="fm-benefit-em">4 weeks free</span></p>
               <div class="fm-counters">
                 <div class="fm-counter">
-                  <span class="fm-count" id="fmCountMumbai" data-city="Mumbai, India" data-start="149" data-baseline="546">149</span>
+                  <span class="fm-count" data-city="Mumbai, India">&mdash;</span>
                   <span class="fm-city">Mumbai</span>
                 </div>
                 <div class="fm-counter">
-                  <span class="fm-count" id="fmCountBangalore" data-city="Bangalore, India" data-start="167" data-baseline="517">167</span>
+                  <span class="fm-count" data-city="Bangalore, India">&mdash;</span>
                   <span class="fm-city">Bangalore</span>
                 </div>
                 <div class="fm-counter">
-                  <span class="fm-count" id="fmCountDelhi" data-city="Delhi, India" data-start="182" data-baseline="526">182</span>
+                  <span class="fm-count" data-city="Delhi, India">&mdash;</span>
                   <span class="fm-city">Delhi</span>
                 </div>
               </div>
@@ -3073,23 +3073,16 @@
       var counters = Array.prototype.slice.call(document.querySelectorAll('.fm-count'));
       if (!counters.length) return;
 
-      // Same public Supabase project / anon key the waitlist form uses.
+      // Public Supabase project / anon key (same one the waitlist form uses).
+      // The RPC does all the math server-side and returns ONLY the final
+      // "slots remaining" number per city — no real counts reach the browser.
       var SUPABASE_URL = 'https://ecdxgzpjgdosueacomwn.supabase.co';
       var SUPABASE_ANON_KEY = 'sb_publishable_7Ef8xN852RGoSgFYiFJ6Sw_QMVIFzfX';
-      var POLL_MS = 60000; // re-check live counts every 60s
+      var POLL_MS = 60000; // re-check every 60s
 
-      // Displayed = start - (women who have claimed a slot since baseline).
-      // start    = the marketing number we seed each city at (data-start)
-      // baseline = female founding-member count captured when this went live
-      //            (data-baseline). As more women claim slots, the live count
-      //            rises and the displayed number falls toward 0.
-      function displayedFor(c, liveFemale) {
-        var start = parseInt(c.dataset.start, 10);
-        var baseline = parseInt(c.dataset.baseline, 10);
-        if (isNaN(liveFemale)) return parseInt(c.textContent, 10) || start; // keep current on miss
-        var claimed = Math.max(0, liveFemale - baseline);
-        return Math.max(0, start - claimed);
-      }
+      var COUNTDOWN_FROM = 1000;   // intro animation starts here and scales to the real number
+      var COUNTDOWN_MS = 2600;
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       function setValue(c, val) {
         var cur = parseInt(c.textContent, 10);
@@ -3099,19 +3092,48 @@
         setTimeout(function () { c.classList.remove('fm-tick'); }, 300);
       }
 
-      function apply(countsByCity) {
+      // Intro: count down from 1000 and ease to the real value (mirrors the
+      // project-vow compatibility-score animation: ease-out 1 - (1-p)^10).
+      function animateDown(c, to) {
+        if (reduceMotion) { c.textContent = to; c._fmValue = to; return; }
+        var from = COUNTDOWN_FROM;
+        c.textContent = from;
+        var start = null;
+        function step(now) {
+          if (start === null) start = now;
+          var p = Math.min((now - start) / COUNTDOWN_MS, 1);
+          var eased = 1 - Math.pow(1 - p, 4); // ease-out quart: smooth, settles gently
+          c.textContent = Math.round(from + eased * (to - from));
+          if (p < 1) {
+            requestAnimationFrame(step);
+          } else {
+            c.textContent = to;
+            c._fmValue = to;
+          }
+        }
+        requestAnimationFrame(step);
+      }
+
+      function apply(remainingByCity) {
         counters.forEach(function (c) {
-          var live = countsByCity[c.dataset.city];
-          var next = displayedFor(c, live);
-          // Never let the number tick back up for a visitor in-session.
-          var cur = parseInt(c.textContent, 10);
+          var next = remainingByCity[c.dataset.city];
+          if (next == null || isNaN(next)) return; // keep dash if missing
+
+          if (!c._fmInit) {
+            c._fmInit = true;
+            animateDown(c, next); // first data: run the intro countdown
+            return;
+          }
+          // Subsequent polls: never let it tick back up for a visitor in-session.
+          var cur = c._fmValue != null ? c._fmValue : parseInt(c.textContent, 10);
           if (!isNaN(cur)) next = Math.min(next, cur);
           setValue(c, next);
+          c._fmValue = next;
         });
       }
 
-      function fetchCounts() {
-        fetch(SUPABASE_URL + '/rest/v1/rpc/founding_female_counts', {
+      function fetchSlots() {
+        fetch(SUPABASE_URL + '/rest/v1/rpc/founding_slots_remaining', {
           method: 'POST',
           headers: {
             'apikey': SUPABASE_ANON_KEY,
@@ -3124,14 +3146,14 @@
           .then(function (rows) {
             if (!Array.isArray(rows)) return; // leave seeded numbers in place on failure
             var byCity = {};
-            rows.forEach(function (row) { byCity[row.city_name] = parseInt(row.female_count, 10); });
+            rows.forEach(function (row) { byCity[row.city_name] = parseInt(row.slots_remaining, 10); });
             apply(byCity);
           })
           .catch(function () { /* network error: keep seeded numbers */ });
       }
 
-      fetchCounts();
-      setInterval(fetchCounts, POLL_MS);
+      fetchSlots();
+      setInterval(fetchSlots, POLL_MS);
     })();
   </script>
 </body>
