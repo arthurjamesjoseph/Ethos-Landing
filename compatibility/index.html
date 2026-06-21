@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ethos – Founding Member Access</title>
-  <meta name="description" content="Ethos – matchmaking, not swiping. Limited Founding Member slots remaining in Mumbai, Bangalore & Delhi. Claim yours.">
+  <title>Ethos – Compatibility First</title>
+  <meta name="description" content="Most apps lead with attraction. Ethos leads with the things that actually keep two people together — shared values, life goals and the way you each want to live.">
   <link rel="canonical" href="https://ethosapp.co/foundingmember">
 
   <!-- Open Graph / Social Sharing -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://ethosapp.co/foundingmember">
-  <meta property="og:title" content="Ethos – Founding Member Access">
+  <meta property="og:title" content="Ethos – Compatibility First">
   <meta property="og:description" content="Limited Founding Member slots remaining in Mumbai, Bangalore & Delhi. Claim yours before they're gone.">
   <meta property="og:image" content="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Ethos – Founding Member Access">
+  <meta name="twitter:title" content="Ethos – Compatibility First">
   <meta name="twitter:description" content="Limited Founding Member slots remaining in Mumbai, Bangalore & Delhi. Claim yours before they're gone.">
   <meta name="twitter:image" content="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
   
@@ -316,7 +316,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background-image: url('hero-bg.png');
+      background-image: url('/hero-bg.png');
       background-size: cover;
       background-position: center;
     }
@@ -360,6 +360,15 @@
     }
 
     /* Headline */
+    .lp-hero-eyebrow {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      color: #111;
+      font-size: 1.5rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      margin: 0;
+    }
+
     .headline-container {
       padding-bottom: 1.5rem;
       max-width: 500px;
@@ -1008,6 +1017,15 @@
     }
     
     /* Privacy Note - slightly more visible */
+    .lp-value { background:#f9f7f4; padding:64px 24px; border-top:1px solid #e8e4de; }
+    .lp-value-inner { max-width:1040px; margin:0 auto; display:flex; gap:56px; align-items:center; }
+    .lp-points { list-style:none; margin:0; padding:0; display:grid; gap:14px; flex:1; }
+    .lp-points li { position:relative; padding-left:32px; font-family:'Cormorant Garamond',Georgia,serif; font-size:22px; line-height:1.4; color:#3d3630; }
+    .lp-points li::before { content:"\2726"; position:absolute; left:0; top:2px; color:#b5a178; font-size:18px; }
+    .lp-testimonial { border-left:3px solid #b5a178; padding-left:22px; margin:0; flex:1; order:-1; }
+    .lp-testimonial p { font-family:'Cormorant Garamond',Georgia,serif; font-style:italic; font-size:24px; line-height:1.45; color:#3d3630; margin:0 0 10px; }
+    .lp-testimonial cite { font-family:'Source Sans 3',-apple-system,sans-serif; font-style:normal; font-size:14px; letter-spacing:.04em; color:#b5a178; }
+    @media (max-width: 760px) { .lp-value-inner { flex-direction:column; gap:32px; align-items:stretch; } .lp-testimonial { order:0; } }
     .privacy-note {
       font-family: var(--font-serif);
       font-size: 0.875rem;
@@ -1761,30 +1779,12 @@
       
       <div class="hero-content">
         <div class="hero-left">
-          <!-- Founding Member scarcity (desktop, over hero image) -->
-          <div class="fm-hero-scarcity">
-            <span class="fm-hero-eyebrow"><span class="live-dot"></span>Founding Member Access</span>
-            <p class="fm-hero-lead">Limited Founding Member slots remaining</p>
-            <div class="fm-hero-counters">
-              <div class="fm-hero-counter">
-                <span class="fm-count" data-city="Mumbai, India">&mdash;</span>
-                <span class="fm-hero-city">Mumbai</span>
-              </div>
-              <div class="fm-hero-counter">
-                <span class="fm-count" data-city="Bangalore, India">&mdash;</span>
-                <span class="fm-hero-city">Bangalore</span>
-              </div>
-              <div class="fm-hero-counter">
-                <span class="fm-count" data-city="Delhi, India">&mdash;</span>
-                <span class="fm-hero-city">Delhi</span>
-              </div>
-            </div>
-            <p class="fm-hero-note">Founding Members get <span class="fm-hero-benefit-em">4 weeks free</span> &middot; slots are filling in real time.</p>
-          </div>
+
+          <p class="lp-hero-eyebrow">Made for the Intentional</p>
 
           <div class="headline-container">
-            <h1 class="headline">Made for the<br>intentional.</h1>
-            <p class="subheadline">For those wanting to find their person.</p>
+            <h1 class="headline">Less noise. More Signal.</h1>
+            <p class="subheadline">Most apps lead with attraction. Ethos leads with the things that actually keep two people together — shared values, life goals and the way you each want to live.</p>
             <div class="hero-badges">
               <span class="live-cities"><span class="live-dot"></span>Now live in Mumbai, Bangalore &amp; Delhi</span>
               <span class="soon-cities"><span class="soon-dot"></span>Coming to Toronto, London, New York, Sydney &amp; more</span>
@@ -1817,13 +1817,13 @@
             </div>
 
             <div class="mode-toggle" id="modeToggle" role="tablist">
-              <button type="button" class="mode-toggle-btn active" id="modeJoinBtn" data-mode="join" role="tab" aria-selected="true">Join Early Access</button>
+              <button type="button" class="mode-toggle-btn active" id="modeJoinBtn" data-mode="join" role="tab" aria-selected="true">Founding Member</button>
               <button type="button" class="mode-toggle-btn" id="modeSigninBtn" data-mode="signin" role="tab" aria-selected="false">Sign In</button>
             </div>
 
-            <h2 class="form-title" id="formTitle">Join for Early Access</h2>
-            <p class="form-subtitle">Priority access and launch updates.</p>
-            <p class="form-scarcity">Early access is limited.</p>
+            <h2 class="form-title" id="formTitle">Become a Founding Member</h2>
+            <p class="form-subtitle">Set up your profile in 60 seconds.</p>
+            <p class="form-scarcity">Founding Member slots are limited.</p>
             
             <div class="form-message" id="formMessage"></div>
             
@@ -1911,10 +1911,10 @@
                 </div>
 
                 <button type="submit" class="submit-btn" id="submitBtn">
-                  Join Early Access
+                  Claim Your Founding Spot
                 </button>
 
-                <p class="privacy-note">We respect your privacy. No spam. Ever.</p>
+                <p class="privacy-note">Free to join · Profiles verified · No swiping · 60 seconds to set up</p>
               </div>
             </form>
 
@@ -2046,6 +2046,21 @@
     </section>
 
     <!-- Journal teaser strip -->
+    <section class="lp-value">
+      <div class="lp-value-inner">
+        <ul class="lp-points">
+          <li>Shared values, surfaced before you ever meet</li>
+          <li>Aligned on relationship and family goals</li>
+          <li>Compatible day-to-day lifestyles</li>
+          <li>The questions that matter, asked early — not three dates in</li>
+        </ul>
+        <blockquote class="lp-testimonial">
+          <p>“Most apps helped me find matches. Ethos helped me find people I could genuinely see myself building a life with.”</p>
+          <cite>— Ananya, 32 • Bengaluru</cite>
+        </blockquote>
+      </div>
+    </section>
+
     <section class="journal-strip">
       <a href="/blog/dating-apps-dont-work" class="journal-strip-link-wrap">
         <div class="journal-strip-left">
@@ -2301,7 +2316,7 @@
         modeJoinBtn.setAttribute('aria-selected', 'true');
         modeSigninBtn.classList.remove('active');
         modeSigninBtn.setAttribute('aria-selected', 'false');
-        formTitle.textContent = 'Join for Early Access';
+        formTitle.textContent = 'Become a Founding Member';
       }
 
       trackEvent('mode_toggle', { mode });
@@ -2403,7 +2418,7 @@
         formMessage.className = 'form-message error';
         formMessage.style.display = 'block';
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Join Early Access';
+        submitBtn.textContent = 'Claim Your Founding Spot';
         cityInput.focus();
         return;
       }
@@ -2424,7 +2439,7 @@
         formMessage.className = 'form-message error';
         formMessage.style.display = 'block';
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Join Early Access';
+        submitBtn.textContent = 'Claim Your Founding Spot';
         form.querySelector('input[name="name"]').focus();
         return;
       }
@@ -2474,7 +2489,7 @@
       }
 
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Join Early Access';
+      submitBtn.textContent = 'Claim Your Founding Spot';
     });
 
     // --- OTP Functions ---

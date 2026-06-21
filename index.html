@@ -2886,7 +2886,9 @@
     .oauth-btn svg { width:18px; height:18px; flex:0 0 auto; }
     .email-toggle-btn { width:100%; height:54px; border-radius:999px; background:transparent; border:1px solid rgba(45,45,45,.2); color:#2D2D2D; font-size:16px; font-weight:500; cursor:pointer; font-family:inherit; transition:background .15s ease; }
     .email-toggle-btn:hover { background:rgba(45,45,45,.04); }
-    .email-fields { margin-top:18px; }
+    .email-fields { margin-top:18px; opacity:0; transform:translateY(10px); transition:opacity .4s ease, transform .4s ease; }
+    .email-fields.revealed { opacity:1; transform:translateY(0); }
+    .oauth-fade { opacity:0 !important; transition:opacity .28s ease; pointer-events:none; }
   </style>
   <script>
     // Social sign-in → Supabase hosted OAuth → returns into the app (signed in).
@@ -2913,10 +2915,34 @@
       var emailFields = document.getElementById('emailFields');
       if (emailToggle && emailFields) {
         emailToggle.addEventListener('click', function () {
-          emailFields.hidden = false;
-          emailToggle.style.display = 'none';
-          var n = emailFields.querySelector('input[name="name"]');
-          if (n) n.focus();
+          // Freeze the hero height first so the background image never resizes
+          // when the form contents change. .hero is flex:1 (flex-basis:0%), so we
+          // must pin flex-basis — setting height alone is overridden by flex.
+          var hero = emailToggle.closest('.hero');
+          if (hero) {
+            var hh = hero.offsetHeight;
+            hero.style.flex = '0 0 ' + hh + 'px';
+            hero.style.height = hh + 'px';
+          }
+          var form = emailToggle.closest('form') || document;
+          var fade = [emailToggle];
+          form.querySelectorAll('.oauth-apple, .oauth-google, .oauth-divider').forEach(function (el) { fade.push(el); });
+          // also fade any "Limited Founding Member slots" card in this column
+          // (the in-card callout, or a moved hero box above/below the form) so
+          // the form height stays roughly constant.
+          var col = emailToggle.closest('.form-container');
+          if (col) col.querySelectorAll('.fm-callout, .fm-hero-scarcity').forEach(function (el) { fade.push(el); });
+          fade.forEach(function (el) { el.classList.add('oauth-fade'); });
+          // after the buttons fade out, collapse them and reveal the fields
+          setTimeout(function () {
+            fade.forEach(function (el) { el.style.display = 'none'; });
+            emailFields.hidden = false;
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () { emailFields.classList.add('revealed'); });
+            });
+            var n = emailFields.querySelector('input[name="name"]');
+            if (n) n.focus();
+          }, 280);
         });
       }
     })();
