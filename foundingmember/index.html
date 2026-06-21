@@ -1837,6 +1837,7 @@
                   class="form-input"
                   name="name"
                   placeholder="Your name"
+                  minlength="2"
                   required
                 >
               </div>
@@ -2378,6 +2379,20 @@
         gender: formData.get('gender'),
         city: resolvedCity
       };
+
+      // Require a real first name — block single-character / initial-only entries.
+      // The first whitespace-separated token becomes first_name downstream, so it
+      // must be at least 2 characters.
+      const firstNameToken = signupData.name.split(/\s+/)[0] || '';
+      if (firstNameToken.length < 2) {
+        formMessage.textContent = 'Please enter your full first name.';
+        formMessage.className = 'form-message error';
+        formMessage.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Join Early Access';
+        form.querySelector('input[name="name"]').focus();
+        return;
+      }
 
       try {
         // Insert waitlist FIRST — the handle_new_user() trigger reads this row
