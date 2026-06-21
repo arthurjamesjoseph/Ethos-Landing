@@ -1936,7 +1936,22 @@
 
     // Capture affiliate/referral code from URL (?ref=CODE)
     const _refParam = new URLSearchParams(window.location.search).get('ref');
-    if (_refParam) sessionStorage.setItem('ethos_ref_code', _refParam);
+    if (_refParam) {
+      sessionStorage.setItem('ethos_ref_code', _refParam);
+      // Record the affiliate click (fire-and-forget; never blocks the page).
+      // resolve_affiliate_code validates the code + logs a click; it's a safe
+      // no-op for plain user referral codes that aren't affiliate codes.
+      fetch(`${SUPABASE_URL}/rest/v1/rpc/resolve_affiliate_code`, {
+        method: 'POST',
+        keepalive: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({ p_code: _refParam })
+      }).catch(() => {});
+    }
 
     function trackEvent(eventType, metadata = {}) {
       fetch(`${SUPABASE_URL}/rest/v1/landing_events`, {
@@ -2186,16 +2201,20 @@
 
     async function sendOtp(email) {
       try {
+        // Attach the affiliate/referral code as user metadata so it is captured
+        // server-side at account creation (trg_affiliate_claim_on_signup reads
+        // raw_user_meta_data.referral_code). Only added when a code is present,
+        // so the request is unchanged for organic signups.
+        const _storedRef = sessionStorage.getItem('ethos_ref_code');
+        const _otpBody = { email: email, create_user: true };
+        if (_storedRef) _otpBody.data = { referral_code: _storedRef };
         const res = await fetch(`${SUPABASE_URL}/auth/v1/otp`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'apikey': SUPABASE_ANON_KEY
           },
-          body: JSON.stringify({
-            email: email,
-            create_user: true
-          })
+          body: JSON.stringify(_otpBody)
         });
         return { ok: res.ok, status: res.status };
       } catch (err) {
