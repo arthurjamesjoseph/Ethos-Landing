@@ -2568,6 +2568,18 @@
     // Track page view
     trackEvent('page_view', { referrer: document.referrer || null });
 
+    // Track clicks on the StoryBrand CTAs + store badges (Download Ethos,
+    // See how it works, Join the waitlist, App Store / Google Play).
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('.sb-store-badge, .sb-btn-primary, .sb-btn-ghost');
+      if (!a || typeof trackEvent !== 'function') return;
+      var box = a.closest('section, .sb-sticky');
+      var loc = box ? (box.id || (box.className || '').split(' ')[0] || 'page') : 'page';
+      var label = (a.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 40);
+      var ev = a.classList.contains('sb-store-badge') ? 'store_click' : 'cta_click';
+      trackEvent(ev, { label: label, location: loc, href: a.getAttribute('href') || null });
+    });
+
     const form = document.getElementById('waitlistForm');
     const formCard = document.getElementById('formCard');
     const formMessage = document.getElementById('formMessage');
