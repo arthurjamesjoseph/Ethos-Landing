@@ -1810,10 +1810,9 @@
       .sb-cols3,.sb-steps,.sb-benefits,.sb-testimonials,.sb-plans { grid-template-columns:1fr; }
       .sb-feat,.sb-about { grid-template-columns:1fr; }
       .sb-feat:nth-child(even) .sb-feat-text { order:0; }
-      /* On mobile the images go full-width; crop closer to the phone
-         (shift the framing down past the caption/whitespace). */
-      .sb-shot { aspect-ratio:1.3; }
-      .sb-shot img { object-position:center 65%; }
+      /* On mobile the images go full-width; crop past the top caption but
+         keep the phone's top (status bar) in view. Phone top sits ~10-14% down. */
+      .sb-shot img { object-position:center 20%; }
     }
     </style>
   </head>
