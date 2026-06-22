@@ -1768,6 +1768,9 @@
     #features { padding-bottom:0; }
     #features .sb-feat:last-child { border-bottom:none; }
     .sb-glyph { color:var(--color-gold); }
+    .sb-scroll-cue { display:flex; justify-content:center; margin-bottom:1.25rem; }
+    .sb-scroll-cue svg { width:40px; height:40px; color:var(--color-gold); animation:sbScrollBounce 1s ease 3; }
+    @keyframes sbScrollBounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(10px);} }
     .sb-about { max-width:720px; margin:0 auto; }
     .sb-about-photo { aspect-ratio:1/1; border-radius:16px; background:var(--color-card); border:1px dashed var(--color-gold); display:flex; align-items:center; justify-content:center; text-align:center; font-family:var(--font-sans); font-size:.85rem; color:var(--color-text-light); padding:1rem; }
     .sb-about-text p { font-family:var(--font-sans); color:var(--color-text-light); line-height:1.7; margin:0 0 1rem; }
@@ -2164,6 +2167,7 @@
     <!-- ========== PROBLEM ========== -->
     <section class="sb-section sb-warm" id="problem">
       <div class="sb-inner">
+        <div class="sb-scroll-cue" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></div>
         <p class="sb-eyebrow">The problem</p>
         <h2 class="sb-h2">Swiping was never going to find your person.</h2>
         <p class="sb-lede">Swipe-based apps are engineered to keep you swiping &mdash; not to get you off the app and into something real.</p>
