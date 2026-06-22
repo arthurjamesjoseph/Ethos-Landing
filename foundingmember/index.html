@@ -2242,6 +2242,7 @@
     if (_refParam) sessionStorage.setItem('ethos_ref_code', _refParam);
 
     function trackEvent(eventType, metadata = {}) {
+      if (typeof gtag === 'function' && eventType !== 'page_view') { try { gtag('event', eventType, metadata); } catch (e) {} }
       fetch(`${SUPABASE_URL}/rest/v1/landing_events`, {
         method: 'POST',
         keepalive: true, // survives page navigation
@@ -3239,6 +3240,7 @@
       var SB = 'https://auth.ethosapp.co';
       var REDIRECT = 'https://app.ethosapp.co';
       function go(provider) {
+        trackEvent('oauth_click', { provider: provider });
         window.location.href = SB + '/auth/v1/authorize?provider=' + provider +
           '&redirect_to=' + encodeURIComponent(REDIRECT);
       }
@@ -3253,6 +3255,7 @@
       var emailFields = document.getElementById('emailFields');
       if (emailToggle && emailFields) {
         emailToggle.addEventListener('click', function () {
+          trackEvent('email_signup_start', {});
           // Freeze the hero height first so the background image never resizes
           // when the form contents change. .hero is flex:1 (flex-basis:0%), so we
           // must pin flex-basis — setting height alone is overridden by flex.
