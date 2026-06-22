@@ -1810,9 +1810,11 @@
       .sb-cols3,.sb-steps,.sb-benefits,.sb-testimonials,.sb-plans { grid-template-columns:1fr; }
       .sb-feat,.sb-about { grid-template-columns:1fr; }
       .sb-feat:nth-child(even) .sb-feat-text { order:0; }
-      /* On mobile the images go full-width; crop past the top caption but
-         keep the phone's top (status bar) in view. Phone top sits ~10-14% down. */
-      .sb-shot img { object-position:center 20%; }
+      /* On mobile, crop each image right above its phone. Phone-top position
+         and visible fraction differ per slide, so set object-position per image. */
+      .sb-shot img { object-position:center 26%; }            /* slide2 / slide3 (phone top ~14%) */
+      .sb-shot img[src*="slide4"] { object-position:center 43%; } /* 2-up, wider frame */
+      .sb-shot img[src*="slide6"] { object-position:center 19%; } /* phone top ~10% */
     }
     </style>
   </head>
