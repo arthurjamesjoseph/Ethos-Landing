@@ -375,12 +375,12 @@
     
     .lp-hero-eyebrow {
       font-family: var(--font-serif);
-      color: var(--color-white);
-      font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+      color: #000;
+      font-size: clamp(1.75rem, 3.4vw, 2.6rem);
       font-weight: 500;
-      letter-spacing: 0.03em;
-      margin: 0 0 0.6rem;
-      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+      letter-spacing: 0.02em;
+      margin: 0 0 1.1rem;
+      text-shadow: 0 1px 10px rgba(255, 255, 255, 0.35);
     }
     .headline {
       font-family: var(--font-serif);
@@ -1737,9 +1737,9 @@
     .sb-col p { font-family:var(--font-sans); font-size:.98rem; color:var(--color-text-light); margin:0; line-height:1.55; }
     .sb-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; margin-bottom:3rem; }
     .sb-step { text-align:center; }
-    .sb-step-n { width:2.6rem; height:2.6rem; border-radius:50%; background:var(--color-cream); border:1px solid var(--color-gold); color:var(--color-gold); font-family:var(--font-serif); font-size:1.2rem; display:flex; align-items:center; justify-content:center; margin:0 auto .8rem; }
-    .sb-step h3 { font-family:var(--font-serif); font-size:1.35rem; font-weight:600; color:var(--color-text); margin:0 0 .35rem; }
-    .sb-step p { font-family:var(--font-sans); font-size:.96rem; color:var(--color-text-light); margin:0; line-height:1.55; }
+    .sb-step-n { width:3.25rem; height:3.25rem; border-radius:50%; background:var(--color-gold); border:none; color:#fff; font-family:var(--font-serif); font-size:1.5rem; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; }
+    .sb-step h3 { font-family:var(--font-serif); font-size:1.69rem; font-weight:600; color:var(--color-text); margin:0 0 .35rem; }
+    .sb-step p { font-family:var(--font-sans); font-size:1.2rem; color:var(--color-text-light); margin:0; line-height:1.55; }
     .sb-benefits { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; max-width:980px; margin:0 auto; }
     .sb-benefit { background:var(--color-card); border:1px solid var(--color-input-border); border-radius:14px; padding:1.4rem; }
     .sb-benefit h4 { font-family:var(--font-serif); font-size:1.25rem; color:var(--color-text); margin:0 0 .35rem; }
@@ -1765,7 +1765,9 @@
     .sb-visual { aspect-ratio:4/3; border-radius:16px; background:var(--color-card); border:1px dashed var(--color-gold); display:flex; align-items:center; justify-content:center; text-align:center; font-family:var(--font-sans); font-size:.85rem; color:var(--color-text-light); padding:1rem; }
     .sb-shot { padding:0; border:none; background:transparent; border-radius:16px; align-self:start; }
     .sb-shot img { width:100%; height:auto; display:block; border-radius:16px; }
+    #features { padding-bottom:0; }
     #features .sb-feat:last-child { border-bottom:none; }
+    .sb-glyph { color:var(--color-gold); }
     .sb-about { max-width:720px; margin:0 auto; }
     .sb-about-photo { aspect-ratio:1/1; border-radius:16px; background:var(--color-card); border:1px dashed var(--color-gold); display:flex; align-items:center; justify-content:center; text-align:center; font-family:var(--font-sans); font-size:.85rem; color:var(--color-text-light); padding:1rem; }
     .sb-about-text p { font-family:var(--font-sans); color:var(--color-text-light); line-height:1.7; margin:0 0 1rem; }
@@ -1794,7 +1796,7 @@
     .sb-faq p { font-family:var(--font-sans); color:var(--color-text-light); line-height:1.6; margin:.75rem 0 0; }
     .sb-faq a { color:var(--color-gold); }
     .sb-store-badges { display:flex; flex-wrap:wrap; justify-content:center; gap:1rem; margin-top:1.75rem; }
-    .sb-store-badge { display:inline-flex; align-items:center; gap:.6rem; padding:.75rem 1.4rem; border-radius:12px; background:var(--color-text); color:#fff; text-decoration:none; font-family:var(--font-sans); font-size:.95rem; }
+    .sb-store-badge { display:inline-flex; align-items:center; justify-content:center; gap:.6rem; min-width:12rem; padding:.75rem 1.4rem; border-radius:12px; background:var(--color-text); color:#fff; text-decoration:none; font-family:var(--font-sans); font-size:.95rem; }
     .sb-store-badge svg { width:18px; height:20px; fill:currentColor; }
     @media (max-width:820px) {
       .sb-cols3,.sb-steps,.sb-benefits,.sb-testimonials,.sb-plans { grid-template-columns:1fr; }
@@ -1870,6 +1872,7 @@
       
       <div class="hero-content">
         <div class="hero-left">
+          <p class="lp-hero-eyebrow">Made for the Intentional</p>
           <!-- Founding Member scarcity (desktop, over hero image) -->
           <div class="fm-hero-scarcity">
             <span class="fm-hero-eyebrow"><span class="live-dot"></span>Founding Member Access</span>
@@ -1892,7 +1895,6 @@
           </div>
 
           <div class="headline-container">
-            <p class="lp-hero-eyebrow">Made for the Intentional</p>
             <h1 class="headline">Stop swiping.<br>Find your person.</h1>
             <div class="sb-hero-cta">
               <a href="#download" class="sb-btn-primary">Download Ethos</a>
@@ -2200,9 +2202,9 @@
         <p class="sb-eyebrow">What members say</p>
         <h2 class="sb-h2">Built for people who are done playing the numbers game.</h2>
         <div class="sb-trust">
-          <span>&#9733; Rated on the App Store &amp; Google Play</span>
-          <span>&#10003; Profiles verified</span>
-          <span>&#9679; Live in Mumbai, Bangalore &amp; Delhi</span>
+          <span><span class="sb-glyph">&#9733;</span> Rated on the App Store &amp; Google Play</span>
+          <span><span class="sb-glyph">&#10003;</span> Profiles verified</span>
+          <span><span class="sb-glyph">&#9679;</span> Live in Mumbai, Bangalore &amp; Delhi</span>
           <span>thousands already on Ethos</span>
         </div>
         <div class="sb-testimonials">
