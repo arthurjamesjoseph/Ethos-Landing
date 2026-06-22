@@ -1710,8 +1710,8 @@
     .sb-btn-primary:hover { background:var(--color-gold-hover); }
     .sb-btn-ghost { display:inline-flex; align-items:center; justify-content:center; padding:.85rem 1.6rem; border-radius:999px; border:1px solid rgba(61,54,48,.25); color:var(--color-text); font-family:var(--font-serif); font-size:1.05rem; text-decoration:none; background:transparent; }
     .sb-btn-ghost:hover { background:rgba(61,54,48,.04); }
-    .sb-hero-cta .sb-btn-ghost { color:#fff; border-color:rgba(255,255,255,.65); text-shadow:0 1px 4px rgba(0,0,0,.35); }
-    .sb-hero-cta .sb-btn-ghost:hover { background:rgba(255,255,255,.12); }
+    .sb-hero-cta .sb-btn-ghost { color:var(--color-gold); background:#fff; border-color:var(--color-gold); }
+    .sb-hero-cta .sb-btn-ghost:hover { background:#fbf7ee; }
     .sb-hero-proof { font-family:var(--font-sans); font-size:.9rem; color:var(--color-text-light); margin:.5rem 0 1.25rem; display:flex; align-items:center; gap:.4rem; }
     .sb-section { padding:5rem 1.5rem; border-top:1px solid rgba(181,161,120,.5); }
     .sb-inner { max-width:1080px; margin:0 auto; }
@@ -1746,14 +1746,14 @@
     .sb-avatar { width:2.4rem; height:2.4rem; border-radius:50%; background:var(--color-cream); border:1px solid var(--color-gold); display:flex; align-items:center; justify-content:center; font-family:var(--font-serif); color:var(--color-gold); font-size:.9rem; }
     .sb-tname { font-family:var(--font-sans); font-size:.9rem; color:var(--color-text-light); }
     .sb-note { text-align:center; font-family:var(--font-sans); font-size:.8rem; color:var(--color-text-light); opacity:.65; margin-top:1.5rem; }
-    .sb-feat { display:grid; grid-template-columns:1fr 1fr; gap:0 4rem; align-items:end; max-width:1000px; margin:0 auto; padding:2.25rem 0 0; border-bottom:1px solid rgba(181,161,120,.6); }
+    .sb-feat { display:grid; grid-template-columns:1fr 1fr; gap:0 4rem; align-items:end; max-width:1000px; margin:0 auto; padding:1.25rem 0 0; border-bottom:1px solid rgba(181,161,120,.6); }
     .sb-feat:nth-child(even) .sb-feat-text { order:2; }
     .sb-gb { color: var(--color-gold); }
     .sb-feat h3 { font-family:var(--font-serif); font-size:1.7rem; font-weight:600; color:var(--color-text); margin:0 0 .5rem; }
     .sb-feat .sb-fsub { font-family:var(--font-sans); font-weight:600; color:var(--color-text); margin:0 0 .5rem; }
     .sb-feat p { font-family:var(--font-sans); color:var(--color-text-light); margin:0; line-height:1.6; }
     .sb-visual { aspect-ratio:4/3; border-radius:16px; background:var(--color-card); border:1px dashed var(--color-gold); display:flex; align-items:center; justify-content:center; text-align:center; font-family:var(--font-sans); font-size:.85rem; color:var(--color-text-light); padding:1rem; }
-    .sb-shot { padding:0; border:none; background:transparent; aspect-ratio:4/5; overflow:hidden; border-radius:16px; }
+    .sb-shot { padding:0; border:none; background:transparent; aspect-ratio:1/1; overflow:hidden; border-radius:16px; }
     .sb-shot img { width:100%; height:100%; object-fit:cover; object-position:top; display:block; }
     #features .sb-feat:last-child { border-bottom:none; }
     .sb-about { max-width:720px; margin:0 auto; }
@@ -1882,7 +1882,6 @@
           </div>
 
           <div class="headline-container">
-            <p class="sb-hero-kicker">Matchmaking, not swiping</p>
             <h1 class="headline">Stop swiping.<br>Find your person.</h1>
             <div class="sb-hero-cta">
               <a href="#download" class="sb-btn-primary">Download Ethos</a>
