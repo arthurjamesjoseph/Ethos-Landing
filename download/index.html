@@ -1760,7 +1760,7 @@
     .sb-avatar { width:2.4rem; height:2.4rem; border-radius:50%; background:var(--color-cream); border:1px solid var(--color-gold); display:flex; align-items:center; justify-content:center; font-family:var(--font-serif); color:var(--color-gold); font-size:.9rem; }
     .sb-tname { font-family:var(--font-sans); font-size:.9rem; color:var(--color-text-light); }
     .sb-note { text-align:center; font-family:var(--font-sans); font-size:.8rem; color:var(--color-text-light); opacity:.65; margin-top:1.5rem; }
-    .sb-feat { display:grid; grid-template-columns:1fr 1fr; gap:0 4rem; align-items:start; max-width:1000px; margin:0 auto; padding:0; border-bottom:1px solid rgba(181,161,120,.6); }
+    .sb-feat { display:grid; grid-template-columns:1fr 1fr; gap:0 4rem; align-items:end; max-width:1000px; margin:0 auto; padding:2.5rem 0 0; border-bottom:1px solid rgba(181,161,120,.6); }
     .sb-feat:nth-child(even) .sb-feat-text { order:2; }
     .sb-feat-text { align-self:center; }
     .sb-gb { color: var(--color-gold); }
@@ -1768,8 +1768,8 @@
     .sb-feat .sb-fsub { font-family:var(--font-sans); font-weight:600; color:var(--color-text); margin:0 0 .5rem; }
     .sb-feat p { font-family:var(--font-sans); color:var(--color-text-light); margin:0; line-height:1.6; }
     .sb-visual { aspect-ratio:4/3; border-radius:16px; background:var(--color-card); border:1px dashed var(--color-gold); display:flex; align-items:center; justify-content:center; text-align:center; font-family:var(--font-sans); font-size:.85rem; color:var(--color-text-light); padding:1rem; }
-    .sb-shot { padding:0; border:none; background:transparent; border-radius:16px; align-self:end; aspect-ratio:1.12; overflow:hidden; }
-    .sb-shot img { width:100%; height:100%; object-fit:cover; object-position:top; display:block; border-radius:16px; }
+    .sb-shot { padding:0; border:none; background:transparent; align-self:end; aspect-ratio:0.95; overflow:hidden; }
+    .sb-shot img { width:100%; height:100%; object-fit:cover; object-position:top; display:block; }
     #features { padding-bottom:0; }
     #features .sb-feat:last-child { border-bottom:none; }
     .sb-glyph { color:var(--color-gold); }
@@ -1810,11 +1810,6 @@
       .sb-cols3,.sb-steps,.sb-benefits,.sb-testimonials,.sb-plans { grid-template-columns:1fr; }
       .sb-feat,.sb-about { grid-template-columns:1fr; }
       .sb-feat:nth-child(even) .sb-feat-text { order:0; }
-      /* On mobile, crop each image right above its phone. Phone-top position
-         and visible fraction differ per slide, so set object-position per image. */
-      .sb-shot img { object-position:center 26%; }            /* slide2 / slide3 (phone top ~14%) */
-      .sb-shot img[src*="slide4"] { object-position:center 43%; } /* 2-up, wider frame */
-      .sb-shot img[src*="slide6"] { object-position:center 19%; } /* phone top ~10% */
     }
     </style>
   </head>
@@ -2236,7 +2231,7 @@
           <p class="sb-fsub">Meet people who want the same things you do.</p>
           <p>A structured values + intent profile drives the match engine &mdash; not a photo-first feed.</p>
         </div>
-        <div class="sb-visual sb-shot"><img src="/assets/app/slide2.png" alt="Ethos values & compatibility questions" loading="lazy"></div>
+        <div class="sb-visual sb-shot"><img src="/assets/app/mock-quiz.png" alt="Ethos values & intent quiz" loading="lazy"></div>
       </div>
               <div class="sb-feat">
         <div class="sb-feat-text">
@@ -2244,7 +2239,7 @@
           <p class="sb-fsub">Spend time on real people with real intent &mdash; and feel safe doing it.</p>
           <p>Profile verification + intent signals filter out low-effort and bad-faith accounts.</p>
         </div>
-        <div class="sb-visual sb-shot sb-shot-2up"><img src="/assets/app/slide4.png" alt="Ethos profile with a compatibility breakdown" loading="lazy"></div>
+        <div class="sb-visual sb-shot"><img src="/assets/app/mock-profile.png" alt="An Ethos profile with a compatibility breakdown" loading="lazy"></div>
       </div>
               <div class="sb-feat">
         <div class="sb-feat-text">
@@ -2252,7 +2247,7 @@
           <p class="sb-fsub">No doom-swiping &mdash; a few matches worth your attention.</p>
           <p>Curated match volume, no infinite feed, no rewarded-engagement loops.</p>
         </div>
-        <div class="sb-visual sb-shot"><img src="/assets/app/slide3.png" alt="A short, curated list of compatible matches" loading="lazy"></div>
+        <div class="sb-visual sb-shot"><img src="/assets/app/mock-matches.png" alt="A short, curated list of compatible matches" loading="lazy"></div>
       </div>
               <div class="sb-feat">
         <div class="sb-feat-text">
@@ -2260,7 +2255,7 @@
           <p class="sb-fsub">Matched within your city and community.</p>
           <p>City-based launch (Mumbai, Bangalore, Delhi now), values-aware local matching.</p>
         </div>
-        <div class="sb-visual sb-shot"><img src="/assets/app/slide6.png" alt="Plans and dates in your city" loading="lazy"></div>
+        <div class="sb-visual sb-shot"><img src="/assets/app/mock-plans.png" alt="Plans and dates in your city" loading="lazy"></div>
       </div>
       </div>
     </section>
@@ -2311,7 +2306,7 @@
         </details>
                   <details>
           <summary>How is matching actually different?</summary>
-          <p>You complete a short values + intent profile, and we surface a small number of genuinely compatible people instead of an endless stream to swipe.</p>
+          <p>You complete a short values + intent profile, and we surface a small number of genuinely compatible people instead of an endless stream to swipe. They complete a compatibility questionnaire and we match using our values-based algorithm.</p>
         </details>
                   <details>
           <summary>Is it safe? Are profiles real?</summary>
@@ -2327,7 +2322,11 @@
         </details>
                   <details>
           <summary>How long until I get matches?</summary>
-          <p>As soon as your city queue opens, you&rsquo;ll start seeing curated matches &mdash; no swiping required to begin.</p>
+          <p>Once your city is open, you&rsquo;ve completed the compatibility quiz, and your application is approved, you&rsquo;ll start seeing curated matches &mdash; no swiping required to begin.</p>
+        </details>
+                  <details>
+          <summary>Why is my application taking a while to approve?</summary>
+          <p>Every application is reviewed by hand to keep Ethos genuine and serious. During a city launch we get a lot of applications at once, so approvals can take a little longer than usual &mdash; we&rsquo;ll email you the moment you&rsquo;re approved.</p>
         </details>
                   <details>
           <summary>What happens to my data?</summary>
