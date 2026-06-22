@@ -1880,20 +1880,6 @@
           <div class="fm-hero-scarcity">
             <span class="fm-hero-eyebrow"><span class="live-dot"></span>Founding Member Access</span>
             <p class="fm-hero-lead">Limited Founding Member slots remaining</p>
-            <div class="fm-hero-counters">
-              <div class="fm-hero-counter">
-                <span class="fm-count" data-city="Mumbai, India">&mdash;</span>
-                <span class="fm-hero-city">Mumbai</span>
-              </div>
-              <div class="fm-hero-counter">
-                <span class="fm-count" data-city="Bangalore, India">&mdash;</span>
-                <span class="fm-hero-city">Bangalore</span>
-              </div>
-              <div class="fm-hero-counter">
-                <span class="fm-count" data-city="Delhi, India">&mdash;</span>
-                <span class="fm-hero-city">Delhi</span>
-              </div>
-            </div>
             <p class="fm-hero-note">Founding Members get <span class="fm-hero-benefit-em">4 weeks free</span> &middot; slots are filling in real time.</p>
           </div>
 
@@ -1939,7 +1925,7 @@
               <button type="button" class="mode-toggle-btn" id="modeSigninBtn" data-mode="signin" role="tab" aria-selected="false">Sign In</button>
             </div>
 
-            <h2 class="form-title" id="formTitle">Join for Early Access</h2>
+            <h2 class="form-title" id="formTitle">Become a Founding Member</h2>
             <p class="form-subtitle">Priority access and launch updates.</p>
             <p class="form-scarcity">Early access is limited.</p>
             
@@ -2611,7 +2597,7 @@
         modeJoinBtn.setAttribute('aria-selected', 'true');
         modeSigninBtn.classList.remove('active');
         modeSigninBtn.setAttribute('aria-selected', 'false');
-        formTitle.textContent = 'Join for Early Access';
+        formTitle.textContent = 'Become a Founding Member';
       }
 
       trackEvent('mode_toggle', { mode });
@@ -3529,8 +3515,8 @@
     .oauth-apple { background:#000; color:#fff; }
     .oauth-google { background:#fff; color:#1f1f1f; border-color:#dadce0; }
     .oauth-btn svg { width:18px; height:18px; flex:0 0 auto; }
-    .email-toggle-btn { width:100%; height:54px; border-radius:999px; background:transparent; border:1px solid rgba(45,45,45,.2); color:#2D2D2D; font-size:16px; font-weight:500; cursor:pointer; font-family:inherit; transition:background .15s ease; }
-    .email-toggle-btn:hover { background:rgba(45,45,45,.04); }
+    .email-toggle-btn { width:100%; height:54px; border-radius:999px; background:var(--color-gold); border:none; color:#fff; font-size:16px; font-weight:600; cursor:pointer; font-family:inherit; transition:background .15s ease; }
+    .email-toggle-btn:hover { background:var(--color-gold-hover); }
     .email-fields { margin-top:18px; opacity:0; transform:translateY(10px); transition:opacity .4s ease, transform .4s ease; }
     .email-fields.revealed { opacity:1; transform:translateY(0); }
     .oauth-fade { opacity:0 !important; transition:opacity .28s ease; pointer-events:none; }
