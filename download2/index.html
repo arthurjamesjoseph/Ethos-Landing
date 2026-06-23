@@ -280,6 +280,9 @@
       .hero-grid { grid-template-columns: 1fr !important; gap: 36px !important; padding-top: 48px !important; }
       .hero-visual { display: none !important; }
       .hero-h1 { font-size: 46px !important; }
+      /* Stronger cream over the top of the photo on mobile so the hero text
+         reads clearly (the image effectively sits lower behind the content). */
+      .hero-vfade { background: linear-gradient(180deg, rgba(250,247,240,0.94) 0%, rgba(250,247,240,0.62) 26%, rgba(250,247,240,0.1) 50%, rgba(250,247,240,0) 70%, #FAF7F0 100%) !important; }
       .problem-grid { grid-template-columns: 1fr !important; }
       .steps-grid { grid-template-columns: 1fr !important; }
       .features-grid { grid-template-columns: 1fr !important; }
@@ -904,7 +907,7 @@
     <section style="position:relative;overflow:hidden">
       <div aria-hidden="true" style="position:absolute;inset:0;background:url('/assets/dl2/ethos-hero-bg.png') center 32%/cover no-repeat"></div>
       <div aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(250,247,240,0.86) 0%,rgba(250,247,240,0.68) 40%,rgba(250,247,240,0.28) 72%,rgba(250,247,240,0.08) 100%)"></div>
-      <div aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(250,247,240,0.4) 0%,rgba(250,247,240,0) 22%,rgba(250,247,240,0) 74%,#FAF7F0 100%)"></div>
+      <div aria-hidden="true" class="hero-vfade" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(250,247,240,0.4) 0%,rgba(250,247,240,0) 22%,rgba(250,247,240,0) 74%,#FAF7F0 100%)"></div>
       <div class="hero-grid" style="position:relative;max-width:1120px;margin:0 auto;padding:74px 32px 60px;display:grid;grid-template-columns:1.05fr 0.95fr;gap:60px;align-items:center">
       <div>
         <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(158,140,80,0.13);color:#7A6B3E;font-family:'Source Sans 3',sans-serif;font-size:11.5px;font-weight:600;letter-spacing:0.13em;text-transform:uppercase;padding:7px 14px;border-radius:999px">
@@ -1200,8 +1203,6 @@
 
         <!-- trust row -->
         <div style="display:flex;align-items:center;gap:22px;margin-top:22px;flex-wrap:wrap">
-          <div style="display:flex;align-items:center;gap:8px"><span style="color:#9E8C50;font-size:16px;letter-spacing:1px">★★★★★</span></div>
-          <div style="width:1px;height:15px;background:#E8E4DD"></div>
           <span style="font-size:16px;color:#6B6560">Every profile verified</span>
         </div>
       </div>
@@ -2573,6 +2574,43 @@
         entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('r-in'); io.unobserve(e.target); } });
       }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
       targets.forEach(function (t) { io.observe(t[0]); });
+    })();
+  </script>
+  <!-- Sticky Journal teaser — fades up on scroll, tucks away near the footer -->
+  <style>
+    .journal-sticky {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+      display: flex; align-items: center; justify-content: center; gap: 8px 14px; flex-wrap: wrap;
+      background: rgba(250,247,240,0.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+      border-top: 1px solid #E8E4DD; padding: 12px 24px; text-decoration: none; color: #2D2D2D;
+      font-size: 15px; box-shadow: 0 -6px 24px rgba(45,45,45,0.07);
+      transform: translateY(115%); transition: transform .45s cubic-bezier(.22,.61,.36,1);
+    }
+    .journal-sticky.visible { transform: translateY(0); }
+    .journal-sticky-label { font-family: 'Source Sans 3', sans-serif; text-transform: uppercase; letter-spacing: .12em; font-size: 11px; font-weight: 600; color: #9E8C50; }
+    .journal-sticky-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 18px; color: #2D2D2D; }
+    .journal-sticky-cta { color: #9E8C50; font-weight: 600; white-space: nowrap; }
+    .journal-sticky:hover .journal-sticky-cta { color: #7A6B3E; }
+    @media (prefers-reduced-motion: reduce) { .journal-sticky { transition: none; } }
+  </style>
+  <a href="/blog/dating-apps-dont-work" id="journalSticky" class="journal-sticky" aria-label="From the Journal: Dating Apps Don't Work">
+    <span class="journal-sticky-label">From the Journal</span>
+    <span class="journal-sticky-title">“Dating Apps Don’t Work”</span>
+    <span class="journal-sticky-cta">Read &rarr;</span>
+  </a>
+  <script>
+    (function () {
+      var bar = document.getElementById('journalSticky');
+      if (!bar) return;
+      function update() {
+        var y = window.scrollY || window.pageYOffset || 0;
+        var nearBottom = (window.innerHeight + y) >= (document.body.scrollHeight - 260);
+        if (y > 680 && !nearBottom) bar.classList.add('visible');
+        else bar.classList.remove('visible');
+      }
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update, { passive: true });
+      update();
     })();
   </script>
 </body>
