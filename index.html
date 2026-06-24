@@ -42,6 +42,37 @@
   src="https://www.facebook.com/tr?id=1549636423188906&ev=PageView&noscript=1"
   /></noscript>
   <!-- End Meta Pixel Code -->
+  <!-- Ethos tracking spine: ethos_id + ad attribution -> /collect -->
+  <script>
+  (function(){
+    var SB='https://ecdxgzpjgdosueacomwn.supabase.co';
+    var AK='sb_publishable_7Ef8xN852RGoSgFYiFJ6Sw_QMVIFzfX';
+    function uuid(){return (window.crypto&&crypto.randomUUID)?crypto.randomUUID():('x'+Date.now()+Math.random().toString(36).slice(2));}
+    function ck(n){var m=document.cookie.split('; ').find(function(r){return r.indexOf(n+'=')===0;});return m?m.split('=')[1]:undefined;}
+    function setck(n,v){document.cookie=n+'='+v+'; max-age='+(400*86400)+'; path=/; SameSite=Lax';}
+    function eid(){var id=localStorage.getItem('ethos_id')||ck('ethos_id');if(!id)id=uuid();localStorage.setItem('ethos_id',id);setck('ethos_id',id);return id;}
+    var p=new URLSearchParams(location.search), ex={};
+    try{ex=JSON.parse(localStorage.getItem('ethos_attr')||'null')||{};}catch(e){}
+    var fbclid=p.get('fbclid');
+    var attr={fbclid:fbclid||ex.fbclid||null,
+      fbc:fbclid?('fb.1.'+Date.now()+'.'+fbclid):(ck('_fbc')||ex.fbc||null),
+      fbp:ck('_fbp')||ex.fbp||null,
+      fb_ad_id:p.get('fb_ad_id')||ex.fb_ad_id||null,
+      fb_adset_id:p.get('fb_adset_id')||ex.fb_adset_id||null,
+      fb_campaign_id:p.get('fb_campaign_id')||ex.fb_campaign_id||null,
+      placement:p.get('placement')||ex.placement||null,
+      utm:{source:p.get('utm_source')||(ex.utm||{}).source||null,medium:p.get('utm_medium')||(ex.utm||{}).medium||null,campaign:p.get('utm_campaign')||(ex.utm||{}).campaign||null,content:p.get('utm_content')||(ex.utm||{}).content||null}};
+    localStorage.setItem('ethos_attr',JSON.stringify(attr));
+    window.ethosCollect=function(name,custom){
+      var evid=uuid(), std={lead:'Lead',complete_registration:'CompleteRegistration'};
+      if(window.fbq&&std[name]){try{fbq('track',std[name],custom||{},{eventID:evid});}catch(e){}}
+      try{fetch(SB+'/functions/v1/collect',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':AK,'Authorization':'Bearer '+AK},
+        body:JSON.stringify(Object.assign({event_id:evid,event_name:name,ethos_id:eid(),event_time:Math.floor(Date.now()/1000),url:location.href,referrer:document.referrer,user_agent:navigator.userAgent,custom:custom||{}},attr))});}catch(e){}
+    };
+    eid();
+    window.ethosCollect('page_view');
+  })();
+  </script>
   <!-- App-download intent: Meta "Lead" on any App Store / Google Play link click -->
   <script>
     document.addEventListener('click', function (e) {
@@ -49,7 +80,7 @@
       if (!link) return;
       var store = link.href.indexOf('apps.apple.com') !== -1 ? 'App Store' : 'Google Play';
       if (typeof fbq === 'function') fbq('track', 'Lead', { content_name: 'App Download', store: store });
-      if (typeof trackEvent === 'function') trackEvent('app_download_click', { store: store });
+      if (typeof trackEvent === 'function') trackEvent('app_download_click', { store: store }); if (window.ethosCollect) window.ethosCollect('app_download_initiated', { store: store });
     }, true);
   </script>
 
