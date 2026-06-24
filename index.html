@@ -69,6 +69,13 @@
       try{fetch(SB+'/functions/v1/collect',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':AK,'Authorization':'Bearer '+AK},
         body:JSON.stringify(Object.assign({event_id:evid,event_name:name,ethos_id:eid(),event_time:Math.floor(Date.now()/1000),url:location.href,referrer:document.referrer,user_agent:navigator.userAgent,custom:custom||{}},attr))});}catch(e){}
     };
+    // Append ethos_id to Play Store links so the app recovers it via the
+    // Install Referrer on first launch (deterministic web->app stitch).
+    document.addEventListener('click', function(ev){
+      var a = ev.target.closest && ev.target.closest('a[href*="play.google.com/store/apps"]');
+      if(!a) return;
+      try { var u = new URL(a.href); if(!u.searchParams.get('referrer')){ u.searchParams.set('referrer','ethos_id='+eid()); a.href=u.toString(); } } catch(e){}
+    }, true);
     eid();
     window.ethosCollect('page_view');
   })();
