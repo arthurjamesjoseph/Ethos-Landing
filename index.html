@@ -42,6 +42,16 @@
   src="https://www.facebook.com/tr?id=1549636423188906&ev=PageView&noscript=1"
   /></noscript>
   <!-- End Meta Pixel Code -->
+  <!-- App-download intent: Meta "Lead" on any App Store / Google Play link click -->
+  <script>
+    document.addEventListener('click', function (e) {
+      var link = e.target.closest && e.target.closest('a[href*="apps.apple.com"], a[href*="play.google.com"]');
+      if (!link) return;
+      var store = link.href.indexOf('apps.apple.com') !== -1 ? 'App Store' : 'Google Play';
+      if (typeof fbq === 'function') fbq('track', 'Lead', { content_name: 'App Download', store: store });
+      if (typeof trackEvent === 'function') trackEvent('app_download_click', { store: store });
+    }, true);
+  </script>
 
   <!-- Reddit Pixel Code -->
   <script>

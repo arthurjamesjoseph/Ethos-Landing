@@ -1508,6 +1508,22 @@
     // Track page view
     trackEvent('page_view', { referrer: document.referrer || null });
 
+    // App-download intent: whenever any App Store / Google Play link is clicked
+    // (header, sign-in section, main CTA, final CTA), fire a Meta standard "Lead"
+    // event so the campaign can optimize/attribute store clicks. Kept distinct
+    // from CompleteRegistration so it doesn't inflate signup numbers. Delegated +
+    // capture so it runs before navigation; the pixel uses sendBeacon and the
+    // store links open in a new tab, so the event reliably sends.
+    document.addEventListener('click', function (e) {
+      const link = e.target.closest('a[href*="apps.apple.com"], a[href*="play.google.com"]');
+      if (!link) return;
+      const store = link.href.indexOf('apps.apple.com') !== -1 ? 'App Store' : 'Google Play';
+      if (typeof fbq === 'function') {
+        fbq('track', 'Lead', { content_name: 'App Download', store: store });
+      }
+      trackEvent('app_download_click', { store: store });
+    }, true);
+
     const form = document.getElementById('waitlistForm');
     const formCard = document.getElementById('formCard');
     const formMessage = document.getElementById('formMessage');
