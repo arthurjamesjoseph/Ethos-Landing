@@ -50,7 +50,7 @@
     function uuid(){return (window.crypto&&crypto.randomUUID)?crypto.randomUUID():('x'+Date.now()+Math.random().toString(36).slice(2));}
     function ck(n){var m=document.cookie.split('; ').find(function(r){return r.indexOf(n+'=')===0;});return m?m.split('=')[1]:undefined;}
     function setck(n,v){document.cookie=n+'='+v+'; max-age='+(400*86400)+'; path=/; SameSite=Lax';}
-    function eid(){var id=localStorage.getItem('ethos_id')||ck('ethos_id');if(!id)id=uuid();localStorage.setItem('ethos_id',id);setck('ethos_id',id);return id;}
+    function eid(){var id=localStorage.getItem('visitor_id')||ck('visitor_id')||localStorage.getItem('ethos_id')||ck('ethos_id');if(!id)id=uuid();localStorage.setItem('visitor_id',id);setck('visitor_id',id);return id;}
     var p=new URLSearchParams(location.search), ex={};
     try{ex=JSON.parse(localStorage.getItem('ethos_attr')||'null')||{};}catch(e){}
     var fbclid=p.get('fbclid');
@@ -67,20 +67,20 @@
       var evid=uuid(), std={lead:'Lead',complete_registration:'CompleteRegistration'};
       if(window.fbq&&std[name]){try{fbq('track',std[name],custom||{},{eventID:evid});}catch(e){}}
       try{fetch(SB+'/functions/v1/collect',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':AK,'Authorization':'Bearer '+AK},
-        body:JSON.stringify(Object.assign({event_id:evid,event_name:name,ethos_id:eid(),event_time:Math.floor(Date.now()/1000),url:location.href,referrer:document.referrer,user_agent:navigator.userAgent,custom:custom||{}},attr))});}catch(e){}
+        body:JSON.stringify(Object.assign({event_id:evid,event_name:name,visitor_id:eid(),event_time:Math.floor(Date.now()/1000),url:location.href,referrer:document.referrer,user_agent:navigator.userAgent,custom:custom||{}},attr))});}catch(e){}
     };
     // Link the ad-attributed landing ethos_id to a user at OTP success. Sends
     // the user's JWT so /collect verifies the user (never trusts a raw user_id).
     window.ethosIdentify=function(userId,token){
       var evid=uuid();
-      try{ fetch(SB+'/functions/v1/collect',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':AK,'Authorization':'Bearer '+(token||AK)},body:JSON.stringify(Object.assign({event_id:evid,event_name:'identify',ethos_id:eid(),user_id:userId,event_time:Math.floor(Date.now()/1000),url:location.href,referrer:document.referrer,user_agent:navigator.userAgent,custom:{}},attr))});}catch(e){}
+      try{ fetch(SB+'/functions/v1/collect',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':AK,'Authorization':'Bearer '+(token||AK)},body:JSON.stringify(Object.assign({event_id:evid,event_name:'identify',visitor_id:eid(),user_id:userId,event_time:Math.floor(Date.now()/1000),url:location.href,referrer:document.referrer,user_agent:navigator.userAgent,custom:{}},attr))});}catch(e){}
     };
     // Append ethos_id to Play Store links so the app recovers it via the
     // Install Referrer on first launch (deterministic web->app stitch).
     document.addEventListener('click', function(ev){
       var a = ev.target.closest && ev.target.closest('a[href*="play.google.com/store/apps"]');
       if(!a) return;
-      try { var u = new URL(a.href); if(!u.searchParams.get('referrer')){ u.searchParams.set('referrer','ethos_id='+eid()); a.href=u.toString(); } } catch(e){}
+      try { var u = new URL(a.href); if(!u.searchParams.get('referrer')){ u.searchParams.set('referrer','visitor_id='+eid()); a.href=u.toString(); } } catch(e){}
     }, true);
     eid();
     window.ethosCollect('page_view');
