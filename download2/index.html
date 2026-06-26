@@ -54,6 +54,12 @@
       try{fetch(SB+'/functions/v1/collect',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':AK,'Authorization':'Bearer '+AK},
         body:JSON.stringify(Object.assign({event_id:evid,event_name:name,ethos_id:eid(),event_time:Math.floor(Date.now()/1000),url:location.href,referrer:document.referrer,user_agent:navigator.userAgent,custom:custom||{}},attr))});}catch(e){}
     };
+    // Link the ad-attributed landing ethos_id to a user at OTP success. Sends
+    // the user's JWT so /collect verifies the user (never trusts a raw user_id).
+    window.ethosIdentify=function(userId,token){
+      var evid=uuid();
+      try{ fetch(SB+'/functions/v1/collect',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':AK,'Authorization':'Bearer '+(token||AK)},body:JSON.stringify(Object.assign({event_id:evid,event_name:'identify',ethos_id:eid(),user_id:userId,event_time:Math.floor(Date.now()/1000),url:location.href,referrer:document.referrer,user_agent:navigator.userAgent,custom:{}},attr))});}catch(e){}
+    };
     // Append ethos_id to Play Store links so the app recovers it via the
     // Install Referrer on first launch (deterministic web->app stitch).
     document.addEventListener('click', function(ev){
@@ -1906,6 +1912,8 @@
 
         if (res.ok && data.access_token) {
           trackEvent('otp_verified', { city: signupData?.city });
+          // Link the ad-attributed landing ethos_id → this user (JWT-verified).
+          if (window.ethosIdentify && data.user) window.ethosIdentify(data.user.id, data.access_token);
 
           // Redirect to app with session
           const redirectBase = currentMode === 'signin' ? 'https://app.ethosapp.co/matches' : 'https://app.ethosapp.co/welcome';
