@@ -74,7 +74,7 @@
     // the user's JWT so /collect verifies the user (never trusts a raw user_id).
     window.ethosIdentify=function(userId,token){
       var evid=uuid();
-      try{ fetch(SB+'/functions/v1/collect',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':AK,'Authorization':'Bearer '+(token||AK)},body:JSON.stringify(Object.assign({event_id:evid,capi_event_id:'reg_'+userId,event_name:'complete_registration',visitor_id:eid(),user_id:userId,event_time:Math.floor(Date.now()/1000),url:location.href,referrer:document.referrer,user_agent:navigator.userAgent,custom:{}},attr))});}catch(e){}
+      try{ return fetch(SB+'/functions/v1/collect',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':AK,'Authorization':'Bearer '+(token||AK)},body:JSON.stringify(Object.assign({event_id:evid,capi_event_id:'reg_'+userId,event_name:'complete_registration',visitor_id:eid(),user_id:userId,event_time:Math.floor(Date.now()/1000),url:location.href,referrer:document.referrer,user_agent:navigator.userAgent,custom:{}},attr))});}catch(e){ return Promise.resolve(); }
     };
     // Append ethos_id to Play Store links so the app recovers it via the
     // Install Referrer on first launch (deterministic web->app stitch).
@@ -2665,6 +2665,19 @@
 
         if (res.ok && data.access_token) {
           trackEvent('otp_verified', { city: signupData?.city });
+          // Link the ad-attributed landing visitor_id → this user and fire
+          // CompleteRegistration. AWAIT it (1.5s cap) before the cross-origin
+          // redirect — mobile/in-app webviews drop keepalive fetches on same-tick nav.
+          try {
+            var _uid = (data.user && data.user.id) || null;
+            if (!_uid && data.access_token) { try { _uid = JSON.parse(atob(data.access_token.split('.')[1])).sub; } catch (e) {} }
+            if (window.ethosIdentify && _uid) {
+              await Promise.race([
+                window.ethosIdentify(_uid, data.access_token),
+                new Promise(function (r) { setTimeout(r, 1500); })
+              ]);
+            }
+          } catch (e) {}
 
           // Redirect to app with session
           // Profile data (first_name, last_name, gender, living_in) is pre-seeded
