@@ -56,9 +56,13 @@
     };
     // Link the ad-attributed landing ethos_id to a user at OTP success. Sends
     // the user's JWT so /collect verifies the user (never trusts a raw user_id).
+    // Returns the fetch promise so the caller can AWAIT it before navigating —
+    // a non-awaited keepalive fetch is dropped by mobile/in-app webviews when
+    // the page redirects in the same tick (that's why CompleteRegistration was
+    // firing 0×). Needs the user JWT in Authorization, so sendBeacon can't be used.
     window.ethosIdentify=function(userId,token){
       var evid=uuid();
-      try{ fetch(SB+'/functions/v1/collect',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':AK,'Authorization':'Bearer '+(token||AK)},body:JSON.stringify(Object.assign({event_id:evid,capi_event_id:'reg_'+userId,event_name:'complete_registration',visitor_id:eid(),user_id:userId,event_time:Math.floor(Date.now()/1000),url:location.href,referrer:document.referrer,user_agent:navigator.userAgent,custom:{}},attr))});}catch(e){}
+      try{ return fetch(SB+'/functions/v1/collect',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':AK,'Authorization':'Bearer '+(token||AK)},body:JSON.stringify(Object.assign({event_id:evid,capi_event_id:'reg_'+userId,event_name:'complete_registration',visitor_id:eid(),user_id:userId,event_time:Math.floor(Date.now()/1000),url:location.href,referrer:document.referrer,user_agent:navigator.userAgent,custom:{}},attr))});}catch(e){ return Promise.resolve(); }
     };
     // Append ethos_id to Play Store links so the app recovers it via the
     // Install Referrer on first launch (deterministic web->app stitch).
@@ -1912,8 +1916,20 @@
 
         if (res.ok && data.access_token) {
           trackEvent('otp_verified', { city: signupData?.city });
-          // Link the ad-attributed landing ethos_id → this user (JWT-verified).
-          if (window.ethosIdentify && data.user) window.ethosIdentify(data.user.id, data.access_token);
+          // Link the ad-attributed landing ethos_id → this user (JWT-verified)
+          // and fire CompleteRegistration. AWAIT it (capped at 1.5s) before the
+          // cross-origin redirect — otherwise mobile/in-app webviews drop the
+          // keepalive fetch when we navigate away in the same tick.
+          try {
+            var _uid = (data.user && data.user.id) || null;
+            if (!_uid && data.access_token) { try { _uid = JSON.parse(atob(data.access_token.split('.')[1])).sub; } catch (e) {} }
+            if (window.ethosIdentify && _uid) {
+              await Promise.race([
+                window.ethosIdentify(_uid, data.access_token),
+                new Promise(function (r) { setTimeout(r, 1500); })
+              ]);
+            }
+          } catch (e) {}
 
           // Redirect to app with session
           const redirectBase = currentMode === 'signin' ? 'https://app.ethosapp.co/matches' : 'https://app.ethosapp.co/welcome';
