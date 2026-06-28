@@ -993,7 +993,7 @@
             <div style="font-family:'Cormorant Garamond',serif;font-size:40px;line-height:.98;color:#241F18;font-weight:600;margin-bottom:26px">Good to<br>have you.</div>
           </div>
           <div id="ctaWhere" style="font-family:'Source Sans 3',sans-serif;font-size:11px;font-weight:600;color:#3A352D;letter-spacing:.22em;text-transform:uppercase;margin-bottom:14px"><span style="color:#A9854F">Step 1 · </span>Where are you?</div>
-          <div id="cityChips" style="display:flex;flex-wrap:wrap;gap:9px;margin-bottom:18px">
+          <div id="cityChips" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px">
             <button type="button" class="city-chip" data-city="Mumbai" style="font-family:inherit;font-size:16px;font-weight:600;padding:9px 18px;border-radius:8px;cursor:pointer;transition:all .15s;background:#FAF7F0;color:#6B6560;border:1px solid #E8E4DD">Mumbai</button>
             <button type="button" class="city-chip" data-city="Bangalore" style="font-family:inherit;font-size:16px;font-weight:600;padding:9px 18px;border-radius:8px;cursor:pointer;transition:all .15s;background:#FAF7F0;color:#6B6560;border:1px solid #E8E4DD">Bangalore</button>
             <button type="button" class="city-chip" data-city="Delhi" style="font-family:inherit;font-size:16px;font-weight:600;padding:9px 18px;border-radius:8px;cursor:pointer;transition:all .15s;background:#FAF7F0;color:#6B6560;border:1px solid #E8E4DD">Delhi</button>
@@ -2544,7 +2544,7 @@
     // ===== City router =====
     (function () {
       const LIVE = ['Mumbai', 'Bangalore', 'Delhi'];
-      const CHIP_BASE = "font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;padding:9px 20px;border-radius:999px;cursor:pointer;transition:all .15s ease;";
+      const CHIP_BASE = "font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(14px,3.6vw,19px);padding:9px 6px;border-radius:999px;cursor:pointer;transition:all .15s ease;white-space:nowrap;text-align:center;";
       const SELECTED = 'background:#1B1712;color:#F4EEE3;border:1px solid #1B1712;';
       const UNSELECTED = 'background:transparent;color:#241F18;border:1px solid rgba(36,31,24,.18);';
 
