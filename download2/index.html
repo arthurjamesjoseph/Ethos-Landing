@@ -394,14 +394,13 @@
     #ctaCard > #ctaOauth     { order: 4; }
     /* ctaEmailReveal is now the email icon inside the #ctaOauth web-sign-in row. */
     #ctaCard > #ctaWaitlist  { order: 6; }
-    /* Smooth fade/rise when "Continue with email" reveals the sign-in fields */
-    #ctaWaitlist.cta-reveal { opacity: 0; transform: translateY(10px); }
-    #ctaWaitlist.cta-reveal.cta-reveal-in {
-      opacity: 1; transform: translateY(0);
-      transition: opacity .45s cubic-bezier(.22,.61,.36,1), transform .45s cubic-bezier(.22,.61,.36,1);
-    }
+    /* Smooth height expand when the form is revealed (Elsewhere / "Continue with email") */
+    #ctaWaitlist { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .55s cubic-bezier(.22,.61,.36,1), opacity .4s ease; }
+    #ctaWaitlist.expanded { grid-template-rows: 1fr; opacity: 1; }
+    #ctaWaitlist > .form-card { overflow: hidden; min-height: 0; }
+    #ctaWaitlist .cta-note { display: none; }
     @media (prefers-reduced-motion: reduce) {
-      #ctaWaitlist.cta-reveal { opacity: 1; transform: none; }
+      #ctaWaitlist { transition: none; }
     }
 
     /* The "or" divider mirrors the form's .oauth-divider look */
@@ -1004,7 +1003,7 @@
           </div>
 
           <!-- waitlist (shown only for Elsewhere) — full /download signup form -->
-          <div id="ctaWaitlist" style="display:none">
+          <div id="ctaWaitlist">
             <p class="cta-note" style="font-size:16px;color:#6B6560;line-height:1.45;margin-bottom:13px"></p>
 
             <div class="form-card" id="formCard">
@@ -2583,8 +2582,7 @@
         // The signup form is always shown. For Elsewhere it carries its
         // "Join the waitlist" title/subtitle/scarcity (revealed via the class);
         // for live/default it shows just the signup options under the "or".
-        waitlistEl.style.display = isOther ? 'block' : 'none';
-        waitlistEl.classList.remove('cta-reveal', 'cta-reveal-in');
+        waitlistEl.classList.toggle('expanded', isOther);
         waitlistEl.classList.toggle('is-elsewhere', isOther);
         // Live cities + default → Sign In mode (existing user logs in with email
         // → OTP); Elsewhere → Join / waitlist signup (full Name/Gender/Email/City).
@@ -2620,11 +2618,7 @@
           orEl.style.display = 'none';
           if (oauthEl) oauthEl.style.display = 'none';
           emailRevealBtn.style.display = 'none';
-          waitlistEl.style.display = 'block';
-          waitlistEl.classList.add('cta-reveal');
-          requestAnimationFrame(function () {
-            requestAnimationFrame(function () { waitlistEl.classList.add('cta-reveal-in'); });
-          });
+          waitlistEl.classList.add('expanded');
           var em = document.getElementById('signinEmail');
           if (em) em.focus({ preventScroll: true });
         });
