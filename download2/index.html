@@ -62,7 +62,7 @@
     // firing 0×). Needs the user JWT in Authorization, so sendBeacon can't be used.
     window.ethosIdentify=function(userId,token){
       var evid=uuid();
-      try{ return fetch(SB+'/functions/v1/collect',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':AK,'Authorization':'Bearer '+(token||AK)},body:JSON.stringify(Object.assign({event_id:evid,capi_event_id:'reg_'+userId,event_name:'complete_registration',visitor_id:eid(),user_id:userId,event_time:Math.floor(Date.now()/1000),url:location.href,referrer:document.referrer,user_agent:navigator.userAgent,custom:{}},attr))});}catch(e){ return Promise.resolve(); }
+      try{ return fetch(SB+'/functions/v1/collect',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json','apikey':AK,'Authorization':'Bearer '+(token||AK)},body:JSON.stringify(Object.assign({event_id:evid,capi_event_id:'reg_'+userId,event_name:'identify',visitor_id:eid(),user_id:userId,event_time:Math.floor(Date.now()/1000),url:location.href,referrer:document.referrer,user_agent:navigator.userAgent,custom:{}},attr))});}catch(e){ return Promise.resolve(); }
     };
     // Append ethos_id to Play Store links so the app recovers it via the
     // Install Referrer on first launch (deterministic web->app stitch).
