@@ -1854,6 +1854,24 @@
         </div>
 
         <div class="form-container">
+          <!-- city-aware CTA card (ported from /download2) -->
+          <div id="ctaCard" style="background:#FCF8F0;border-radius:26px;padding:34px;box-shadow:0 18px 50px -24px rgba(36,31,24,.45);display:flex;flex-direction:column">
+          <div style="order:-1">
+            <div style="font-family:'Source Sans 3',sans-serif;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#A9854F;font-weight:600;margin-bottom:12px">Members only</div>
+            <div style="font-family:'Cormorant Garamond','EB Garamond',Georgia,serif;font-size:40px;line-height:.98;color:#2D2D2D;font-weight:600;margin-bottom:26px">Welcome</div>
+          </div>
+          <div id="ctaWhere" style="font-family:'Source Sans 3',sans-serif;font-size:11px;font-weight:600;color:#3A352D;letter-spacing:.22em;text-transform:uppercase;margin-bottom:14px"><span style="color:#A9854F">Step 1 · </span>Where are you?</div>
+          <div id="cityChips" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px">
+            <button type="button" class="city-chip" data-city="Mumbai">Mumbai</button>
+            <button type="button" class="city-chip" data-city="Bangalore">Bangalore</button>
+            <button type="button" class="city-chip" data-city="Delhi">Delhi</button>
+            <button type="button" class="city-chip" data-city="Other">Elsewhere</button>
+          </div>
+
+          <!-- waitlist (shown only for Elsewhere) / web sign-in form -->
+          <div id="ctaWaitlist" style="display:none">
+            <p class="cta-note" style="font-size:16px;color:#6B6560;line-height:1.45;margin-bottom:13px"></p>
+
           <div class="form-card" id="formCard">
             <!-- Founding Member scarcity callout -->
             <div class="fm-callout" id="fmCallout">
@@ -2102,6 +2120,41 @@
               </div>
             </div>
           </div>
+          </div><!-- /#ctaWaitlist -->
+
+          <!-- stores (shown unless Elsewhere) -->
+          <div id="ctaStores">
+            <p class="cta-note" style="font-size:18px;color:#8C8275;line-height:1.45;margin-bottom:26px"></p>
+            <div style="font-family:'Source Sans 3',sans-serif;font-size:11px;font-weight:600;color:#3A352D;letter-spacing:.22em;text-transform:uppercase;margin-bottom:14px"><span style="color:#A9854F">Step 2 · </span>Get the app</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <a href="https://apps.apple.com/in/app/ethos/id6761717128" class="store-chip" style="display:flex;align-items:center;justify-content:center;gap:9px;height:56px;border-radius:14px;background:#1B1712;color:#F4EEE3;text-decoration:none;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:600;transition:background .15s">
+                <svg viewBox="0 0 384 512" width="16" height="18" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+                App Store
+              </a>
+              <a href="https://play.google.com/store/apps/details?id=com.ethoslabs.app" class="store-chip" style="display:flex;align-items:center;justify-content:center;gap:9px;height:56px;border-radius:14px;background:#1B1712;color:#F4EEE3;text-decoration:none;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:600;transition:background .15s">
+                <svg viewBox="0 0 24 24" width="16" height="16"><path fill="#EA4335" d="M3.6 1.8 13 11.2l2.6-2.6z"/><path fill="#4285F4" d="M3 2.2v19.6L12.8 12z"/><path fill="#34A853" d="M3.6 22.2 15.6 15.4 13 12.8z"/><path fill="#FBBC05" d="m16.4 9 4.3 2.4c.9.5.9 1.7 0 2.2L16.4 16l-3-3z"/></svg>
+                Google Play
+              </a>
+            </div>
+          </div>
+
+          <!-- divider: store buttons above = get the app; below = sign in on the web -->
+          <div id="ctaOr" class="oauth-divider"><span>or sign in on the web</span></div>
+          <!-- Web sign-in: 3-icon row (Apple / Google / Email). Hidden for
+               Elsewhere. Apple/Google use the shared go() OAuth handler; the
+               email icon (#ctaEmailReveal) opens the email-OTP flow. -->
+          <div id="ctaOauth" style="display:none;grid-template-columns:1fr 1fr 1fr;gap:10px">
+            <button type="button" class="oauth-icon oauth-apple" title="Continue with Apple" aria-label="Continue with Apple">
+              <svg viewBox="0 0 384 512" width="16" height="18" fill="#241F18" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+            </button>
+            <button type="button" class="oauth-icon oauth-google" title="Continue with Google" aria-label="Continue with Google">
+              <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+            </button>
+            <button type="button" id="ctaEmailReveal" class="oauth-icon" title="Continue with email" aria-label="Continue with email">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#241F18" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 7.5 12 13l8.5-5.5"/></svg>
+            </button>
+          </div>
+          </div><!-- /#ctaCard -->
 
           <!-- Founding Member box (below the sign-in card) -->
           <div class="fm-hero-scarcity">
@@ -3335,6 +3388,56 @@
     .email-fields { margin-top:18px; opacity:0; transform:translateY(10px); transition:opacity .4s ease, transform .4s ease; }
     .email-fields.revealed { opacity:1; transform:translateY(0); }
     .oauth-fade { opacity:0 !important; transition:opacity .28s ease; pointer-events:none; }
+
+    /* ===== City-aware CTA card (ported from /download2) ===== */
+    /* Icon-only web sign-in buttons (design 3-icon row) */
+    .oauth-icon { display:flex; align-items:center; justify-content:center; height:50px; border-radius:14px; border:1px solid rgba(36,31,24,.16); background:#FBF7EF; cursor:pointer; transition:border-color .15s ease; }
+    .oauth-icon:hover { border-color:rgba(36,31,24,.34); }
+    /* Icon variant keeps the light surface (overrides the full-button provider bg) */
+    .oauth-icon.oauth-apple, .oauth-icon.oauth-google { background:#FBF7EF; color:inherit; border-color:rgba(36,31,24,.16); }
+    .oauth-icon.oauth-apple:hover, .oauth-icon.oauth-google:hover { border-color:rgba(36,31,24,.34); }
+    .store-chip:hover { background:#000 !important; }
+
+    /* ----- CTA card stacking order (eyebrow/headline -> where -> chips ----- */
+    /* -> stores -> "or" -> web-oauth -> form). Card is a flex column; order   */
+    /* overrides DOM order so the store buttons render above the signup form.  */
+    #ctaCard > #ctaWhere     { order: 0; }
+    #ctaCard > #cityChips    { order: 1; }
+    #ctaCard > #ctaStores    { order: 2; }
+    #ctaCard > #ctaOr        { order: 3; }
+    #ctaCard > #ctaOauth     { order: 4; }
+    #ctaCard > #ctaWaitlist  { order: 6; }
+    /* Smooth fade/rise when the email icon reveals the sign-in fields */
+    #ctaWaitlist.cta-reveal { opacity: 0; transform: translateY(10px); }
+    #ctaWaitlist.cta-reveal.cta-reveal-in {
+      opacity: 1; transform: translateY(0);
+      transition: opacity .45s cubic-bezier(.22,.61,.36,1), transform .45s cubic-bezier(.22,.61,.36,1);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #ctaWaitlist.cta-reveal { opacity: 1; transform: none; }
+    }
+    #ctaOr { margin: 18px 0; }
+    /* Fit the proven form component inside the hero CTA card */
+    #ctaWaitlist .form-card { background: transparent; border-radius: 12px; padding: 0; box-shadow: none; }
+    /* The founding-member callout + mode tabs are redundant in this context */
+    #ctaWaitlist .fm-callout,
+    #ctaWaitlist .mode-toggle { display: none; }
+    /* Hide the "Join the waitlist" heading by default (live cities / default). */
+    /* Only the Elsewhere branch reveals it via .is-elsewhere. */
+    #ctaWaitlist .form-title,
+    #ctaWaitlist .form-subtitle,
+    #ctaWaitlist .form-scarcity { display: none; }
+    #ctaWaitlist.is-elsewhere .form-title,
+    #ctaWaitlist.is-elsewhere .form-subtitle,
+    #ctaWaitlist.is-elsewhere .form-scarcity { display: block; }
+    /* The note line lives above the stores for live/default; suppress the    */
+    /* duplicate note inside the waitlist block otherwise.                    */
+    #ctaWaitlist > .cta-note { display: none; }
+    /* Hide the form's own social sign-in buttons + its internal "or" divider  */
+    /* so the card reads cleanly: store buttons -> one "or" -> web sign-in.    */
+    #ctaWaitlist .oauth-btn,
+    #ctaWaitlist .oauth-divider { display: none; }
+    .oauth-fade { opacity:0 !important; transition:opacity .28s ease; pointer-events:none; }
   </style>
   <script>
     // Social sign-in → Supabase hosted OAuth → returns into the app (signed in).
@@ -3388,6 +3491,86 @@
           }, 280);
         });
       }
+    })();
+
+    // ===== City router (ported from /download2) =====
+    (function () {
+      const LIVE = ['Mumbai', 'Bangalore', 'Delhi'];
+      const CHIP_BASE = "font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(14px,3.6vw,19px);padding:9px 6px;border-radius:999px;cursor:pointer;transition:all .15s ease;white-space:nowrap;text-align:center;";
+      const SELECTED = 'background:#1B1712;color:#F4EEE3;border:1px solid #1B1712;';
+      const UNSELECTED = 'background:transparent;color:#241F18;border:1px solid rgba(36,31,24,.18);';
+
+      const chips = Array.from(document.querySelectorAll('.city-chip'));
+      const storesEl = document.getElementById('ctaStores');
+      const orEl = document.getElementById('ctaOr');
+      const emailRevealBtn = document.getElementById('ctaEmailReveal');
+      const oauthEl = document.getElementById('ctaOauth');
+      const waitlistEl = document.getElementById('ctaWaitlist');
+      const notes = document.querySelectorAll('.cta-note');
+
+      let city = 'Mumbai';
+
+      function noteText() {
+        if (city === 'Other') return "Ethos isn’t in your city yet — join the waitlist and we’ll tell you the moment it lands.";
+        if (LIVE.includes(city)) return "Now live in " + city + ". Founding members get four weeks free.";
+        return "Now live in Mumbai, Bangalore & Delhi. Founding members get four weeks free.";
+      }
+
+      function render() {
+        const isOther = city === 'Other';
+        chips.forEach(function (c) {
+          c.setAttribute('style', CHIP_BASE + (c.dataset.city === city ? SELECTED : UNSELECTED));
+        });
+        const txt = noteText();
+        notes.forEach(function (n) { n.textContent = txt; });
+        storesEl.style.display = isOther ? 'none' : 'block';
+        orEl.style.display = isOther ? 'none' : 'flex';
+        if (oauthEl) oauthEl.style.display = isOther ? 'none' : 'grid';
+        if (emailRevealBtn) emailRevealBtn.style.display = '';
+        waitlistEl.style.display = isOther ? 'block' : 'none';
+        waitlistEl.classList.remove('cta-reveal', 'cta-reveal-in');
+        waitlistEl.classList.toggle('is-elsewhere', isOther);
+        var formCard = document.getElementById('formCard');
+        if (formCard) formCard.classList.toggle('mode-signin', !isOther);
+        var emailToggle = document.getElementById('continueEmailBtn');
+        var emailFields = document.getElementById('emailFields');
+        if (emailToggle && emailFields) {
+          if (isOther) {
+            emailToggle.style.display = 'none';
+            emailFields.hidden = false;
+            emailFields.classList.add('revealed');
+          } else {
+            emailToggle.style.display = '';
+            emailFields.hidden = true;
+            emailFields.classList.remove('revealed');
+          }
+        }
+      }
+
+      chips.forEach(function (c) {
+        c.addEventListener('click', function () {
+          city = c.dataset.city;
+          render();
+        });
+      });
+
+      if (emailRevealBtn) {
+        emailRevealBtn.addEventListener('click', function () {
+          storesEl.style.display = 'none';
+          orEl.style.display = 'none';
+          if (oauthEl) oauthEl.style.display = 'none';
+          emailRevealBtn.style.display = 'none';
+          waitlistEl.style.display = 'block';
+          waitlistEl.classList.add('cta-reveal');
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () { waitlistEl.classList.add('cta-reveal-in'); });
+          });
+          var em = document.getElementById('signinEmail');
+          if (em) em.focus({ preventScroll: true });
+        });
+      }
+
+      render();
     })();
   </script>
 </body>
