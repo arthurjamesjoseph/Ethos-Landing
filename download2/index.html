@@ -900,6 +900,9 @@
     .oauth-btn:disabled { opacity:.6; cursor:default; }
     .oauth-apple { background:#000; color:#fff; }
     .oauth-google { background:#fff; color:#1f1f1f; border-color:#dadce0; }
+    /* Icon variant keeps the light surface (overrides the full-button provider bg) */
+    .oauth-icon.oauth-apple, .oauth-icon.oauth-google { background:#FBF7EF; color:inherit; border-color:rgba(36,31,24,.16); }
+    .oauth-icon.oauth-apple:hover, .oauth-icon.oauth-google:hover { border-color:rgba(36,31,24,.34); }
     .oauth-btn svg { width:18px; height:18px; flex:0 0 auto; }
     .email-toggle-btn { width:100%; height:54px; border-radius:999px; background:var(--color-gold); border:none; color:#fff; font-size:16px; font-weight:600; cursor:pointer; font-family:inherit; transition:background .15s ease; }
     .email-toggle-btn:hover { background:var(--color-gold-hover); }
