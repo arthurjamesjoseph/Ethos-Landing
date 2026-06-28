@@ -3308,7 +3308,10 @@
       var REDIRECT = 'https://app.ethosapp.co';
       function go(provider) {
         trackEvent('oauth_click', { provider: provider });
-        window.location.href = SB + '/auth/v1/authorize?provider=' + provider +
+        // Apple only releases name/email on first consent, and only when scoped.
+        // Google's scopes are URLs and already include email — don't touch them.
+        var scopes = provider === 'apple' ? '&scopes=' + encodeURIComponent('name email') : '';
+        window.location.href = SB + '/auth/v1/authorize?provider=' + provider + scopes +
           '&redirect_to=' + encodeURIComponent(REDIRECT);
       }
       document.querySelectorAll('.oauth-apple').forEach(function (b) {

@@ -2978,7 +2978,10 @@
         // flow does, so the app claims it post-sign-in from this ?ref= param.
         var ref = sessionStorage.getItem('ethos_ref_code');
         var redirect = REDIRECT + (ref ? '?ref=' + encodeURIComponent(ref) : '');
-        window.location.href = SB + '/auth/v1/authorize?provider=' + provider +
+        // Apple only releases name/email on first consent, and only when scoped.
+        // Google's scopes are URLs and already include email — don't touch them.
+        var scopes = provider === 'apple' ? '&scopes=' + encodeURIComponent('name email') : '';
+        window.location.href = SB + '/auth/v1/authorize?provider=' + provider + scopes +
           '&redirect_to=' + encodeURIComponent(redirect);
       }
       document.querySelectorAll('.oauth-apple').forEach(function (b) {
