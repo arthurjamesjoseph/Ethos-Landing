@@ -1298,9 +1298,9 @@
           <span style="font-size:16px;color:#6B6560">Every profile verified</span>
         </div>
 
-        <!-- above-the-fold testimonial (quote follows the selected city) -->
-        <figure id="heroTestimonial" style="margin:24px 0 0;padding:18px 0 0;border-top:1px solid #E8E4DD;max-width:32em">
-          <blockquote id="heroTestimonialQuote" style="margin:0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:21px;font-weight:500;line-height:1.35;letter-spacing:-0.005em;color:#2D2D2D">&ldquo;It finally felt like the conversations mattered &mdash; I wasn&rsquo;t just swiping for the sake of it.&rdquo;</blockquote>
+        <!-- above-the-fold testimonial (starts on the selected city's quote, then rotates through all three) -->
+        <figure id="heroTestimonial" style="margin:24px 0 0;padding:18px 0 0;border-top:1px solid #E8E4DD;max-width:32em;transition:opacity .45s ease">
+          <blockquote id="heroTestimonialQuote" style="margin:0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:21px;font-weight:500;line-height:1.35;letter-spacing:-0.005em;color:#2D2D2D;min-height:2.7em">&ldquo;It finally felt like the conversations mattered &mdash; I wasn&rsquo;t just swiping for the sake of it.&rdquo;</blockquote>
           <figcaption id="heroTestimonialName" style="margin-top:9px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:#6B6560"><strong style="color:#2D2D2D;font-weight:600">Priya, 29</strong> &nbsp;&middot;&nbsp; Mumbai &middot; verified member</figcaption>
         </figure>
       </div>
@@ -2603,18 +2603,40 @@
         return null;
       }
 
-      // Hero testimonial follows the selected city.
+      // Hero testimonial: starts on the selected city's quote, then rotates
+      // through all three. Picking a city chip restarts the cycle on that city.
       const TESTIMONIALS = {
         Mumbai: { q: '“It finally felt like the conversations mattered — I wasn’t just swiping for the sake of it.”', name: 'Priya, 29', where: 'Mumbai' },
         Bangalore: { q: '“I love how intentional Ethos feels compared to most platforms. More thoughtful, well designed.”', name: 'Ananya, 32', where: 'Bangalore' },
         Delhi: { q: '“Everyone is actually here for something serious — partnership, not games.”', name: 'Neha, 31', where: 'Delhi' }
       };
-      function renderTestimonial() {
-        var t = TESTIMONIALS[city] || TESTIMONIALS.Mumbai;
+      const T_ORDER = ['Mumbai', 'Bangalore', 'Delhi'];
+      const T_ROTATE_MS = 6000;
+      const tFigure = document.getElementById('heroTestimonial');
+      const tReduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let tIndex = 0, tTimer = null;
+      function setTestimonial(key) {
+        var t = TESTIMONIALS[key] || TESTIMONIALS.Mumbai;
         var q = document.getElementById('heroTestimonialQuote');
         var n = document.getElementById('heroTestimonialName');
         if (q) q.textContent = t.q;
         if (n) n.innerHTML = '<strong style="color:#2D2D2D;font-weight:600">' + t.name + '</strong> &nbsp;&middot;&nbsp; ' + t.where + ' &middot; verified member';
+      }
+      function startTestimonialRotation() {
+        clearInterval(tTimer);
+        tTimer = setInterval(function () {
+          tIndex = (tIndex + 1) % T_ORDER.length;
+          if (tReduceMotion || !tFigure) { setTestimonial(T_ORDER[tIndex]); return; }
+          tFigure.style.opacity = '0';
+          setTimeout(function () { setTestimonial(T_ORDER[tIndex]); tFigure.style.opacity = '1'; }, 450);
+        }, T_ROTATE_MS);
+      }
+      function renderTestimonial() {
+        var i = T_ORDER.indexOf(city);
+        if (i >= 0) tIndex = i; // 'Other' keeps the current quote in the cycle
+        setTestimonial(T_ORDER[tIndex]);
+        if (tFigure) tFigure.style.opacity = '1';
+        startTestimonialRotation();
       }
 
       let city = cityFromParams() || 'Mumbai';
