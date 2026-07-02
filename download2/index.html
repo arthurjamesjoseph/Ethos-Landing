@@ -407,6 +407,19 @@
     /* The "or" divider mirrors the form's .oauth-divider look */
     #ctaOr { margin: 18px 0; }
 
+    /* ----- Hero testimonial rotator ----- */
+    /* Slides share one grid cell, so the container holds the tallest quote's
+       height at every viewport — rotating never moves surrounding elements. */
+    #heroTestimonial { display: grid; margin: 24px 0 0; padding: 18px 0 0; border-top: 1px solid #E8E4DD; max-width: 32em; }
+    .hero-t-slide { grid-area: 1 / 1; opacity: 0; transform: translateY(4px); transition: opacity 1.6s cubic-bezier(.4,0,.2,1), transform 1.6s cubic-bezier(.4,0,.2,1); pointer-events: none; }
+    .hero-t-slide.active { opacity: 1; transform: none; pointer-events: auto; }
+    .hero-t-slide blockquote { margin: 0; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 21px; font-weight: 500; line-height: 1.35; letter-spacing: -0.005em; color: #2D2D2D; }
+    .hero-t-name { margin-top: 9px; font-family: 'Source Sans 3', sans-serif; font-size: 14px; color: #6B6560; }
+    .hero-t-name strong { color: #2D2D2D; font-weight: 600; }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-t-slide { transition: none; transform: none; }
+    }
+
     /* Hide the "Join the waitlist" heading by default (live cities /     */
     /* default). Only the Elsewhere branch reveals it via .is-elsewhere.  */
     #ctaWaitlist .form-title,
@@ -1298,11 +1311,23 @@
           <span style="font-size:16px;color:#6B6560">Every profile verified</span>
         </div>
 
-        <!-- above-the-fold testimonial (starts on the selected city's quote, then rotates through all three) -->
-        <figure id="heroTestimonial" style="margin:24px 0 0;padding:18px 0 0;border-top:1px solid #E8E4DD;max-width:32em;transition:opacity .45s ease">
-          <blockquote id="heroTestimonialQuote" style="margin:0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:21px;font-weight:500;line-height:1.35;letter-spacing:-0.005em;color:#2D2D2D;min-height:2.7em">&ldquo;It finally felt like the conversations mattered &mdash; I wasn&rsquo;t just swiping for the sake of it.&rdquo;</blockquote>
-          <figcaption id="heroTestimonialName" style="margin-top:9px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:#6B6560"><strong style="color:#2D2D2D;font-weight:600">Priya, 29</strong> &nbsp;&middot;&nbsp; Mumbai &middot; verified member</figcaption>
-        </figure>
+        <!-- above-the-fold testimonial rotator: slides stack in one grid cell
+             (tallest quote sets the height) and crossfade in place, so rotation
+             never shifts the layout around it. Starts on the selected city. -->
+        <div id="heroTestimonial">
+          <div class="hero-t-slide active" data-t="Mumbai">
+            <blockquote>&ldquo;It finally felt like the conversations mattered &mdash; I wasn&rsquo;t just swiping for the sake of it.&rdquo;</blockquote>
+            <div class="hero-t-name"><strong>Priya, 29</strong> &nbsp;&middot;&nbsp; Mumbai &middot; verified member</div>
+          </div>
+          <div class="hero-t-slide" data-t="Bangalore">
+            <blockquote>&ldquo;I love how intentional Ethos feels compared to most platforms. More thoughtful, well designed.&rdquo;</blockquote>
+            <div class="hero-t-name"><strong>Ananya, 32</strong> &nbsp;&middot;&nbsp; Bangalore &middot; verified member</div>
+          </div>
+          <div class="hero-t-slide" data-t="Delhi">
+            <blockquote>&ldquo;Everyone is actually here for something serious &mdash; partnership, not games.&rdquo;</blockquote>
+            <div class="hero-t-name"><strong>Neha, 31</strong> &nbsp;&middot;&nbsp; Delhi &middot; verified member</div>
+          </div>
+        </div>
       </div>
 
       <!-- hero visual -->
@@ -2603,39 +2628,28 @@
         return null;
       }
 
-      // Hero testimonial: starts on the selected city's quote, then rotates
-      // through all three. Picking a city chip restarts the cycle on that city.
-      const TESTIMONIALS = {
-        Mumbai: { q: '“It finally felt like the conversations mattered — I wasn’t just swiping for the sake of it.”', name: 'Priya, 29', where: 'Mumbai' },
-        Bangalore: { q: '“I love how intentional Ethos feels compared to most platforms. More thoughtful, well designed.”', name: 'Ananya, 32', where: 'Bangalore' },
-        Delhi: { q: '“Everyone is actually here for something serious — partnership, not games.”', name: 'Neha, 31', where: 'Delhi' }
-      };
+      // Hero testimonial rotator: the outgoing and incoming slides crossfade
+      // simultaneously in a shared grid cell (see #heroTestimonial CSS), so
+      // the swap is one smooth blend and never reflows the layout around it.
+      // Starts on the selected city; a city chip restarts the cycle there.
       const T_ORDER = ['Mumbai', 'Bangalore', 'Delhi'];
       const T_ROTATE_MS = 6000;
-      const tFigure = document.getElementById('heroTestimonial');
-      const tReduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const tSlides = Array.from(document.querySelectorAll('.hero-t-slide'));
       let tIndex = 0, tTimer = null;
       function setTestimonial(key) {
-        var t = TESTIMONIALS[key] || TESTIMONIALS.Mumbai;
-        var q = document.getElementById('heroTestimonialQuote');
-        var n = document.getElementById('heroTestimonialName');
-        if (q) q.textContent = t.q;
-        if (n) n.innerHTML = '<strong style="color:#2D2D2D;font-weight:600">' + t.name + '</strong> &nbsp;&middot;&nbsp; ' + t.where + ' &middot; verified member';
+        tSlides.forEach(function (s) { s.classList.toggle('active', s.dataset.t === key); });
       }
       function startTestimonialRotation() {
         clearInterval(tTimer);
         tTimer = setInterval(function () {
           tIndex = (tIndex + 1) % T_ORDER.length;
-          if (tReduceMotion || !tFigure) { setTestimonial(T_ORDER[tIndex]); return; }
-          tFigure.style.opacity = '0';
-          setTimeout(function () { setTestimonial(T_ORDER[tIndex]); tFigure.style.opacity = '1'; }, 450);
+          setTestimonial(T_ORDER[tIndex]);
         }, T_ROTATE_MS);
       }
       function renderTestimonial() {
         var i = T_ORDER.indexOf(city);
         if (i >= 0) tIndex = i; // 'Other' keeps the current quote in the cycle
         setTestimonial(T_ORDER[tIndex]);
-        if (tFigure) tFigure.style.opacity = '1';
         startTestimonialRotation();
       }
 
