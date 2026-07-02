@@ -393,6 +393,7 @@
     #ctaCard > #ctaOr        { order: 3; }
     #ctaCard > #ctaOauth     { order: 4; }
     /* ctaEmailReveal is now the email icon inside the #ctaOauth web-sign-in row. */
+    #ctaCard > #ctaSigninLink { order: 5; }
     #ctaCard > #ctaWaitlist  { order: 6; }
     /* Smooth height expand when the form is revealed (Elsewhere / "Continue with email") */
     #ctaWaitlist { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .55s cubic-bezier(.22,.61,.36,1), opacity .4s ease; }
@@ -924,12 +925,12 @@
         <span class="logo-text">Ethos</span>
       </a>
       <div class="header-right">
-        <a href="https://play.google.com/store/apps/details?id=com.ethoslabs.app" target="_blank" rel="noopener noreferrer" class="header-store-link" aria-label="Get Ethos on Google Play">
+        <a href="https://play.google.com/store/apps/details?id=com.ethoslabs.app" target="_blank" rel="noopener noreferrer" class="header-store-link" id="headerPlayLink" aria-label="Get Ethos on Google Play">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor">
             <path d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/>
           </svg>
         </a>
-        <a href="https://apps.apple.com/in/app/ethos/id6761717128" target="_blank" rel="noopener noreferrer" class="header-store-link" aria-label="Get Ethos on the App Store">
+        <a href="https://apps.apple.com/in/app/ethos/id6761717128" target="_blank" rel="noopener noreferrer" class="header-store-link" id="headerAppStoreLink" aria-label="Get Ethos on the App Store">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="currentColor">
             <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
           </svg>
@@ -1260,14 +1261,14 @@
           <div id="ctaStores">
             <p class="cta-note" style="font-size:18px;color:#8C8275;line-height:1.45;margin-bottom:26px"></p>
             <div style="font-family:'Source Sans 3',sans-serif;font-size:11px;font-weight:600;color:#3A352D;letter-spacing:.22em;text-transform:uppercase;margin-bottom:14px"><span style="color:#A9854F">Step 2 · </span>Get the app</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-              <a href="https://apps.apple.com/in/app/ethos/id6761717128" class="store-chip" style="display:flex;align-items:center;justify-content:center;gap:9px;height:56px;border-radius:14px;background:#1B1712;color:#F4EEE3;text-decoration:none;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:600;transition:background .15s">
+            <div id="storeChips" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <a href="https://apps.apple.com/in/app/ethos/id6761717128" class="store-chip" id="storeAppStoreChip" style="display:flex;align-items:center;justify-content:center;gap:9px;height:56px;border-radius:14px;background:#1B1712;color:#F4EEE3;text-decoration:none;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:600;transition:background .15s">
                 <svg viewBox="0 0 384 512" width="16" height="18" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
-                App Store
+                <span class="store-chip-label">App Store</span>
               </a>
-              <a href="https://play.google.com/store/apps/details?id=com.ethoslabs.app" class="store-chip" style="display:flex;align-items:center;justify-content:center;gap:9px;height:56px;border-radius:14px;background:#1B1712;color:#F4EEE3;text-decoration:none;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:600;transition:background .15s">
+              <a href="https://play.google.com/store/apps/details?id=com.ethoslabs.app" class="store-chip" id="storePlayChip" style="display:flex;align-items:center;justify-content:center;gap:9px;height:56px;border-radius:14px;background:#1B1712;color:#F4EEE3;text-decoration:none;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:600;transition:background .15s">
                 <svg viewBox="0 0 24 24" width="16" height="16"><path fill="#EA4335" d="M3.6 1.8 13 11.2l2.6-2.6z"/><path fill="#4285F4" d="M3 2.2v19.6L12.8 12z"/><path fill="#34A853" d="M3.6 22.2 15.6 15.4 13 12.8z"/><path fill="#FBBC05" d="m16.4 9 4.3 2.4c.9.5.9 1.7 0 2.2L16.4 16l-3-3z"/></svg>
-                Google Play
+                <span class="store-chip-label">Google Play</span>
               </a>
             </div>
           </div>
@@ -1288,12 +1289,20 @@
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#241F18" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 7.5 12 13l8.5-5.5"/></svg>
             </button>
           </div>
+          <!-- Mobile: single-CTA mode collapses the web-sign-in row behind this link -->
+          <button type="button" id="ctaSigninLink" style="display:none;background:none;border:none;cursor:pointer;font-family:'Source Sans 3',sans-serif;font-size:14px;color:#6B6560;padding:16px 0 0;margin:0;text-decoration:underline;text-underline-offset:3px;text-align:center">Already a member? Sign in</button>
         </div>
 
         <!-- trust row -->
         <div style="display:flex;align-items:center;gap:22px;margin-top:22px;flex-wrap:wrap">
           <span style="font-size:16px;color:#6B6560">Every profile verified</span>
         </div>
+
+        <!-- above-the-fold testimonial (quote follows the selected city) -->
+        <figure id="heroTestimonial" style="margin:24px 0 0;padding:18px 0 0;border-top:1px solid #E8E4DD;max-width:32em">
+          <blockquote id="heroTestimonialQuote" style="margin:0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:21px;font-weight:500;line-height:1.35;letter-spacing:-0.005em;color:#2D2D2D">&ldquo;It finally felt like the conversations mattered &mdash; I wasn&rsquo;t just swiping for the sake of it.&rdquo;</blockquote>
+          <figcaption id="heroTestimonialName" style="margin-top:9px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:#6B6560"><strong style="color:#2D2D2D;font-weight:600">Priya, 29</strong> &nbsp;&middot;&nbsp; Mumbai &middot; verified member</figcaption>
+        </figure>
       </div>
 
       <!-- hero visual -->
@@ -1308,8 +1317,8 @@
     <div style="border-top:1px solid #E8E4DD;border-bottom:1px solid #E8E4DD;background:#EDE8DC">
       <div style="max-width:1120px;margin:0 auto;padding:15px 32px;display:flex;align-items:center;justify-content:center;gap:14px;font-size:16px;color:#6B6560;text-align:center;flex-wrap:wrap">
         <span style="font-weight:600;color:#2D2D2D">Now live in Mumbai · Bangalore · Delhi</span>
-        <span style="color:#C9C1B2">—</span>
-        <span>Coming to Sydney, London, Toronto &amp; New York and more</span>
+        <span style="color:#C9C1B2" id="expansionDash">—</span>
+        <span id="expansionCopy">Coming to Sydney, London, Toronto &amp; New York and more</span>
       </div>
     </div>
 
@@ -1483,7 +1492,7 @@
             <span style="font-size:21px;font-weight:600;color:#2D2D2D">Which cities is Ethos in?</span>
             <span class="faq-sign" style="font-family:'Cormorant Garamond',serif;font-size:28px;color:#9E8C50;flex:none;line-height:1">+</span>
           </button>
-          <p class="faq-answer" style="font-size:17px;color:#6B6560;line-height:1.55;padding:0 0 22px;max-width:62ch;display:none">Live now in Mumbai, Bangalore and Delhi. Sydney, London, Toronto and New York are next — join the waitlist to get notified in your city.</p>
+          <p class="faq-answer" id="faqCitiesAnswer" style="font-size:17px;color:#6B6560;line-height:1.55;padding:0 0 22px;max-width:62ch;display:none">Live now in Mumbai, Bangalore and Delhi. Sydney, London, Toronto and New York are next — join the waitlist to get notified in your city.</p>
         </div>
         <div class="faq-row" style="border-bottom:1px solid #E8E4DD">
           <button type="button" class="faq-toggle" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:20px;background:none;border:none;cursor:pointer;padding:20px 0;text-align:left;font-family:inherit">
@@ -2557,8 +2566,58 @@
       const oauthEl = document.getElementById('ctaOauth');
       const waitlistEl = document.getElementById('ctaWaitlist');
       const notes = document.querySelectorAll('.cta-note');
+      const signinLink = document.getElementById('ctaSigninLink');
+      const storeChipsEl = document.getElementById('storeChips');
+      const appStoreChip = document.getElementById('storeAppStoreChip');
+      const playChip = document.getElementById('storePlayChip');
 
-      let city = 'Mumbai';
+      // --- OS detection: paid traffic is 84% Android, so mobile visitors get
+      // ONE store CTA (their platform) instead of five competing buttons. ---
+      const ua = navigator.userAgent || '';
+      const isAndroid = /android/i.test(ua);
+      const isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      const isMobile = isAndroid || isIOS;
+      // Header shows only the matching store icon on mobile.
+      if (isAndroid) { var h = document.getElementById('headerAppStoreLink'); if (h) h.style.display = 'none'; }
+      if (isIOS) { var h2 = document.getElementById('headerPlayLink'); if (h2) h2.style.display = 'none'; }
+      // Web sign-in stays reachable behind a small text link.
+      let signinRevealed = false;
+
+      // --- Preselect the city chip from the ad's UTM / city params (also
+      // recovers from the stored attribution for return visits). ---
+      function cityFromParams() {
+        var parts = [];
+        try {
+          var p = new URLSearchParams(location.search);
+          parts = [p.get('city'), p.get('utm_city'), p.get('utm_campaign'), p.get('utm_content'), p.get('utm_term')];
+        } catch (e) {}
+        try {
+          var ex = JSON.parse(localStorage.getItem('ethos_attr') || 'null');
+          if (ex && ex.utm) parts.push(ex.utm.campaign, ex.utm.content);
+        } catch (e) {}
+        var s = parts.filter(Boolean).join(' ').toLowerCase();
+        if (!s) return null;
+        if (/mumbai|bombay/.test(s)) return 'Mumbai';
+        if (/bangalore|bengaluru/.test(s)) return 'Bangalore';
+        if (/delhi|gurgaon|gurugram|noida|\bncr\b/.test(s)) return 'Delhi';
+        return null;
+      }
+
+      // Hero testimonial follows the selected city.
+      const TESTIMONIALS = {
+        Mumbai: { q: '“It finally felt like the conversations mattered — I wasn’t just swiping for the sake of it.”', name: 'Priya, 29', where: 'Mumbai' },
+        Bangalore: { q: '“I love how intentional Ethos feels compared to most platforms. More thoughtful, well designed.”', name: 'Ananya, 32', where: 'Bangalore' },
+        Delhi: { q: '“Everyone is actually here for something serious — partnership, not games.”', name: 'Neha, 31', where: 'Delhi' }
+      };
+      function renderTestimonial() {
+        var t = TESTIMONIALS[city] || TESTIMONIALS.Mumbai;
+        var q = document.getElementById('heroTestimonialQuote');
+        var n = document.getElementById('heroTestimonialName');
+        if (q) q.textContent = t.q;
+        if (n) n.innerHTML = '<strong style="color:#2D2D2D;font-weight:600">' + t.name + '</strong> &nbsp;&middot;&nbsp; ' + t.where + ' &middot; verified member';
+      }
+
+      let city = cityFromParams() || 'Mumbai';
 
       function noteText() {
         if (city === 'Other') return "Ethos isn’t in your city yet — join the waitlist and we’ll tell you the moment it lands.";
@@ -2576,8 +2635,19 @@
         // Stores + "or" divider render above the form for the live cities and
         // the default state; hidden for Elsewhere.
         storesEl.style.display = isOther ? 'none' : 'block';
-        orEl.style.display = isOther ? 'none' : 'flex';
-        if (oauthEl) oauthEl.style.display = isOther ? 'none' : 'grid';
+        // Mobile: one smart store button for the visitor's platform; web
+        // sign-in collapses behind the "Already a member?" link until tapped.
+        if (isMobile && storeChipsEl && appStoreChip && playChip) {
+          storeChipsEl.style.gridTemplateColumns = '1fr';
+          appStoreChip.style.display = isAndroid ? 'none' : 'flex';
+          playChip.style.display = isAndroid ? 'flex' : 'none';
+          var lbl = (isAndroid ? playChip : appStoreChip).querySelector('.store-chip-label');
+          if (lbl) lbl.textContent = isAndroid ? 'Get Ethos on Google Play' : 'Get Ethos on the App Store';
+        }
+        var showSignin = !isMobile || signinRevealed;
+        orEl.style.display = (isOther || !showSignin) ? 'none' : 'flex';
+        if (oauthEl) oauthEl.style.display = (isOther || !showSignin) ? 'none' : 'grid';
+        if (signinLink) signinLink.style.display = (isOther || showSignin) ? 'none' : 'block';
         if (emailRevealBtn) emailRevealBtn.style.display = '';
         // The signup form is always shown. For Elsewhere it carries its
         // "Join the waitlist" title/subtitle/scarcity (revealed via the class);
@@ -2603,6 +2673,7 @@
             emailFields.classList.remove('revealed');
           }
         }
+        renderTestimonial();
       }
 
       chips.forEach(function (c) {
@@ -2611,6 +2682,13 @@
           render();
         });
       });
+
+      if (signinLink) {
+        signinLink.addEventListener('click', function () {
+          signinRevealed = true;
+          render();
+        });
+      }
 
       if (emailRevealBtn) {
         emailRevealBtn.addEventListener('click', function () {
@@ -2625,6 +2703,24 @@
       }
 
       render();
+    })();
+
+    // ===== Geo: hide international expansion copy for India visitors =====
+    // India visitors don't need "Coming to Sydney, London..." — it dilutes the
+    // "live in your city now" message the ads sell. Timezone + locale check,
+    // no network round-trip.
+    (function () {
+      var tz = '';
+      try { tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || ''); } catch (e) {}
+      var lang = (navigator.language || '').toLowerCase();
+      var isIndia = /asia\/(kolkata|calcutta)/i.test(tz) || /-in$/.test(lang);
+      if (!isIndia) return;
+      var dash = document.getElementById('expansionDash');
+      var copy = document.getElementById('expansionCopy');
+      if (dash) dash.style.display = 'none';
+      if (copy) copy.style.display = 'none';
+      var faq = document.getElementById('faqCitiesAnswer');
+      if (faq) faq.textContent = 'Live now in Mumbai, Bangalore and Delhi. More cities are on the way — join the waitlist and we’ll tell you the moment Ethos reaches yours.';
     })();
 
     // ===== FAQ accordion (single-open, row 0 open by default) =====
