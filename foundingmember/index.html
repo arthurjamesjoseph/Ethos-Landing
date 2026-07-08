@@ -3411,11 +3411,16 @@
       var REDIRECT = 'https://app.ethosapp.co';
       function go(provider) {
         trackEvent('oauth_click', { provider: provider });
+        // Forward the affiliate/referral code into the app so the OAuth signup
+        // can be attributed. OAuth can't carry user_metadata the way the OTP
+        // flow does, so the app claims it post-sign-in from this ?ref= param.
+        var ref = sessionStorage.getItem('ethos_ref_code');
+        var redirect = REDIRECT + (ref ? '?ref=' + encodeURIComponent(ref) : '');
         // Apple only releases name/email on first consent, and only when scoped.
         // Google's scopes are URLs and already include email — don't touch them.
         var scopes = provider === 'apple' ? '&scopes=' + encodeURIComponent('name email') : '';
         window.location.href = SB + '/auth/v1/authorize?provider=' + provider + scopes +
-          '&redirect_to=' + encodeURIComponent(REDIRECT);
+          '&redirect_to=' + encodeURIComponent(redirect);
       }
       document.querySelectorAll('.oauth-apple').forEach(function (b) {
         b.addEventListener('click', function () { go('apple'); });

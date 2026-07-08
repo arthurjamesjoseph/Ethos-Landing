@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ethos – Partnerships</title>
+  <meta name="description" content="Ethos partner portal — track your campaigns, referrals and earnings.">
+  <link rel="canonical" href="https://ethosapp.co/partnerships">
+  <meta name="robots" content="noindex">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+  <link rel="apple-touch-icon" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-cream: #f5f2ed;
+      --color-card: #f9f7f4;
+      --color-input-bg: #ffffff;
+      --color-input-border: #e8e4de;
+      --color-gold: #b5a178;
+      --color-gold-hover: #a6926b;
+      --color-bronze: #8a7550;   /* data marks — 3:1+ on card surface */
+      --color-text: #3d3630;
+      --color-text-light: #6b5f54;
+      --color-white: #ffffff;
+      --color-error: #c45c4a;
+      --color-success: #5a7a5a;
+
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Source Sans 3', -apple-system, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    html, body { min-height: 100%; }
+    body {
+      font-family: var(--font-sans);
+      color: var(--color-text);
+      background: var(--color-cream);
+      line-height: 1.6;
+    }
+
+    .page { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ── Header (shared with the rest of the site) ── */
+    .header {
+      background: var(--color-cream);
+      padding: 1rem 2.5rem;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: center; gap: 0.625rem; text-decoration: none; color: var(--color-text); }
+    .logo-img { height: 32px; width: auto; }
+    .logo-text { font-family: var(--font-serif); font-size: 1.375rem; font-weight: 600; letter-spacing: 0.01em; }
+    .header-right { display: flex; align-items: center; gap: 0.75rem; }
+
+    .menu-toggle {
+      background: none; border: none; cursor: pointer; padding: 0.5rem;
+      display: flex; flex-direction: column; gap: 5px; z-index: 1001;
+    }
+    .menu-toggle span {
+      display: block; width: 22px; height: 1.5px; background: var(--color-text);
+      border-radius: 1px; transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .menu-toggle.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .menu-toggle.active span:nth-child(2) { opacity: 0; }
+    .menu-toggle.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    .menu-overlay {
+      position: fixed; inset: 0; background: rgba(45, 45, 45, 0.80); z-index: 999;
+      opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .menu-overlay.active { opacity: 1; visibility: visible; }
+    .menu-drawer {
+      position: fixed; top: 0; right: 0; width: 300px; max-width: 85vw; height: 100%;
+      background: var(--color-cream); z-index: 1000; transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex; flex-direction: column; padding: 5rem 2rem 2rem;
+    }
+    .menu-drawer.active { transform: translateX(0); }
+    .menu-nav { display: flex; flex-direction: column; gap: 0.25rem; }
+    .menu-link {
+      font-family: var(--font-serif); font-size: 1.25rem; font-weight: 500;
+      color: var(--color-text); text-decoration: none; padding: 0.875rem 0;
+      border-bottom: 1px solid var(--color-input-border); transition: color 0.2s; display: block;
+    }
+    .menu-link:hover { color: var(--color-gold); }
+    .menu-link:first-child { border-top: 1px solid var(--color-input-border); }
+    .menu-footer { margin-top: auto; padding-top: 1.5rem; }
+    .menu-contact { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light); line-height: 1.6; }
+    .menu-contact a { color: var(--color-text-light); }
+    .menu-contact a:hover { text-decoration: underline; }
+
+    /* ── Main layout ── */
+    .main { flex: 1; width: 100%; max-width: 1060px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    .eyebrow {
+      font-family: var(--font-sans); font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-gold);
+      text-align: center; margin-bottom: 0.75rem;
+    }
+    .page-title {
+      font-family: var(--font-serif); font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 500;
+      line-height: 1.15; text-align: center; letter-spacing: -0.01em; margin-bottom: 0.5rem;
+    }
+    .page-sub {
+      font-family: var(--font-serif); font-size: 1.125rem; color: var(--color-text-light);
+      text-align: center; max-width: 34rem; margin: 0 auto 2.5rem;
+    }
+
+    /* ── Auth card ── */
+    .auth-wrap { max-width: 420px; margin: 0 auto; }
+    .form-card {
+      background: var(--color-card); border-radius: 12px; padding: 2.25rem 2rem;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    }
+    .form-title {
+      font-family: var(--font-serif); font-size: 1.625rem; font-weight: 600;
+      color: var(--color-text); text-align: center; margin-bottom: 0.375rem;
+    }
+    .form-subtitle {
+      font-family: var(--font-serif); font-size: 1rem; color: var(--color-text-light);
+      text-align: center; margin-bottom: 1.5rem;
+    }
+    .form-label {
+      display: block; font-family: var(--font-serif); font-size: 0.9375rem; font-weight: 600;
+      margin-bottom: 0.375rem;
+    }
+    .form-input {
+      width: 100%; padding: 0.8125rem 1rem; font-family: var(--font-serif); font-size: 1rem;
+      color: var(--color-text); background: var(--color-input-bg);
+      border: 1px solid var(--color-input-border); border-radius: 8px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-input:focus {
+      outline: none; border-color: var(--color-gold);
+      box-shadow: 0 0 0 3px rgba(181, 161, 120, 0.15);
+    }
+    .submit-btn {
+      width: 100%; padding: 1rem 1.5rem; margin-top: 1.25rem;
+      font-family: var(--font-serif); font-size: 1.0625rem; font-weight: 600;
+      color: var(--color-white); background: var(--color-gold);
+      border: none; border-radius: 8px; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .submit-btn:hover:not(:disabled) { background: var(--color-gold-hover); }
+    .submit-btn:disabled { opacity: 0.55; cursor: default; }
+
+    .form-error {
+      font-family: var(--font-serif); font-size: 0.9rem; color: var(--color-error);
+      text-align: center; min-height: 1.4rem; margin-top: 0.875rem;
+    }
+    .form-hint {
+      font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light);
+      text-align: center; margin-top: 0.875rem;
+    }
+    .form-hint button {
+      background: none; border: none; font: inherit; color: var(--color-gold);
+      cursor: pointer; text-decoration: underline;
+    }
+    .form-hint button:disabled { color: var(--color-text-light); text-decoration: none; cursor: default; }
+
+    /* OTP boxes */
+    .otp-inputs { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.25rem; }
+    .otp-input {
+      width: 48px; height: 56px; text-align: center;
+      font-family: var(--font-serif); font-size: 1.5rem; font-weight: 600;
+      color: var(--color-text); background: var(--color-input-bg);
+      border: 1.5px solid var(--color-input-border); border-radius: 8px;
+      transition: border-color 0.2s, box-shadow 0.2s; caret-color: var(--color-gold);
+    }
+    .otp-input:focus {
+      outline: none; border-color: var(--color-gold);
+      box-shadow: 0 0 0 3px rgba(181, 161, 120, 0.15);
+    }
+    .otp-input.filled { border-color: var(--color-gold); }
+
+    /* ── Dashboard ── */
+    .dash-head {
+      display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+      gap: 0.5rem 1rem; margin-bottom: 0.375rem;
+    }
+    .dash-welcome { font-family: var(--font-serif); font-size: clamp(1.75rem, 3.5vw, 2.375rem); font-weight: 500; }
+    .signout-btn {
+      background: none; border: none; font-family: var(--font-serif); font-size: 0.9375rem;
+      color: var(--color-text-light); cursor: pointer; text-decoration: underline; padding: 0.25rem 0;
+    }
+    .signout-btn:hover { color: var(--color-text); }
+    .dash-terms {
+      font-family: var(--font-serif); font-size: 1rem; color: var(--color-text-light);
+      margin-bottom: 2rem;
+    }
+    .dash-terms strong { color: var(--color-text); font-weight: 600; }
+
+    .card {
+      background: var(--color-card); border-radius: 12px;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+      padding: 1.75rem 1.75rem; margin-bottom: 1.5rem;
+    }
+    .card-title {
+      font-family: var(--font-serif); font-size: 1.25rem; font-weight: 600; margin-bottom: 1.125rem;
+    }
+    .card-note { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light); margin-top: 1rem; }
+
+    /* Stat tiles */
+    .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .tile {
+      background: var(--color-card); border-radius: 12px; padding: 1.375rem 1rem;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06); text-align: center;
+    }
+    .tile-value { font-family: var(--font-serif); font-size: 2.125rem; font-weight: 600; line-height: 1.1; }
+    .tile-label {
+      font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-light);
+      margin-top: 0.375rem;
+    }
+
+    /* Links table */
+    .links-table { width: 100%; border-collapse: collapse; }
+    .links-table th {
+      font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-light);
+      text-align: left; padding: 0 0.75rem 0.625rem 0; border-bottom: 1px solid var(--color-input-border);
+    }
+    .links-table th.num, .links-table td.num { text-align: right; }
+    .links-table td { padding: 0.875rem 0.75rem 0.875rem 0; border-bottom: 1px solid var(--color-input-border); vertical-align: middle; }
+    .links-table tr:last-child td { border-bottom: none; }
+    .code-chip {
+      font-family: var(--font-sans); font-size: 0.875rem; font-weight: 600; letter-spacing: 0.04em;
+    }
+    .code-campaign { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light); }
+    .copy-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-family: var(--font-serif); font-size: 0.9rem; font-weight: 600; color: var(--color-text);
+      background: var(--color-input-bg); border: 1px solid var(--color-input-border);
+      border-radius: 8px; padding: 0.45rem 0.875rem; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s; white-space: nowrap;
+    }
+    .copy-btn:hover { border-color: var(--color-gold); }
+    .copy-btn.copied { border-color: var(--color-success); color: var(--color-success); }
+    .link-url { font-family: var(--font-sans); font-size: 0.8125rem; color: var(--color-text-light); word-break: break-all; }
+
+    /* Chart */
+    .chart-wrap { position: relative; }
+    .chart-tooltip {
+      position: absolute; pointer-events: none; background: var(--color-text); color: var(--color-white);
+      font-family: var(--font-sans); font-size: 0.75rem; line-height: 1.35;
+      border-radius: 6px; padding: 0.375rem 0.625rem; white-space: nowrap;
+      transform: translate(-50%, -110%); opacity: 0; transition: opacity 0.12s; z-index: 5;
+    }
+    .chart-empty { font-family: var(--font-serif); color: var(--color-text-light); font-size: 0.9375rem; }
+
+    /* Earnings */
+    .money-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .money-cell { text-align: center; padding: 0.875rem 0.5rem; background: var(--color-input-bg); border: 1px solid var(--color-input-border); border-radius: 10px; }
+    .money-value { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 600; }
+    .money-label {
+      font-family: var(--font-sans); font-size: 0.6563rem; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-light); margin-top: 0.25rem;
+    }
+
+    .status-chip {
+      display: inline-block; font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; border-radius: 999px; padding: 0.2rem 0.7rem;
+    }
+    .status-paid { background: rgba(90, 122, 90, 0.14); color: var(--color-success); }
+    .status-pending { background: rgba(181, 161, 120, 0.2); color: #7d6a49; }
+
+    .empty-note { font-family: var(--font-serif); font-size: 0.9375rem; color: var(--color-text-light); }
+
+    /* Footer */
+    .app-footer { padding: 1.5rem 2.5rem 2rem; }
+    .app-footer-copy { font-family: var(--font-serif); font-size: 0.8125rem; color: var(--color-text-light); text-align: center; }
+    .app-footer-copy a { color: var(--color-text-light); }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 720px) {
+      .header { padding: 0.875rem 1.25rem; }
+      .main { padding: 1.75rem 1rem 3rem; }
+      .tiles { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+      .money-row { grid-template-columns: repeat(2, 1fr); }
+      .card { padding: 1.375rem 1.125rem; }
+      .links-table .hide-mobile { display: none; }
+      .otp-input { width: 42px; height: 52px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <img
+            src="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png"
+            alt="Ethos"
+            class="logo-img"
+          >
+          <span class="logo-text">Ethos</span>
+        </a>
+        <div class="header-right">
+          <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- Menu Drawer -->
+    <nav class="menu-drawer" id="menuDrawer">
+      <div class="menu-nav">
+        <a href="/about" class="menu-link">Our Ethos</a>
+        <a href="/how-it-works" class="menu-link">How It Works</a>
+        <a href="/blog" class="menu-link">Blog</a>
+        <a href="/safety" class="menu-link">Safety</a>
+        <a href="/privacy" class="menu-link">Privacy Policy</a>
+        <a href="/terms" class="menu-link">Terms of Service</a>
+        <a href="/contact" class="menu-link">Contact Us</a>
+      </div>
+      <div class="menu-footer">
+        <p class="menu-contact">
+          Questions? Reach us at<br>
+          <a href="mailto:support@ethosapp.co">support@ethosapp.co</a>
+        </p>
+      </div>
+    </nav>
+
+    <main class="main">
+
+      <!-- ── Sign-in view ── -->
+      <section id="authView">
+        <p class="eyebrow">Partnerships</p>
+        <h1 class="page-title">Partner with Ethos.</h1>
+        <p class="page-sub">Your campaigns, referrals and earnings — all in one place.</p>
+
+        <div class="auth-wrap">
+          <div class="form-card" id="emailStep">
+            <h2 class="form-title">Sign in</h2>
+            <p class="form-subtitle">We'll email you a six-digit code.</p>
+            <label class="form-label" for="emailInput">Email</label>
+            <input type="email" class="form-input" id="emailInput" placeholder="you@example.com" autocomplete="email" inputmode="email">
+            <button class="submit-btn" id="sendCodeBtn">Send Code</button>
+            <p class="form-error" id="emailError"></p>
+            <p class="form-hint">Partner access is by invitation. If you don't have it yet, write to <a href="mailto:support@ethosapp.co" style="color: var(--color-gold);">support@ethosapp.co</a>.</p>
+          </div>
+
+          <div class="form-card hidden" id="otpStep">
+            <h2 class="form-title">Enter your code</h2>
+            <p class="form-subtitle" id="otpSubtitle">Sent to your email — it expires in 10 minutes.</p>
+            <div class="otp-inputs" id="otpInputs">
+              <input class="otp-input" type="text" inputmode="numeric" maxlength="1" autocomplete="one-time-code">
+              <input class="otp-input" type="text" inputmode="numeric" maxlength="1">
+              <input class="otp-input" type="text" inputmode="numeric" maxlength="1">
+              <input class="otp-input" type="text" inputmode="numeric" maxlength="1">
+              <input class="otp-input" type="text" inputmode="numeric" maxlength="1">
+              <input class="otp-input" type="text" inputmode="numeric" maxlength="1">
+            </div>
+            <button class="submit-btn" id="verifyBtn" disabled>Verify</button>
+            <p class="form-error" id="otpError"></p>
+            <p class="form-hint">
+              Didn't get it? <button id="resendBtn">Resend code</button> ·
+              <button id="backBtn">Use a different email</button>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Dashboard view ── -->
+      <section id="dashView" class="hidden">
+        <div class="dash-head">
+          <h1 class="dash-welcome" id="dashWelcome">Welcome</h1>
+          <button class="signout-btn" id="signoutBtn">Sign out</button>
+        </div>
+        <p class="dash-terms" id="dashTerms"></p>
+
+        <div class="tiles" id="funnelTiles"></div>
+
+        <div class="card">
+          <h2 class="card-title">Your links</h2>
+          <div id="linksBody"></div>
+          <p class="card-note">Share your link anywhere — every visit and signup through it is credited to you automatically.</p>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Activity — last 30 days</h2>
+          <div class="chart-wrap" id="chartWrap"></div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Earnings</h2>
+          <div class="money-row" id="moneyRow"></div>
+          <p class="card-note">Earnings accrue while people you referred stay subscribed, within your commission window. Figures are estimates until each payout is confirmed.</p>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Payout history</h2>
+          <div id="payoutsBody"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="app-footer">
+      <p class="app-footer-copy">&copy; 2026 Ethos Labs Pty Ltd &middot; <a href="https://ethosapp.co">ethosapp.co</a></p>
+    </footer>
+  </div>
+
+  <script>
+    // ── Config ──────────────────────────────────────────────────────────────
+    // Set localStorage.ethos_portal_env = 'dev' to point at the dev project
+    // (both keys are publishable anon keys).
+    const IS_DEV = localStorage.getItem('ethos_portal_env') === 'dev';
+    const SUPABASE_URL = IS_DEV
+      ? 'https://yhivzfjkdijitjmyyjhd.supabase.co'
+      : 'https://ecdxgzpjgdosueacomwn.supabase.co';
+    const SUPABASE_ANON_KEY = IS_DEV
+      ? 'sb_publishable_UAqfnVFlwsRh4an6LDWz3g_gbERZh8e'
+      : 'sb_publishable_7Ef8xN852RGoSgFYiFJ6Sw_QMVIFzfX';
+    const PORTAL_FN = SUPABASE_URL + '/functions/v1/partner-portal';
+    const TOKEN_KEY = 'ethos_partner_token';
+
+    const CURRENCY_SYMBOLS = { INR: '₹', USD: '$', GBP: '£', AUD: 'A$', CAD: 'C$', EUR: '€' };
+
+    // ── Menu (same behaviour as the rest of the site) ───────────────────────
+    const menuToggle = document.getElementById('menuToggle');
+    const menuDrawer = document.getElementById('menuDrawer');
+    const menuOverlay = document.getElementById('menuOverlay');
+    function closeMenu() {
+      menuToggle.classList.remove('active');
+      menuDrawer.classList.remove('active');
+      menuOverlay.classList.remove('active');
+    }
+    menuToggle.addEventListener('click', () => {
+      const open = !menuDrawer.classList.contains('active');
+      menuToggle.classList.toggle('active', open);
+      menuDrawer.classList.toggle('active', open);
+      menuOverlay.classList.toggle('active', open);
+    });
+    menuOverlay.addEventListener('click', closeMenu);
+
+    // ── API helper ───────────────────────────────────────────────────────────
+    async function portal(action, payload) {
+      const res = await fetch(PORTAL_FN, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        },
+        body: JSON.stringify({ action, ...payload }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw Object.assign(new Error(body.error || 'Something went wrong.'), { status: res.status });
+      return body;
+    }
+
+    // ── Formatting ───────────────────────────────────────────────────────────
+    function fmtMoney(minor, currency) {
+      const sym = CURRENCY_SYMBOLS[currency] || (currency + ' ');
+      return sym + (minor / 100).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function fmtMoneyList(map) {
+      const entries = Object.entries(map).filter(([, v]) => v !== 0);
+      if (!entries.length) return fmtMoney(0, 'INR');
+      return entries.map(([c, v]) => fmtMoney(v, c)).join(' + ');
+    }
+    function fmtDate(iso) {
+      if (!iso) return '—';
+      return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    // ── View switching ───────────────────────────────────────────────────────
+    const authView = document.getElementById('authView');
+    const dashView = document.getElementById('dashView');
+    const emailStep = document.getElementById('emailStep');
+    const otpStep = document.getElementById('otpStep');
+
+    function showAuth() {
+      dashView.classList.add('hidden');
+      authView.classList.remove('hidden');
+      otpStep.classList.add('hidden');
+      emailStep.classList.remove('hidden');
+    }
+    function showDash() {
+      authView.classList.add('hidden');
+      dashView.classList.remove('hidden');
+    }
+
+    // ── Sign-in flow ─────────────────────────────────────────────────────────
+    const emailInput = document.getElementById('emailInput');
+    const sendCodeBtn = document.getElementById('sendCodeBtn');
+    const emailError = document.getElementById('emailError');
+    const otpError = document.getElementById('otpError');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const resendBtn = document.getElementById('resendBtn');
+    const backBtn = document.getElementById('backBtn');
+    const otpBoxes = Array.from(document.querySelectorAll('.otp-input'));
+    let currentEmail = '';
+    let resendTimer = null;
+
+    async function requestCode(email) {
+      sendCodeBtn.disabled = true;
+      sendCodeBtn.textContent = 'Sending…';
+      emailError.textContent = '';
+      try {
+        await portal('request_code', { email });
+        currentEmail = email;
+        emailStep.classList.add('hidden');
+        otpStep.classList.remove('hidden');
+        otpBoxes.forEach(b => { b.value = ''; b.classList.remove('filled'); });
+        otpBoxes[0].focus();
+        otpError.textContent = '';
+        startResendCooldown();
+      } catch (err) {
+        emailError.textContent = err.message;
+      } finally {
+        sendCodeBtn.disabled = false;
+        sendCodeBtn.textContent = 'Send Code';
+      }
+    }
+
+    sendCodeBtn.addEventListener('click', () => {
+      const email = emailInput.value.trim();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+        emailError.textContent = 'Please enter a valid email address.';
+        return;
+      }
+      requestCode(email);
+    });
+    emailInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendCodeBtn.click(); });
+
+    function startResendCooldown() {
+      let left = 30;
+      resendBtn.disabled = true;
+      clearInterval(resendTimer);
+      resendTimer = setInterval(() => {
+        left--;
+        resendBtn.textContent = left > 0 ? `Resend code (${left}s)` : 'Resend code';
+        if (left <= 0) { clearInterval(resendTimer); resendBtn.disabled = false; }
+      }, 1000);
+      resendBtn.textContent = 'Resend code (30s)';
+    }
+    resendBtn.addEventListener('click', () => { if (currentEmail) requestCode(currentEmail); });
+    backBtn.addEventListener('click', () => {
+      otpStep.classList.add('hidden');
+      emailStep.classList.remove('hidden');
+      emailInput.focus();
+    });
+
+    // OTP box behaviour (type, backspace, paste)
+    otpBoxes.forEach((box, i) => {
+      box.addEventListener('input', () => {
+        box.value = box.value.replace(/\D/g, '').slice(0, 1);
+        box.classList.toggle('filled', !!box.value);
+        if (box.value && i < otpBoxes.length - 1) otpBoxes[i + 1].focus();
+        syncVerifyState();
+      });
+      box.addEventListener('keydown', e => {
+        if (e.key === 'Backspace' && !box.value && i > 0) otpBoxes[i - 1].focus();
+        if (e.key === 'Enter' && !verifyBtn.disabled) verifyBtn.click();
+      });
+      box.addEventListener('paste', e => {
+        const digits = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 6);
+        if (!digits) return;
+        e.preventDefault();
+        digits.split('').forEach((d, j) => {
+          if (otpBoxes[j]) { otpBoxes[j].value = d; otpBoxes[j].classList.add('filled'); }
+        });
+        otpBoxes[Math.min(digits.length, 5)].focus();
+        syncVerifyState();
+      });
+    });
+    function otpValue() { return otpBoxes.map(b => b.value).join(''); }
+    function syncVerifyState() { verifyBtn.disabled = otpValue().length !== 6; }
+
+    verifyBtn.addEventListener('click', async () => {
+      verifyBtn.disabled = true;
+      verifyBtn.textContent = 'Verifying…';
+      otpError.textContent = '';
+      try {
+        const out = await portal('verify_code', { email: currentEmail, code: otpValue() });
+        localStorage.setItem(TOKEN_KEY, out.token);
+        await loadDashboard();
+      } catch (err) {
+        otpError.textContent = err.message;
+        verifyBtn.disabled = false;
+      } finally {
+        verifyBtn.textContent = 'Verify';
+      }
+    });
+
+    document.getElementById('signoutBtn').addEventListener('click', async () => {
+      const token = localStorage.getItem(TOKEN_KEY);
+      localStorage.removeItem(TOKEN_KEY);
+      if (token) portal('logout', { token }).catch(() => {});
+      showAuth();
+    });
+
+    // ── Dashboard rendering ──────────────────────────────────────────────────
+    async function loadDashboard() {
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (!token) { showAuth(); return; }
+      let data;
+      try {
+        data = await portal('dashboard', { token });
+      } catch (err) {
+        localStorage.removeItem(TOKEN_KEY);
+        showAuth();
+        return;
+      }
+      renderDashboard(data);
+      showDash();
+    }
+
+    function renderDashboard(data) {
+      const aff = data.affiliate || {};
+      const funnel = data.funnel || {};
+      const earnings = data.earnings || { by_currency: [] };
+      const payouts = data.payouts || [];
+      const codes = data.codes || [];
+
+      document.getElementById('dashWelcome').textContent = 'Welcome, ' + (aff.name || 'Partner');
+      const durText = aff.commission_duration_months === 0
+        ? 'for as long as they stay subscribed'
+        : 'for their first ' + aff.commission_duration_months + ' month' + (aff.commission_duration_months === 1 ? '' : 's');
+      document.getElementById('dashTerms').innerHTML =
+        'You earn <strong>' + esc(aff.commission_rate) + '%</strong> of subscription revenue from everyone who joins through your links, ' + esc(durText) +
+        '. Partner since ' + esc(fmtDate(aff.partner_since)) + '.';
+
+      // Funnel tiles
+      const tiles = [
+        { label: 'Link visits', value: funnel.clicks || 0 },
+        { label: 'Signups', value: funnel.registered || 0 },
+        { label: 'Approved', value: funnel.approved || 0 },
+        { label: 'Subscribed', value: funnel.paying || 0 },
+      ];
+      document.getElementById('funnelTiles').innerHTML = tiles.map(t =>
+        '<div class="tile"><div class="tile-value">' + t.value.toLocaleString() + '</div><div class="tile-label">' + t.label + '</div></div>'
+      ).join('');
+
+      // Links
+      const linksBody = document.getElementById('linksBody');
+      const activeCodes = codes.filter(c => c.is_active);
+      if (!activeCodes.length) {
+        linksBody.innerHTML = '<p class="empty-note">Your links are being set up — check back soon.</p>';
+      } else {
+        linksBody.innerHTML =
+          '<table class="links-table"><thead><tr>' +
+          '<th>Link</th><th class="hide-mobile">Campaign</th><th class="num">Visits</th><th class="num">Signups</th><th></th>' +
+          '</tr></thead><tbody>' +
+          activeCodes.map((c, i) => {
+            const url = 'https://ethosapp.co/?ref=' + encodeURIComponent(c.code);
+            return '<tr>' +
+              '<td><div class="code-chip">' + esc(c.code) + '</div><div class="link-url">' + esc(url) + '</div></td>' +
+              '<td class="hide-mobile"><span class="code-campaign">' + esc(c.campaign_name || '—') + '</span></td>' +
+              '<td class="num">' + (c.clicks || 0) + '</td>' +
+              '<td class="num">' + (c.signups || 0) + '</td>' +
+              '<td class="num"><button class="copy-btn" data-url="' + esc(url) + '" data-idx="' + i + '">Copy link</button></td>' +
+              '</tr>';
+          }).join('') +
+          '</tbody></table>';
+        linksBody.querySelectorAll('.copy-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            navigator.clipboard.writeText(btn.dataset.url).then(() => {
+              btn.classList.add('copied');
+              btn.textContent = 'Copied';
+              setTimeout(() => { btn.classList.remove('copied'); btn.textContent = 'Copy link'; }, 1600);
+            }).catch(() => {});
+          });
+        });
+      }
+
+      renderChart(data.clicks_by_day || []);
+
+      // Earnings
+      const accrued = {}, paid = {}, pending = {};
+      (earnings.by_currency || []).forEach(e => { accrued[e.currency] = (accrued[e.currency] || 0) + (e.commission_minor || 0); });
+      payouts.forEach(p => {
+        if (p.status === 'paid') paid[p.currency] = (paid[p.currency] || 0) + p.amount_minor;
+        if (p.status === 'pending') pending[p.currency] = (pending[p.currency] || 0) + p.amount_minor;
+      });
+      // Partner-facing balance never goes below zero (reconciliation detail
+      // like an overpayment is an admin concern, not a partner one).
+      const balance = {};
+      new Set([...Object.keys(accrued), ...Object.keys(paid), ...Object.keys(pending)]).forEach(c => {
+        balance[c] = Math.max(0, (accrued[c] || 0) - (paid[c] || 0) - (pending[c] || 0));
+      });
+      const cells = [
+        { label: 'Accrued (est.)', value: fmtMoneyList(accrued) },
+        { label: 'Paid to you', value: fmtMoneyList(paid) },
+        { label: 'Queued', value: fmtMoneyList(pending) },
+        { label: 'Balance', value: fmtMoneyList(balance) },
+      ];
+      document.getElementById('moneyRow').innerHTML = cells.map(c =>
+        '<div class="money-cell"><div class="money-value">' + esc(c.value) + '</div><div class="money-label">' + c.label + '</div></div>'
+      ).join('');
+
+      // Payouts
+      const payoutsBody = document.getElementById('payoutsBody');
+      if (!payouts.length) {
+        payoutsBody.innerHTML = '<p class="empty-note">No payouts yet — they’ll appear here once your first commission is processed.</p>';
+      } else {
+        payoutsBody.innerHTML =
+          '<table class="links-table"><thead><tr>' +
+          '<th>Amount</th><th class="hide-mobile">Period</th><th>Status</th><th>Paid on</th><th class="hide-mobile">Reference</th>' +
+          '</tr></thead><tbody>' +
+          payouts.map(p => {
+            const period = p.period_start && p.period_end
+              ? fmtDate(p.period_start) + ' – ' + fmtDate(p.period_end) : '—';
+            return '<tr>' +
+              '<td><strong>' + fmtMoney(p.amount_minor, p.currency) + '</strong></td>' +
+              '<td class="hide-mobile">' + esc(period) + '</td>' +
+              '<td><span class="status-chip status-' + esc(p.status) + '">' + esc(p.status) + '</span></td>' +
+              '<td>' + fmtDate(p.paid_at) + '</td>' +
+              '<td class="hide-mobile">' + esc(p.payment_reference || '—') + '</td>' +
+              '</tr>';
+          }).join('') +
+          '</tbody></table>';
+      }
+    }
+
+    // ── Activity chart: single-series bars, last 30 days, hover tooltip ─────
+    let lastClicksByDay = null;
+    function renderChart(clicksByDay) {
+      lastClicksByDay = clicksByDay;
+      const wrap = document.getElementById('chartWrap');
+      const byDay = {};
+      clicksByDay.forEach(d => { byDay[d.day] = d.clicks; });
+
+      const days = [];
+      const today = new Date();
+      for (let i = 29; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        const key = d.toISOString().slice(0, 10);
+        days.push({ key, date: d, clicks: byDay[key] || 0 });
+      }
+      const max = Math.max(...days.map(d => d.clicks));
+
+      if (max === 0) {
+        wrap.innerHTML = '<p class="chart-empty">No link visits in the last 30 days. Share your link to get started.</p>';
+        return;
+      }
+
+      // 1 SVG unit = 1 CSS px so text and rounded corners never distort.
+      const W = Math.max(280, wrap.clientWidth || 940), H = 190, PAD_B = 24, PAD_T = 14;
+      const plotH = H - PAD_B - PAD_T;
+      const step = W / days.length;
+      const barW = Math.min(18, step - 2);   // 2px surface gap between bars
+
+      let bars = '', labels = '';
+      days.forEach((d, i) => {
+        const h = d.clicks === 0 ? 0 : Math.max(3, (d.clicks / max) * plotH);
+        const x = i * step + (step - barW) / 2;
+        const y = H - PAD_B - h;
+        if (d.clicks > 0) {
+          bars += '<path d="M' + x + ' ' + (H - PAD_B) +
+            ' V' + (y + 4) + ' Q' + x + ' ' + y + ' ' + (x + 4) + ' ' + y +
+            ' H' + (x + barW - 4) + ' Q' + (x + barW) + ' ' + y + ' ' + (x + barW) + ' ' + (y + 4) +
+            ' V' + (H - PAD_B) + ' Z" fill="var(--color-bronze)"/>';
+        }
+        // invisible hover target spanning the full column
+        bars += '<rect class="hover-col" data-i="' + i + '" x="' + (i * step) + '" y="0" width="' + step + '" height="' + H + '" fill="transparent"/>';
+        if (i % 7 === 0) {
+          const anchor = i === 0 ? 'start' : 'middle';
+          const lx = i === 0 ? 2 : i * step + step / 2;
+          labels += '<text x="' + lx + '" y="' + (H - 6) +
+            '" text-anchor="' + anchor + '" font-family="var(--font-sans)" font-size="10" fill="var(--color-text-light)">' +
+            d.date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + '</text>';
+        }
+      });
+
+      wrap.innerHTML =
+        '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" height="' + H + '" style="display:block" role="img" aria-label="Link visits per day, last 30 days">' +
+        '<line x1="0" y1="' + (H - PAD_B) + '" x2="' + W + '" y2="' + (H - PAD_B) + '" stroke="var(--color-input-border)" stroke-width="1"/>' +
+        bars + labels +
+        '</svg><div class="chart-tooltip" id="chartTooltip"></div>';
+
+      const tooltip = document.getElementById('chartTooltip');
+      const svg = wrap.querySelector('svg');
+      wrap.querySelectorAll('.hover-col').forEach(col => {
+        col.addEventListener('mousemove', e => {
+          const d = days[Number(col.dataset.i)];
+          tooltip.innerHTML = '<strong>' + d.clicks + ' visit' + (d.clicks === 1 ? '' : 's') + '</strong><br>' +
+            d.date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+          const rect = wrap.getBoundingClientRect();
+          tooltip.style.left = (e.clientX - rect.left) + 'px';
+          tooltip.style.top = (e.clientY - rect.top - 6) + 'px';
+          tooltip.style.opacity = '1';
+        });
+        col.addEventListener('mouseleave', () => { tooltip.style.opacity = '0'; });
+      });
+    }
+
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      if (!lastClicksByDay || dashView.classList.contains('hidden')) return;
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => renderChart(lastClicksByDay), 150);
+    });
+
+    // ── Boot ─────────────────────────────────────────────────────────────────
+    if (localStorage.getItem(TOKEN_KEY)) {
+      loadDashboard();
+    } else {
+      showAuth();
+    }
+  </script>
+</body>
+</html>
