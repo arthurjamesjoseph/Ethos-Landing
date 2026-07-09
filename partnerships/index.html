@@ -403,7 +403,8 @@
         <div class="card">
           <h2 class="card-title">Earnings</h2>
           <div class="money-row" id="moneyRow"></div>
-          <p class="card-note">Earnings accrue while people you referred stay subscribed, within your commission window. Figures are estimates until each payout is confirmed.</p>
+          <p class="card-note" id="earningsBreakdown" style="display:none"></p>
+          <p class="card-note">Earnings are locked in as each referral qualifies. Figures are reconciled when each payout is confirmed.</p>
         </div>
 
         <div class="card">
@@ -637,12 +638,27 @@
       const codes = data.codes || [];
 
       document.getElementById('dashWelcome').textContent = 'Welcome, ' + (aff.name || 'Partner');
-      const durText = aff.commission_duration_months === 0
-        ? 'for as long as they stay subscribed'
-        : 'for their first ' + aff.commission_duration_months + ' month' + (aff.commission_duration_months === 1 ? '' : 's');
+
+      // Terms: flat bounties (per approved woman / per paying man), plus an
+      // optional revenue-share component when a percentage is configured.
+      const bountyCur = aff.bounty_currency || 'INR';
+      const bountyParts = [];
+      if ((aff.bounty_approved_female_minor || 0) > 0) {
+        bountyParts.push('<strong>' + fmtMoney(aff.bounty_approved_female_minor, bountyCur) + '</strong> for every woman who joins through your links and gets approved');
+      }
+      if ((aff.bounty_paid_male_minor || 0) > 0) {
+        bountyParts.push('<strong>' + fmtMoney(aff.bounty_paid_male_minor, bountyCur) + '</strong> for every man who joins through your links and starts a paid subscription');
+      }
+      let termsHtml = bountyParts.length ? 'You earn ' + bountyParts.join(', and ') + '.' : '';
+      if ((aff.commission_rate || 0) > 0) {
+        const durText = aff.commission_duration_months === 0
+          ? 'for as long as they stay subscribed'
+          : 'for their first ' + aff.commission_duration_months + ' month' + (aff.commission_duration_months === 1 ? '' : 's');
+        termsHtml += (termsHtml ? ' Plus ' : 'You earn ') + '<strong>' + esc(aff.commission_rate) + '%</strong> of subscription revenue, ' + esc(durText) + '.';
+      }
       document.getElementById('dashTerms').innerHTML =
-        'You earn <strong>' + esc(aff.commission_rate) + '%</strong> of subscription revenue from everyone who joins through your links, ' + esc(durText) +
-        '. Partner since ' + esc(fmtDate(aff.partner_since)) + '.';
+        (termsHtml || 'Your commission terms are being set up.') +
+        ' Partner since ' + esc(fmtDate(aff.partner_since)) + '.';
 
       // Funnel tiles
       const tiles = [
@@ -711,6 +727,22 @@
       document.getElementById('moneyRow').innerHTML = cells.map(c =>
         '<div class="money-cell"><div class="money-value">' + esc(c.value) + '</div><div class="money-label">' + c.label + '</div></div>'
       ).join('');
+
+      // Breakdown line: what the accrued figure is made of.
+      const breakdownBits = (earnings.bounties || []).map(b =>
+        b.type === 'approved_female'
+          ? b.count + ' approved ' + (b.count === 1 ? 'woman' : 'women') + ' (' + fmtMoney(b.amount_minor, b.currency) + ')'
+          : b.count + ' subscribed ' + (b.count === 1 ? 'man' : 'men') + ' (' + fmtMoney(b.amount_minor, b.currency) + ')');
+      (earnings.revenue_share_by_currency || []).forEach(r => {
+        breakdownBits.push('revenue share (' + fmtMoney(r.commission_minor || 0, r.currency) + ')');
+      });
+      const breakdownEl = document.getElementById('earningsBreakdown');
+      if (breakdownBits.length) {
+        breakdownEl.textContent = 'Accrued so far: ' + breakdownBits.join(' · ');
+        breakdownEl.style.display = '';
+      } else {
+        breakdownEl.style.display = 'none';
+      }
 
       // Payouts
       const payoutsBody = document.getElementById('payoutsBody');
