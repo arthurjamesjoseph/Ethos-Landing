@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KPYG1FQVZW"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-KPYG1FQVZW');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Host Portal – Ethos</title>
+  <meta name="description" content="Ethos host portal – submit events, see your guest list, and run the door.">
+  <meta name="robots" content="noindex">
+
+  <link rel="icon" type="image/png" href="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --color-cream: #f5f2ed; --color-card: #f9f7f4; --color-input-bg: #ffffff;
+      --color-input-border: #e8e4de; --color-gold: #b5a178; --color-gold-hover: #a6926b;
+      --color-text: #3d3630; --color-text-light: #6b5f54; --color-white: #ffffff;
+      --color-error: #c45c4a; --color-success: #5a7a5a;
+      --font-serif: 'Cormorant Garamond', Georgia, serif;
+      --font-sans: 'Source Sans 3', -apple-system, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    html, body { min-height: 100%; }
+    body { font-family: var(--font-sans); color: var(--color-text); background: var(--color-cream); line-height: 1.6; }
+    .page { min-height: 100vh; display: flex; flex-direction: column; }
+    .header { background: var(--color-cream); padding: 1rem 2.5rem; position: sticky; top: 0; z-index: 100; }
+    .header-inner { display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: center; gap: 0.625rem; text-decoration: none; color: var(--color-text); }
+    .logo-img { height: 32px; width: auto; }
+    .logo-text { font-family: var(--font-serif); font-size: 1.375rem; font-weight: 600; }
+    .main { flex: 1; width: 100%; max-width: 960px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    .eyebrow { font-family: var(--font-sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-gold); text-align: center; margin-bottom: 0.75rem; }
+    .page-title { font-family: var(--font-serif); font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 500; line-height: 1.15; text-align: center; margin-bottom: 0.5rem; }
+    .page-sub { font-family: var(--font-serif); font-size: 1.125rem; color: var(--color-text-light); text-align: center; max-width: 34rem; margin: 0 auto 2.5rem; }
+    .auth-wrap { max-width: 420px; margin: 0 auto; }
+    .form-card { background: var(--color-card); border-radius: 12px; padding: 2.25rem 2rem; box-shadow: 0 4px 24px rgba(0,0,0,0.1); }
+    .form-title { font-family: var(--font-serif); font-size: 1.625rem; font-weight: 600; text-align: center; margin-bottom: 0.375rem; }
+    .form-subtitle { font-family: var(--font-serif); font-size: 1rem; color: var(--color-text-light); text-align: center; margin-bottom: 1.5rem; }
+    .form-label { display: block; font-family: var(--font-serif); font-size: 0.9375rem; font-weight: 600; margin-bottom: 0.375rem; }
+    .form-input, .form-select {
+      width: 100%; padding: 0.8125rem 1rem; font-family: var(--font-serif); font-size: 1rem;
+      color: var(--color-text); background: var(--color-input-bg);
+      border: 1px solid var(--color-input-border); border-radius: 8px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-input:focus, .form-select:focus { outline: none; border-color: var(--color-gold); box-shadow: 0 0 0 3px rgba(181,161,120,0.15); }
+    textarea.form-input { resize: vertical; min-height: 80px; }
+    .code-input { text-align: center; font-size: 1.5rem; letter-spacing: 0.5em; font-weight: 600; }
+    .submit-btn {
+      width: 100%; padding: 1rem 1.5rem; margin-top: 1.25rem;
+      font-family: var(--font-serif); font-size: 1.0625rem; font-weight: 600;
+      color: var(--color-white); background: var(--color-gold); border: none; border-radius: 8px; cursor: pointer;
+    }
+    .submit-btn:hover:not(:disabled) { background: var(--color-gold-hover); }
+    .submit-btn:disabled { opacity: 0.55; cursor: default; }
+    .form-error { font-family: var(--font-serif); font-size: 0.9rem; color: var(--color-error); text-align: center; min-height: 1.4rem; margin-top: 0.875rem; }
+    .form-ok { font-family: var(--font-serif); font-size: 0.9rem; color: var(--color-success); text-align: center; min-height: 1.4rem; margin-top: 0.875rem; }
+    .form-hint { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light); text-align: center; margin-top: 0.875rem; }
+    .form-hint button { background: none; border: none; font: inherit; color: var(--color-gold); cursor: pointer; text-decoration: underline; }
+    .dash-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1rem; margin-bottom: 0.375rem; }
+    .dash-welcome { font-family: var(--font-serif); font-size: clamp(1.75rem, 3.5vw, 2.375rem); font-weight: 500; }
+    .signout-btn { background: none; border: none; font-family: var(--font-serif); font-size: 0.9375rem; color: var(--color-text-light); cursor: pointer; text-decoration: underline; }
+    .dash-terms { font-family: var(--font-serif); font-size: 1rem; color: var(--color-text-light); margin-bottom: 2rem; }
+    .card { background: var(--color-card); border-radius: 12px; box-shadow: 0 2px 16px rgba(0,0,0,0.06); padding: 1.75rem; margin-bottom: 1.5rem; }
+    .card-title { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 600; margin-bottom: 0.375rem; }
+    .card-sub { font-family: var(--font-serif); font-size: 0.9375rem; color: var(--color-text-light); margin-bottom: 1.125rem; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem 1rem; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.875rem 1rem; }
+    .field { margin-bottom: 0.875rem; }
+    .tbl { width: 100%; border-collapse: collapse; }
+    .tbl th { font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-light); text-align: left; padding: 0 0.75rem 0.625rem 0; border-bottom: 1px solid var(--color-input-border); }
+    .tbl td { padding: 0.875rem 0.75rem 0.875rem 0; border-bottom: 1px solid var(--color-input-border); vertical-align: middle; font-family: var(--font-serif); font-size: 0.9688rem; }
+    .tbl tr:last-child td { border-bottom: none; }
+    .status-chip { display: inline-block; font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 999px; padding: 0.2rem 0.7rem; }
+    .status-submitted { background: rgba(181,161,120,0.2); color: #7d6a49; }
+    .status-draft { background: rgba(107,95,84,0.12); color: var(--color-text-light); }
+    .status-published { background: rgba(90,122,90,0.14); color: var(--color-success); }
+    .status-cancelled { background: rgba(196,92,74,0.14); color: var(--color-error); }
+    .status-completed { background: rgba(107,95,84,0.12); color: var(--color-text-light); }
+    .mini-btn { font-family: var(--font-serif); font-size: 0.9rem; font-weight: 600; color: var(--color-text); background: var(--color-input-bg); border: 1px solid var(--color-input-border); border-radius: 8px; padding: 0.45rem 0.875rem; cursor: pointer; white-space: nowrap; }
+    .mini-btn:hover { border-color: var(--color-gold); }
+    .checkin-btn { font-family: var(--font-serif); font-size: 0.875rem; font-weight: 600; border-radius: 999px; padding: 0.3rem 0.9rem; cursor: pointer; border: 1px solid var(--color-input-border); background: var(--color-input-bg); color: var(--color-text); }
+    .checkin-btn.in { background: rgba(90,122,90,0.14); color: var(--color-success); border-color: transparent; }
+    .empty-note { font-family: var(--font-serif); font-size: 0.9375rem; color: var(--color-text-light); }
+    .guests-panel { border-top: 1px solid var(--color-input-border); margin-top: 1rem; padding-top: 1rem; }
+    .stats-line { font-family: var(--font-serif); font-size: 0.9375rem; color: var(--color-text-light); }
+    .app-footer { padding: 1.5rem 2.5rem 2rem; }
+    .app-footer-copy { font-family: var(--font-serif); font-size: 0.8125rem; color: var(--color-text-light); text-align: center; }
+    .hidden { display: none !important; }
+    @media (max-width: 720px) {
+      .main { padding: 1.75rem 1rem 3rem; }
+      .card { padding: 1.375rem 1.125rem; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .tbl .hide-mobile { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="header-inner">
+        <a href="/" class="logo">
+          <img src="https://ecdxgzpjgdosueacomwn.supabase.co/storage/v1/object/public/static-assets/ethoslogo.png" alt="Ethos" class="logo-img">
+          <span class="logo-text">Ethos</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="main">
+      <div id="authView">
+        <p class="eyebrow">Hosts</p>
+        <h1 class="page-title">Host Portal</h1>
+        <p class="page-sub">Run events for Ethos members — submit your event, watch it fill with a balanced guest list, and manage the door on the night.</p>
+        <div class="auth-wrap">
+          <div class="form-card">
+            <div id="emailStep">
+              <h2 class="form-title">Sign in</h2>
+              <p class="form-subtitle">We'll email you a one-time code.</p>
+              <label class="form-label" for="emailInput">Email</label>
+              <input class="form-input" type="email" id="emailInput" autocomplete="email" placeholder="you@example.com">
+              <button class="submit-btn" id="sendCodeBtn">Send code</button>
+              <p class="form-error" id="emailError"></p>
+            </div>
+            <div id="otpStep" class="hidden">
+              <h2 class="form-title">Enter your code</h2>
+              <p class="form-subtitle" id="otpSubtitle">Sent to your email.</p>
+              <input class="form-input code-input" id="codeInput" inputmode="numeric" maxlength="6" placeholder="······">
+              <button class="submit-btn" id="verifyBtn">Verify</button>
+              <p class="form-error" id="otpError"></p>
+              <p class="form-hint"><button id="backBtn">Use a different email</button></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="dashView" class="hidden">
+        <div class="dash-head">
+          <h1 class="dash-welcome" id="welcomeName">Welcome</h1>
+          <button class="signout-btn" id="signoutBtn">Sign out</button>
+        </div>
+        <p class="dash-terms">Submitted events are reviewed by the Ethos team before going live.</p>
+
+        <div class="card">
+          <h2 class="card-title">Your events</h2>
+          <p class="card-sub">Sales update live; open the guest list on the night to check people in.</p>
+          <div id="eventsList"><p class="empty-note">Loading…</p></div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Submit an event</h2>
+          <p class="card-sub">Times are in the event city's local time. We'll review and publish, and add your poster with you.</p>
+          <div class="field"><label class="form-label">Title</label><input class="form-input" id="evTitle"></div>
+          <div class="grid-2">
+            <div class="field"><label class="form-label">City</label><select class="form-select" id="evCity"></select></div>
+            <div class="field"><label class="form-label">Date &amp; time (local)</label><input class="form-input" id="evWhen" type="datetime-local"></div>
+          </div>
+          <div class="field"><label class="form-label">Venue name</label><input class="form-input" id="evVenue"></div>
+          <div class="field"><label class="form-label">Venue address</label><input class="form-input" id="evAddress"></div>
+          <div class="field"><label class="form-label">Category</label><input class="form-input" id="evCategory" placeholder="Supper club, Mixer…"></div>
+          <div class="field"><label class="form-label">Short description (card line)</label><input class="form-input" id="evDesc"></div>
+          <div class="field"><label class="form-label">Full details (event page)</label><textarea class="form-input" id="evDetails" placeholder="What guests can expect. Blank lines split paragraphs."></textarea></div>
+          <div class="grid-3">
+            <div class="field"><label class="form-label">Capacity</label><input class="form-input" id="evCapacity" type="number" min="1" value="12"></div>
+            <div class="field"><label class="form-label">Men's tickets</label><input class="form-input" id="evMen" type="number" min="0" placeholder="No split"></div>
+            <div class="field"><label class="form-label">Women's tickets</label><input class="form-input" id="evWomen" type="number" min="0" placeholder="No split"></div>
+          </div>
+          <div class="grid-3">
+            <div class="field"><label class="form-label">Price</label><input class="form-input" id="evPrice" type="number" min="0" step="0.01" placeholder="0"></div>
+            <div class="field"><label class="form-label">Currency</label><select class="form-select" id="evCurrency"><option>INR</option><option>USD</option></select></div>
+            <div class="field"><label class="form-label">Audience age (min–max)</label>
+              <div style="display:flex;gap:0.5rem;">
+                <input class="form-input" id="evAgeMin" type="number" min="18" max="99" placeholder="Any">
+                <input class="form-input" id="evAgeMax" type="number" min="18" max="99" placeholder="Any">
+              </div>
+            </div>
+          </div>
+          <button class="submit-btn" id="submitEventBtn">Submit for review</button>
+          <p class="form-error" id="submitError"></p>
+          <p class="form-ok" id="submitOk"></p>
+        </div>
+      </main>
+
+    <footer class="app-footer">
+      <p class="app-footer-copy">&copy; 2026 Ethos Labs Pty Ltd &middot; <a href="https://ethosapp.co">ethosapp.co</a></p>
+    </footer>
+  </div>
+
+  <script>
+    const IS_DEV = localStorage.getItem('ethos_portal_env') === 'dev';
+    const SUPABASE_URL = IS_DEV
+      ? 'https://yhivzfjkdijitjmyyjhd.supabase.co'
+      : 'https://ecdxgzpjgdosueacomwn.supabase.co';
+    const SUPABASE_ANON_KEY = IS_DEV
+      ? 'sb_publishable_UAqfnVFlwsRh4an6LDWz3g_gbERZh8e'
+      : 'sb_publishable_7Ef8xN852RGoSgFYiFJ6Sw_QMVIFzfX';
+    const PORTAL_FN = SUPABASE_URL + '/functions/v1/host-portal';
+    const TOKEN_KEY = 'ethos_host_token';
+    const CURRENCY_SYMBOLS = { INR: '₹', USD: '$' };
+
+    async function portal(action, payload) {
+      const res = await fetch(PORTAL_FN, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
+        body: JSON.stringify({ action, ...payload }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw Object.assign(new Error(body.error || 'Something went wrong.'), { status: res.status });
+      return body;
+    }
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+    function fmtDate(iso) { return iso ? new Date(iso).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : '—'; }
+    function fmtMoney(minor, cur) { return minor ? (CURRENCY_SYMBOLS[cur] || cur + ' ') + (minor / 100) : 'Free'; }
+
+    const authView = document.getElementById('authView');
+    const dashView = document.getElementById('dashView');
+    const emailStep = document.getElementById('emailStep');
+    const otpStep = document.getElementById('otpStep');
+    let currentEmail = '';
+
+    function showAuth() { dashView.classList.add('hidden'); authView.classList.remove('hidden'); otpStep.classList.add('hidden'); emailStep.classList.remove('hidden'); }
+    function showDash() { authView.classList.add('hidden'); dashView.classList.remove('hidden'); }
+
+    document.getElementById('sendCodeBtn').addEventListener('click', async () => {
+      const email = document.getElementById('emailInput').value.trim();
+      const btn = document.getElementById('sendCodeBtn');
+      document.getElementById('emailError').textContent = '';
+      btn.disabled = true; btn.textContent = 'Sending…';
+      try {
+        const r = await portal('request_code', { email });
+        currentEmail = email;
+        emailStep.classList.add('hidden');
+        otpStep.classList.remove('hidden');
+        document.getElementById('otpSubtitle').textContent = 'Sent to ' + email + '.';
+        const codeEl = document.getElementById('codeInput');
+        codeEl.value = r.dev_code || '';
+        codeEl.focus();
+      } catch (err) {
+        document.getElementById('emailError').textContent = err.message;
+      } finally { btn.disabled = false; btn.textContent = 'Send code'; }
+    });
+
+    document.getElementById('backBtn').addEventListener('click', () => {
+      otpStep.classList.add('hidden'); emailStep.classList.remove('hidden');
+    });
+
+    document.getElementById('verifyBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('verifyBtn');
+      document.getElementById('otpError').textContent = '';
+      btn.disabled = true; btn.textContent = 'Verifying…';
+      try {
+        const r = await portal('verify_code', { email: currentEmail, code: document.getElementById('codeInput').value.trim() });
+        localStorage.setItem(TOKEN_KEY, r.token);
+        await loadDashboard();
+      } catch (err) {
+        document.getElementById('otpError').textContent = err.message;
+      } finally { btn.disabled = false; btn.textContent = 'Verify'; }
+    });
+
+    document.getElementById('signoutBtn').addEventListener('click', async () => {
+      const token = localStorage.getItem(TOKEN_KEY);
+      localStorage.removeItem(TOKEN_KEY);
+      if (token) { try { await portal('logout', { token }); } catch (_) {} }
+      showAuth();
+    });
+
+    function renderEvents(events) {
+      const el = document.getElementById('eventsList');
+      if (!events.length) {
+        el.innerHTML = '<p class="empty-note">No events yet — submit your first one below.</p>';
+        return;
+      }
+      el.innerHTML = '<table class="tbl"><thead><tr>' +
+        '<th>Event</th><th>When</th><th>Status</th><th>Sold</th><th class="hide-mobile">Balance</th><th></th>' +
+        '</tr></thead><tbody>' +
+        events.map(e =>
+          '<tr data-event="' + esc(e.id) + '">' +
+          '<td><strong>' + esc(e.title) + '</strong><br><span style="color:var(--color-text-light);font-size:0.875rem;">' + esc(e.venue_name) + ' · ' + esc(String(e.city_name).split(',')[0]) + ' · ' + fmtMoney(e.price_minor, e.currency) + '</span></td>' +
+          '<td>' + fmtDate(e.starts_at) + '</td>' +
+          '<td><span class="status-chip status-' + esc(e.status) + '">' + esc(e.status) + '</span></td>' +
+          '<td>' + e.stats.total + '/' + e.capacity + '</td>' +
+          '<td class="hide-mobile">' + e.stats.men + ' M · ' + e.stats.women + ' W · ' + e.stats.checked_in + ' in</td>' +
+          '<td><button class="mini-btn guests-btn">Guest list</button></td>' +
+          '</tr>' +
+          '<tr class="guests-row hidden" data-for="' + esc(e.id) + '"><td colspan="6"><div class="guests-panel"></div></td></tr>'
+        ).join('') + '</tbody></table>';
+    }
+
+    async function loadDashboard() {
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (!token) { showAuth(); return; }
+      try {
+        const d = await portal('dashboard', { token });
+        document.getElementById('welcomeName').textContent = 'Welcome, ' + d.host_name.split(' ')[0];
+        renderEvents(d.events || []);
+        const citySel = document.getElementById('evCity');
+        citySel.innerHTML = (d.cities || []).map(c => '<option>' + esc(c) + '</option>').join('');
+        showDash();
+      } catch (err) {
+        localStorage.removeItem(TOKEN_KEY);
+        showAuth();
+      }
+    }
+
+    document.getElementById('eventsList').addEventListener('click', async (e) => {
+      if (e.target.classList.contains('guests-btn')) {
+        const row = e.target.closest('tr');
+        const eventId = row.dataset.event;
+        const panelRow = document.querySelector('.guests-row[data-for="' + eventId + '"]');
+        const panel = panelRow.querySelector('.guests-panel');
+        if (!panelRow.classList.contains('hidden')) { panelRow.classList.add('hidden'); return; }
+        e.target.disabled = true; e.target.textContent = 'Loading…';
+        try {
+          const token = localStorage.getItem(TOKEN_KEY);
+          const g = await portal('event_guests', { token, event_id: eventId });
+          panel.innerHTML = !g.guests.length
+            ? '<p class="empty-note">No reservations yet.</p>'
+            : '<p class="stats-line" style="margin-bottom:0.75rem;">' + g.guests.length + ' going</p>' +
+              '<table class="tbl"><thead><tr><th>Guest</th><th>Ticket</th><th></th></tr></thead><tbody>' +
+              g.guests.map(x =>
+                '<tr><td>' + esc(x.first_name) + ' <span style="color:var(--color-text-light);">' +
+                [x.age, x.gender === 'male' ? 'M' : x.gender === 'female' ? 'W' : null].filter(Boolean).join(' · ') +
+                '</span></td>' +
+                '<td style="font-family:var(--font-sans);font-size:0.8125rem;">' + esc(x.ticket) + '</td>' +
+                '<td><button class="checkin-btn' + (x.checked_in ? ' in' : '') + '" data-order="' + esc(x.order_id) + '" data-in="' + (x.checked_in ? '1' : '0') + '">' +
+                (x.checked_in ? 'Checked in ✓' : 'Check in') + '</button></td></tr>'
+              ).join('') + '</tbody></table>';
+          panelRow.classList.remove('hidden');
+        } catch (err) {
+          panel.innerHTML = '<p class="empty-note" style="color:var(--color-error);">' + esc(err.message) + '</p>';
+          panelRow.classList.remove('hidden');
+        } finally {
+          e.target.disabled = false; e.target.textContent = 'Guest list';
+        }
+      }
+      if (e.target.classList.contains('checkin-btn')) {
+        const btn = e.target;
+        const goingIn = btn.dataset.in !== '1';
+        btn.disabled = true;
+        try {
+          const token = localStorage.getItem(TOKEN_KEY);
+          await portal('check_in', { token, order_id: btn.dataset.order, checked_in: goingIn });
+          btn.dataset.in = goingIn ? '1' : '0';
+          btn.textContent = goingIn ? 'Checked in ✓' : 'Check in';
+          btn.classList.toggle('in', goingIn);
+        } catch (err) {
+          alert(err.message);
+        } finally { btn.disabled = false; }
+      }
+    });
+
+    document.getElementById('submitEventBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('submitEventBtn');
+      const errEl = document.getElementById('submitError');
+      const okEl = document.getElementById('submitOk');
+      errEl.textContent = ''; okEl.textContent = '';
+      btn.disabled = true; btn.textContent = 'Submitting…';
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        await portal('submit_event', {
+          token,
+          title: document.getElementById('evTitle').value,
+          city_name: document.getElementById('evCity').value,
+          local_datetime: document.getElementById('evWhen').value,
+          venue_name: document.getElementById('evVenue').value,
+          venue_address: document.getElementById('evAddress').value,
+          category: document.getElementById('evCategory').value,
+          description: document.getElementById('evDesc').value,
+          details: document.getElementById('evDetails').value,
+          capacity: document.getElementById('evCapacity').value,
+          capacity_men: document.getElementById('evMen').value,
+          capacity_women: document.getElementById('evWomen').value,
+          price: document.getElementById('evPrice').value || 0,
+          currency: document.getElementById('evCurrency').value,
+          audience_age_min: document.getElementById('evAgeMin').value,
+          audience_age_max: document.getElementById('evAgeMax').value,
+        });
+        okEl.textContent = 'Submitted — the Ethos team will review and publish it.';
+        ['evTitle','evVenue','evAddress','evCategory','evDesc','evDetails','evWhen','evMen','evWomen','evPrice','evAgeMin','evAgeMax'].forEach(id => { document.getElementById(id).value = ''; });
+        const d = await portal('dashboard', { token });
+        renderEvents(d.events || []);
+      } catch (err) {
+        errEl.textContent = err.message;
+      } finally { btn.disabled = false; btn.textContent = 'Submit for review'; }
+    });
+
+    loadDashboard();
+  </script>
+</body>
+</html>

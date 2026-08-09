@@ -106,6 +106,9 @@
     .cand { border-top: 1px solid var(--color-input-border); padding: 1rem 0; }
     .cand:first-of-type { margin-top: 1rem; }
     .cand-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .cand-left { display: flex; align-items: center; gap: 0.875rem; min-width: 0; }
+    .cand-photo { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
+    .cand-photo-empty { width: 64px; height: 64px; border-radius: 10px; background: var(--color-input-border); flex-shrink: 0; }
     .cand-name { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 600; }
     .cand-meta { font-family: var(--font-serif); font-size: 0.9375rem; color: var(--color-text-light); }
     .intro-btn {
@@ -216,9 +219,10 @@
         <p class="dash-terms">Search opted-in members, and send introductions through Ethos.</p>
 
         <div class="privacy-strip">
-          You see first name, age, and city only — members share more with you
-          only by accepting your introduction. Every search result and
-          introduction is logged and visible to Ethos and to the member.
+          You see opted-in members' profiles and photos — never their
+          questionnaire answers or contact details. Every profile you're
+          shown and every introduction you send is logged and visible to
+          Ethos and to the member.
         </div>
 
         <div class="card">
@@ -434,8 +438,11 @@
         results.innerHTML = r.candidates.map(c =>
           '<div class="cand" data-uid="' + esc(c.user_id) + '">' +
             '<div class="cand-row">' +
-              '<div><div class="cand-name">' + esc(c.first_name) + '</div>' +
-              '<div class="cand-meta">' + [c.age, c.city ? esc(String(c.city).split(',')[0]) : null].filter(Boolean).join(' · ') + '</div></div>' +
+              '<div class="cand-left">' +
+                (c.photo_url ? '<img class="cand-photo" src="' + esc(c.photo_url) + '" alt="">' : '<div class="cand-photo-empty"></div>') +
+                '<div style="min-width:0;"><div class="cand-name">' + esc(c.first_name) + '</div>' +
+                '<div class="cand-meta">' + [c.age, c.city ? esc(String(c.city).split(',')[0]) : null, c.occupation ? esc(c.occupation) : null, c.height_cm ? c.height_cm + ' cm' : null].filter(Boolean).join(' · ') + '</div></div>' +
+              '</div>' +
               '<button class="intro-btn">Request introduction</button>' +
             '</div>' +
             '<div class="intro-form hidden">' +
