@@ -269,6 +269,12 @@
         </div>
 
         <div class="card">
+          <h2 class="card-title">Consultations</h2>
+          <p class="card-sub">Members who'd like a video call with you. Confirm one of their times — the call happens right here in your browser, and in their app.</p>
+          <div id="consultsList"><p class="empty-note">No consultation requests yet.</p></div>
+        </div>
+
+        <div class="card">
           <h2 class="card-title">Member introductions</h2>
           <p class="card-sub">Two members you've introduced to each other. When both say yes, they plan their date inside Ethos — you'll see it progress here.</p>
           <div id="memberPairs"><p class="empty-note">No member introductions yet — select two candidates above with their Pair buttons.</p></div>
@@ -457,6 +463,7 @@
         showDash();
         loadRequests();
         loadMemberPairs();
+        loadConsults();
       } catch (err) {
         localStorage.removeItem(TOKEN_KEY);
         showAuth();
@@ -616,6 +623,66 @@
       } catch (err) {
         errEl.textContent = err.message;
         e.target.disabled = false; e.target.textContent = 'Introduce them';
+      }
+    });
+
+    // ── Consultations ─────────────────────────────────────────────────────
+    async function loadConsults() {
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const r = await portal('consults', { token });
+        const el = document.getElementById('consultsList');
+        const rows = r.consults || [];
+        if (!rows.length) {
+          el.innerHTML = '<p class="empty-note">No consultation requests yet.</p>';
+          return;
+        }
+        el.innerHTML = rows.map(c => {
+          const who = esc(c.member_first_name) + (c.member_city ? ' · ' + esc(String(c.member_city).split(',')[0]) : '');
+          let bodyHtml = '';
+          if (c.status === 'requested') {
+            bodyHtml =
+              '<div class="req-note">Pick a time that works:</div>' +
+              '<div style="margin-top:0.4rem;display:flex;flex-wrap:wrap;gap:0.4rem;">' +
+              (c.proposed_times || []).map(t =>
+                '<button class="intro-btn consult-confirm" data-cid="' + esc(c.id) + '" data-time="' + esc(t) + '">' +
+                new Date(t).toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) +
+                '</button>').join('') +
+              ' <button class="intro-btn consult-decline" data-cid="' + esc(c.id) + '">Decline</button></div>';
+          } else if (c.status === 'confirmed') {
+            bodyHtml =
+              '<div class="req-note">Confirmed for ' + new Date(c.scheduled_at).toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) + '.' +
+              (c.join_url
+                ? ' <a class="intro-btn" style="display:inline-block;text-decoration:none;" href="' + esc(c.join_url) + '" target="_blank" rel="noopener">Join the call</a>'
+                : ' The join button appears here 15 minutes before.') + '</div>';
+          } else {
+            bodyHtml = '<div class="req-note">' + esc(c.status) + '</div>';
+          }
+          return '<div class="req">' +
+            '<span class="status-chip status-' + esc(c.status) + '">' + esc(c.status) + '</span>' +
+            ' <span style="font-family:var(--font-serif);font-size:1.0625rem;font-weight:600;">' + who + '</span>' +
+            (c.note ? '<div class="req-brief">' + esc(c.note) + '</div>' : '') +
+            bodyHtml +
+          '</div>';
+        }).join('');
+      } catch (_) { /* non-fatal */ }
+    }
+
+    document.getElementById('consultsList').addEventListener('click', async (e) => {
+      const cid = e.target.dataset && e.target.dataset.cid;
+      if (!cid) return;
+      const token = localStorage.getItem(TOKEN_KEY);
+      e.target.disabled = true;
+      try {
+        if (e.target.classList.contains('consult-confirm')) {
+          await portal('confirm_consult', { token, consult_id: cid, time: e.target.dataset.time });
+        } else if (e.target.classList.contains('consult-decline')) {
+          await portal('decline_consult', { token, consult_id: cid });
+        }
+        loadConsults();
+      } catch (err) {
+        alert(err.message || 'Something went wrong.');
+        e.target.disabled = false;
       }
     });
 
