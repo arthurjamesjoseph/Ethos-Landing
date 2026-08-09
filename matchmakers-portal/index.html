@@ -154,6 +154,15 @@
     .profile-panel { padding: 0.75rem 0 0.5rem; }
     .photo-strip { display: flex; gap: 0.75rem; overflow-x: auto; padding-bottom: 0.5rem; }
     .photo-strip img { height: 180px; border-radius: 10px; object-fit: cover; }
+    .msg-badge { display: inline-block; min-width: 1.25rem; padding: 0 0.3rem; margin-left: 0.4rem; background: var(--color-gold); color: var(--color-white); border-radius: 999px; font-family: var(--font-sans); font-size: 0.75rem; font-weight: 600; text-align: center; }
+    .chat-panel { padding: 0.75rem 0 0.5rem; }
+    .chat-scroll { max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; padding: 0.25rem 0; }
+    .chat-bubble { max-width: 75%; padding: 0.5rem 0.875rem; border-radius: 14px; font-size: 0.9688rem; line-height: 1.5; }
+    .chat-bubble.mm { align-self: flex-end; background: var(--color-gold); color: var(--color-white); }
+    .chat-bubble.member { align-self: flex-start; background: var(--color-input-bg); border: 1px solid var(--color-input-border); }
+    .chat-compose { display: flex; gap: 0.5rem; margin-top: 0.625rem; }
+    .chat-compose .form-input { flex: 1; }
+    .chat-send { width: auto; padding: 0.6rem 1.4rem; margin: 0; }
     .facts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.625rem 1.25rem; margin-top: 0.875rem; }
     .fact { display: flex; flex-direction: column; }
     .fact-k { font-family: var(--font-sans); font-size: 0.6563rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-light); }
@@ -392,9 +401,13 @@
           '<td class="hide-mobile"><div class="pipe-msg">' + esc(i.message) + '</div></td>' +
           '<td>' + fmtDate(i.created_at) + '</td>' +
           '<td>' + (i.status === 'accepted'
-            ? '<button class="intro-btn view-profile-btn">View profile</button>'
+            ? '<button class="intro-btn view-profile-btn">View profile</button> ' +
+              '<button class="intro-btn messages-btn">Messages' +
+              (i.unread_count ? '<span class="msg-badge">' + i.unread_count + '</span>' : '') +
+              '</button>'
             : '') + '</td></tr>' +
-          '<tr class="profile-row hidden" data-for="' + esc(i.id) + '"><td colspan="5"><div class="profile-panel"></div></td></tr>'
+          '<tr class="profile-row hidden" data-for="' + esc(i.id) + '"><td colspan="5"><div class="profile-panel"></div></td></tr>' +
+          '<tr class="chat-row hidden" data-for-chat="' + esc(i.id) + '"><td colspan="5"><div class="chat-panel"></div></td></tr>'
         ).join('') + '</tbody></table>';
     }
 
@@ -563,13 +576,107 @@
     document.getElementById('results').addEventListener('click', candClick);
     document.getElementById('requestsList').addEventListener('click', candClick);
 
+    // ── Introduction chat threads ─────────────────────────────────────────
+    let chatPollTimer = null;
+
+    function chatBubbles(messages) {
+      return messages.length
+        ? messages.map(m =>
+            '<div class="chat-bubble ' + (m.sender === 'matchmaker' ? 'mm' : 'member') + '">' + esc(m.body) + '</div>'
+          ).join('')
+        : '<p class="empty-note">No messages yet — introduce yourself.</p>';
+    }
+
+    async function refreshChat(introId) {
+      const panelRow = document.querySelector('.chat-row[data-for-chat="' + introId + '"]');
+      if (!panelRow || panelRow.classList.contains('hidden')) return;
+      const token = localStorage.getItem(TOKEN_KEY);
+      const d = await portal('intro_messages', { token, introduction_id: introId });
+      const scroll = panelRow.querySelector('.chat-scroll');
+      if (scroll) {
+        const atBottom = scroll.scrollTop + scroll.clientHeight >= scroll.scrollHeight - 20;
+        scroll.innerHTML = chatBubbles(d.messages || []);
+        if (atBottom) scroll.scrollTop = scroll.scrollHeight;
+      }
+    }
+
+    function closeChat() {
+      if (chatPollTimer) { clearInterval(chatPollTimer); chatPollTimer = null; }
+      document.querySelectorAll('.chat-row').forEach(r => r.classList.add('hidden'));
+    }
+
+    async function sendChatMessage(introId, panel) {
+      const input = panel.querySelector('.chat-input');
+      const btn = panel.querySelector('.chat-send');
+      const text = input.value.trim();
+      if (!text) return;
+      btn.disabled = true;
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        await portal('send_intro_message', { token, introduction_id: introId, body: text });
+        input.value = '';
+        const scroll = panel.querySelector('.chat-scroll');
+        const empty = scroll.querySelector('.empty-note');
+        if (empty) empty.remove();
+        scroll.insertAdjacentHTML('beforeend', '<div class="chat-bubble mm">' + esc(text) + '</div>');
+        scroll.scrollTop = scroll.scrollHeight;
+      } catch (err) {
+        alert(err.message || 'Could not send that message.');
+      } finally {
+        btn.disabled = false;
+        input.focus();
+      }
+    }
+
     document.getElementById('pipeline').addEventListener('click', async (e) => {
+      const chatPanel = e.target.closest('.chat-panel');
+      if (chatPanel && e.target.classList.contains('chat-send')) {
+        const introId = chatPanel.closest('.chat-row').dataset.forChat;
+        sendChatMessage(introId, chatPanel);
+        return;
+      }
+
+      if (e.target.closest('.messages-btn')) {
+        const btn = e.target.closest('.messages-btn');
+        const row = btn.closest('tr');
+        const introId = row.dataset.intro;
+        const panelRow = document.querySelector('.chat-row[data-for-chat="' + introId + '"]');
+        const panel = panelRow.querySelector('.chat-panel');
+        if (!panelRow.classList.contains('hidden')) { closeChat(); return; }
+        closeChat();
+        document.querySelectorAll('.profile-row').forEach(r => r.classList.add('hidden'));
+        btn.disabled = true;
+        try {
+          const token = localStorage.getItem(TOKEN_KEY);
+          const d = await portal('intro_messages', { token, introduction_id: introId });
+          panel.innerHTML =
+            '<div class="chat-scroll">' + chatBubbles(d.messages || []) + '</div>' +
+            '<div class="chat-compose">' +
+            '<input class="form-input chat-input" maxlength="2000" placeholder="Write a message…">' +
+            '<button class="submit-btn chat-send">Send</button>' +
+            '</div>';
+          panelRow.classList.remove('hidden');
+          const scroll = panel.querySelector('.chat-scroll');
+          scroll.scrollTop = scroll.scrollHeight;
+          const badge = btn.querySelector('.msg-badge');
+          if (badge) badge.remove();
+          chatPollTimer = setInterval(() => refreshChat(introId).catch(() => {}), 10000);
+        } catch (err) {
+          panel.innerHTML = '<p class="empty-note" style="color:var(--color-error);">' + esc(err.message) + '</p>';
+          panelRow.classList.remove('hidden');
+        } finally {
+          btn.disabled = false;
+        }
+        return;
+      }
+
       if (!e.target.classList.contains('view-profile-btn')) return;
       const row = e.target.closest('tr');
       const introId = row.dataset.intro;
       const panelRow = document.querySelector('.profile-row[data-for="' + introId + '"]');
       const panel = panelRow.querySelector('.profile-panel');
       if (!panelRow.classList.contains('hidden')) { panelRow.classList.add('hidden'); return; }
+      closeChat();
       e.target.disabled = true; e.target.textContent = 'Loading…';
       try {
         const token = localStorage.getItem(TOKEN_KEY);
@@ -582,6 +689,14 @@
       } finally {
         e.target.disabled = false; e.target.textContent = 'View profile';
       }
+    });
+
+    document.getElementById('pipeline').addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' || !e.target.classList.contains('chat-input')) return;
+      e.preventDefault();
+      const panel = e.target.closest('.chat-panel');
+      const introId = panel.closest('.chat-row').dataset.forChat;
+      sendChatMessage(introId, panel);
     });
 
     // Boot: resume session if we have a token.
