@@ -141,6 +141,14 @@
     .status-declined { background: rgba(107, 95, 84, 0.12); color: var(--color-text-light); }
     .empty-note { font-family: var(--font-serif); font-size: 0.9375rem; color: var(--color-text-light); }
 
+    .profile-panel { padding: 0.75rem 0 0.5rem; }
+    .photo-strip { display: flex; gap: 0.75rem; overflow-x: auto; padding-bottom: 0.5rem; }
+    .photo-strip img { height: 180px; border-radius: 10px; object-fit: cover; }
+    .facts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.625rem 1.25rem; margin-top: 0.875rem; }
+    .fact { display: flex; flex-direction: column; }
+    .fact-k { font-family: var(--font-sans); font-size: 0.6563rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-light); }
+    .fact-v { font-family: var(--font-serif); font-size: 1rem; }
+
     .privacy-strip {
       font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light);
       border: 1px solid var(--color-input-border); border-radius: 10px; padding: 0.875rem 1.125rem; margin-bottom: 1.5rem;
@@ -350,14 +358,39 @@
         return;
       }
       el.innerHTML = '<table class="pipe-table"><thead><tr>' +
-        '<th>Member</th><th>Status</th><th class="hide-mobile">Your message</th><th>Sent</th>' +
+        '<th>Member</th><th>Status</th><th class="hide-mobile">Your message</th><th>Sent</th><th></th>' +
         '</tr></thead><tbody>' +
         introductions.map(i =>
-          '<tr><td>' + esc(i.member_first_name) + '</td>' +
+          '<tr data-intro="' + esc(i.id) + '"><td>' + esc(i.member_first_name) + '</td>' +
           '<td><span class="status-chip status-' + esc(i.status) + '">' + esc(i.status) + '</span></td>' +
           '<td class="hide-mobile"><div class="pipe-msg">' + esc(i.message) + '</div></td>' +
-          '<td>' + fmtDate(i.created_at) + '</td></tr>'
+          '<td>' + fmtDate(i.created_at) + '</td>' +
+          '<td>' + (i.status === 'accepted'
+            ? '<button class="intro-btn view-profile-btn">View profile</button>'
+            : '') + '</td></tr>' +
+          '<tr class="profile-row hidden" data-for="' + esc(i.id) + '"><td colspan="5"><div class="profile-panel"></div></td></tr>'
         ).join('') + '</tbody></table>';
+    }
+
+    function renderProfile(panel, data) {
+      const p = data.profile || {};
+      const facts = [
+        ['Age', p.age], ['City', p.city ? String(p.city).split(',')[0] : null],
+        ['Occupation', p.occupation], ['Employer', p.employer],
+        ['Education', p.education], ['Height', p.height_cm ? p.height_cm + ' cm' : null],
+        ['Religion', p.religion], ['Marital status', p.marital_status],
+        ['Drinking', p.drinking], ['Smoking', p.smoking],
+        ['Career stage', p.career_stage],
+        ['Languages', Array.isArray(p.languages) ? p.languages.join(', ') : p.languages],
+      ].filter(([, v]) => v != null && v !== '');
+      panel.innerHTML =
+        (data.photos && data.photos.length
+          ? '<div class="photo-strip">' + data.photos.map(u => '<img src="' + esc(u) + '" alt="">').join('') + '</div>'
+          : '<p class="empty-note">No photos available.</p>') +
+        '<div class="facts-grid">' +
+        facts.map(([k, v]) => '<div class="fact"><span class="fact-k">' + esc(k) + '</span><span class="fact-v">' + esc(v) + '</span></div>').join('') +
+        '</div>' +
+        '<p class="card-note">Shared with you because ' + esc(p.first_name || 'this member') + ' accepted your introduction. Please treat it confidentially — it stays inside Ethos.</p>';
     }
 
     async function loadDashboard() {
@@ -453,6 +486,27 @@
         } finally {
           btn.disabled = false; btn.textContent = 'Send';
         }
+      }
+    });
+
+    document.getElementById('pipeline').addEventListener('click', async (e) => {
+      if (!e.target.classList.contains('view-profile-btn')) return;
+      const row = e.target.closest('tr');
+      const introId = row.dataset.intro;
+      const panelRow = document.querySelector('.profile-row[data-for="' + introId + '"]');
+      const panel = panelRow.querySelector('.profile-panel');
+      if (!panelRow.classList.contains('hidden')) { panelRow.classList.add('hidden'); return; }
+      e.target.disabled = true; e.target.textContent = 'Loading…';
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const data = await portal('member_profile', { token, introduction_id: introId });
+        renderProfile(panel, data);
+        panelRow.classList.remove('hidden');
+      } catch (err) {
+        panel.innerHTML = '<p class="empty-note" style="color:var(--color-error);">' + esc(err.message) + '</p>';
+        panelRow.classList.remove('hidden');
+      } finally {
+        e.target.disabled = false; e.target.textContent = 'View profile';
       }
     });
 
