@@ -169,6 +169,12 @@
           <div class="field"><label class="form-label">Category</label><input class="form-input" id="evCategory" placeholder="Supper club, Mixer…"></div>
           <div class="field"><label class="form-label">Short description (card line)</label><input class="form-input" id="evDesc"></div>
           <div class="field"><label class="form-label">Full details (event page)</label><textarea class="form-input" id="evDetails" placeholder="What guests can expect. Blank lines split paragraphs."></textarea></div>
+          <div class="field">
+            <label class="form-label">Event image (optional)</label>
+            <input class="form-input" id="evImage" type="file" accept="image/*">
+            <img id="evImagePreview" class="hidden" style="margin-top:0.5rem;max-height:140px;border-radius:10px;" alt="">
+            <p style="font-family:var(--font-serif);font-size:0.8125rem;color:var(--color-text-light);margin-top:0.375rem;">The Ethos team crops it for the app during review.</p>
+          </div>
           <div class="grid-3">
             <div class="field"><label class="form-label">Capacity</label><input class="form-input" id="evCapacity" type="number" min="1" value="12"></div>
             <div class="field"><label class="form-label">Men's tickets</label><input class="form-input" id="evMen" type="number" min="0" placeholder="No split"></div>
@@ -237,6 +243,11 @@
       btn.disabled = true; btn.textContent = 'Sending…';
       try {
         const r = await portal('request_code', { email });
+        if (r.token) { // dev-project walkthrough bypass
+          localStorage.setItem(TOKEN_KEY, r.token);
+          await loadDashboard();
+          return;
+        }
         currentEmail = email;
         emailStep.classList.add('hidden');
         otpStep.classList.remove('hidden');
@@ -358,6 +369,31 @@
       }
     });
 
+    // Downscale the chosen image client-side (max 1600px, JPEG) so the
+    // submission payload stays small.
+    let eventImageB64 = null;
+    document.getElementById('evImage').addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      eventImageB64 = null;
+      const preview = document.getElementById('evImagePreview');
+      preview.classList.add('hidden');
+      if (!file) return;
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 1600;
+        const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        eventImageB64 = canvas.toDataURL('image/jpeg', 0.88);
+        preview.src = eventImageB64;
+        preview.classList.remove('hidden');
+        URL.revokeObjectURL(img.src);
+      };
+      img.src = URL.createObjectURL(file);
+    });
+
     document.getElementById('submitEventBtn').addEventListener('click', async () => {
       const btn = document.getElementById('submitEventBtn');
       const errEl = document.getElementById('submitError');
@@ -383,7 +419,11 @@
           currency: document.getElementById('evCurrency').value,
           audience_age_min: document.getElementById('evAgeMin').value,
           audience_age_max: document.getElementById('evAgeMax').value,
+          image_b64: eventImageB64,
         });
+        eventImageB64 = null;
+        document.getElementById('evImage').value = '';
+        document.getElementById('evImagePreview').classList.add('hidden');
         okEl.textContent = 'Submitted — the Ethos team will review and publish it.';
         ['evTitle','evVenue','evAddress','evCategory','evDesc','evDetails','evWhen','evMen','evWomen','evPrice','evAgeMin','evAgeMax'].forEach(id => { document.getElementById(id).value = ''; });
         const d = await portal('dashboard', { token });

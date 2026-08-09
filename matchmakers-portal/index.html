@@ -330,6 +330,11 @@
       btn.disabled = true; btn.textContent = 'Sending…';
       try {
         const r = await portal('request_code', { email });
+        if (r.token) { // dev-project walkthrough bypass
+          localStorage.setItem(TOKEN_KEY, r.token);
+          await loadDashboard();
+          return;
+        }
         currentEmail = email;
         emailStep.classList.add('hidden');
         otpStep.classList.remove('hidden');
