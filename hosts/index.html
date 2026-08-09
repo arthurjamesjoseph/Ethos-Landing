@@ -202,7 +202,11 @@
   </div>
 
   <script>
-    const IS_DEV = localStorage.getItem('ethos_portal_env') === 'dev';
+    // localhost defaults to the DEV project (so the walkthrough bypass just
+    // works); localStorage.ethos_portal_env = 'dev' | 'prod' overrides either way.
+    const ENV_OVERRIDE = localStorage.getItem('ethos_portal_env');
+    const IS_LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    const IS_DEV = ENV_OVERRIDE === 'dev' || (IS_LOCAL && ENV_OVERRIDE !== 'prod');
     const SUPABASE_URL = IS_DEV
       ? 'https://yhivzfjkdijitjmyyjhd.supabase.co'
       : 'https://ecdxgzpjgdosueacomwn.supabase.co';
