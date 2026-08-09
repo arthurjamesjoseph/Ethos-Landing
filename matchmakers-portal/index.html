@@ -142,6 +142,13 @@
     .status-pending { background: rgba(181, 161, 120, 0.2); color: #7d6a49; }
     .status-accepted { background: rgba(90, 122, 90, 0.14); color: var(--color-success); }
     .status-declined { background: rgba(107, 95, 84, 0.12); color: var(--color-text-light); }
+    .status-open { background: rgba(181, 161, 120, 0.2); color: #7d6a49; }
+    .status-answered { background: rgba(90, 122, 90, 0.14); color: var(--color-success); }
+    .status-closed { background: rgba(107, 95, 84, 0.12); color: var(--color-text-light); }
+    .req { border-top: 1px solid var(--color-input-border); padding: 1rem 0; }
+    .req-brief { font-family: var(--font-serif); font-size: 0.9688rem; margin-top: 0.375rem; }
+    .req-note { font-family: var(--font-serif); font-size: 0.9rem; color: var(--color-text-light); margin-top: 0.375rem; }
+    .form-ok { font-family: var(--font-serif); font-size: 0.9rem; color: var(--color-success); min-height: 1.4rem; margin-top: 0.5rem; }
     .empty-note { font-family: var(--font-serif); font-size: 0.9375rem; color: var(--color-text-light); }
 
     .profile-panel { padding: 0.75rem 0 0.5rem; }
@@ -234,6 +241,16 @@
           </div>
           <p class="filters-note" id="filtersNote"></p>
           <div id="results"></div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Ask the Ethos team</h2>
+          <p class="card-sub">Send your client's brief in your own words — including the things only the compatibility questionnaire knows. Our team searches and sends back profiles that fit.</p>
+          <textarea class="form-input" id="briefInput" placeholder="e.g. My client is 34, in Delhi, and wants someone who loves animals, stays close to family, and enjoys travelling well."></textarea>
+          <div style="margin-top:0.75rem;"><button class="search-btn" id="briefBtn">Send to the team</button></div>
+          <p class="form-error" id="briefError"></p>
+          <p class="form-ok" id="briefOk"></p>
+          <div id="requestsList"></div>
         </div>
 
         <div class="card">
@@ -405,6 +422,7 @@
         document.getElementById('welcomeName').textContent = 'Welcome, ' + d.matchmaker_name.split(' ')[0];
         renderPipeline(d.introductions || []);
         showDash();
+        loadRequests();
       } catch (err) {
         localStorage.removeItem(TOKEN_KEY);
         showAuth();
@@ -435,26 +453,7 @@
           results.innerHTML = '<p class="empty-note" style="margin-top:1rem;">No opted-in members match right now. Try widening the brief — new members opt in every week.</p>';
           return;
         }
-        results.innerHTML = r.candidates.map(c =>
-          '<div class="cand" data-uid="' + esc(c.user_id) + '">' +
-            '<div class="cand-row">' +
-              '<div class="cand-left">' +
-                (c.photo_url ? '<img class="cand-photo" src="' + esc(c.photo_url) + '" alt="">' : '<div class="cand-photo-empty"></div>') +
-                '<div style="min-width:0;"><div class="cand-name">' + esc(c.first_name) + '</div>' +
-                '<div class="cand-meta">' + [c.age, c.city ? esc(String(c.city).split(',')[0]) : null, c.occupation ? esc(c.occupation) : null, c.height_cm ? c.height_cm + ' cm' : null].filter(Boolean).join(' · ') + '</div></div>' +
-              '</div>' +
-              '<button class="intro-btn">Request introduction</button>' +
-            '</div>' +
-            '<div class="intro-form hidden">' +
-              '<textarea class="form-input" rows="3" placeholder="Introduce your client — who they are and why you\'re reaching out. The member sees this message."></textarea>' +
-              '<div class="intro-actions">' +
-                '<button class="intro-send">Send</button>' +
-                '<button class="intro-cancel">Cancel</button>' +
-              '</div>' +
-            '</div>' +
-            '<p class="cand-status"></p>' +
-          '</div>'
-        ).join('');
+        results.innerHTML = r.candidates.map(c => candCardHtml(c, null)).join('');
       } catch (err) {
         results.innerHTML = '<p class="empty-note" style="margin-top:1rem;color:var(--color-error);">' + esc(err.message) + '</p>';
       } finally {
@@ -462,7 +461,68 @@
       }
     });
 
-    document.getElementById('results').addEventListener('click', async (e) => {
+    function candCardHtml(c, extraNote) {
+      return '<div class="cand" data-uid="' + esc(c.user_id) + '">' +
+        '<div class="cand-row">' +
+          '<div class="cand-left">' +
+            (c.photo_url ? '<img class="cand-photo" src="' + esc(c.photo_url) + '" alt="">' : '<div class="cand-photo-empty"></div>') +
+            '<div style="min-width:0;"><div class="cand-name">' + esc(c.first_name) + '</div>' +
+            '<div class="cand-meta">' + [c.age, c.city ? esc(String(c.city).split(',')[0]) : null, c.occupation ? esc(c.occupation) : null, c.height_cm ? c.height_cm + ' cm' : null].filter(Boolean).join(' · ') + '</div>' +
+            (extraNote ? '<div class="req-note">' + esc(extraNote) + '</div>' : '') + '</div>' +
+          '</div>' +
+          '<button class="intro-btn">Request introduction</button>' +
+        '</div>' +
+        '<div class="intro-form hidden">' +
+          '<textarea class="form-input" rows="3" placeholder="Introduce your client — who they are and why you\'re reaching out. The member sees this message."></textarea>' +
+          '<div class="intro-actions">' +
+            '<button class="intro-send">Send</button>' +
+            '<button class="intro-cancel">Cancel</button>' +
+          '</div>' +
+        '</div>' +
+        '<p class="cand-status"></p>' +
+      '</div>';
+    }
+
+    function renderRequests(requests) {
+      const el = document.getElementById('requestsList');
+      if (!requests.length) { el.innerHTML = ''; return; }
+      el.innerHTML = requests.map(r =>
+        '<div class="req">' +
+          '<span class="status-chip status-' + esc(r.status) + '">' + esc(r.status) + '</span>' +
+          ' <span style="font-family:var(--font-sans);font-size:0.75rem;color:var(--color-text-light);">' + fmtDate(r.created_at) + '</span>' +
+          '<div class="req-brief">' + esc(r.brief) + '</div>' +
+          (r.admin_note ? '<div class="req-note">Ethos team: ' + esc(r.admin_note) + '</div>' : '') +
+          (r.results && r.results.length ? r.results.map(c => candCardHtml(c, c.note)).join('') : '') +
+        '</div>'
+      ).join('');
+    }
+
+    async function loadRequests() {
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const r = await portal('search_requests', { token });
+        renderRequests(r.requests || []);
+      } catch (_) { /* non-fatal */ }
+    }
+
+    document.getElementById('briefBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('briefBtn');
+      const errEl = document.getElementById('briefError');
+      const okEl = document.getElementById('briefOk');
+      errEl.textContent = ''; okEl.textContent = '';
+      btn.disabled = true; btn.textContent = 'Sending…';
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        await portal('submit_search_request', { token, brief: document.getElementById('briefInput').value.trim() });
+        okEl.textContent = 'Sent — the team will search and send profiles back here.';
+        document.getElementById('briefInput').value = '';
+        loadRequests();
+      } catch (err) {
+        errEl.textContent = err.message;
+      } finally { btn.disabled = false; btn.textContent = 'Send to the team'; }
+    });
+
+    async function candClick(e) {
       const cand = e.target.closest('.cand');
       if (!cand) return;
       const form = cand.querySelector('.intro-form');
@@ -494,7 +554,9 @@
           btn.disabled = false; btn.textContent = 'Send';
         }
       }
-    });
+    }
+    document.getElementById('results').addEventListener('click', candClick);
+    document.getElementById('requestsList').addEventListener('click', candClick);
 
     document.getElementById('pipeline').addEventListener('click', async (e) => {
       if (!e.target.classList.contains('view-profile-btn')) return;
