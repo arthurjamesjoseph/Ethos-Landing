@@ -159,7 +159,13 @@
     .pair-tray .form-input { margin-top: 0.5rem; }
     .pair-title { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 600; }
     .pair-clear { font-family: var(--font-sans); font-size: 0.8125rem; color: var(--color-text-light); background: none; border: none; cursor: pointer; text-decoration: underline; }
+    .req-dismiss { float: right; font-family: var(--font-sans); font-size: 0.75rem; color: var(--color-text-light); background: none; border: none; cursor: pointer; text-decoration: underline; }
+    .consult-member { display: flex; align-items: center; gap: 0.625rem; margin: 0.5rem 0; }
+    .consult-member img { height: 44px; width: 44px; border-radius: 50%; object-fit: cover; }
     .pair-label { display: block; margin-top: 0.75rem; font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-light); }
+    .share-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .share-row .form-input { flex: 1; font-family: var(--font-sans); font-size: 0.875rem; color: var(--color-text-light); }
+    .share-row .search-btn { white-space: nowrap; }
     .apply-link-row { margin-top: 1.25rem; text-align: center; font-family: var(--font-serif); font-size: 1rem; color: var(--color-text-light); }
     .apply-link { background: none; border: none; cursor: pointer; font-family: var(--font-serif); font-size: 1rem; color: var(--color-gold); text-decoration: underline; padding: 0; }
     #applyCard .form-label { margin-top: 0; }
@@ -287,10 +293,29 @@
           <h2 class="card-title">Ask the Ethos team</h2>
           <p class="card-sub">Send your client's brief in your own words — including the things only the compatibility questionnaire knows. Our team searches and sends back profiles that fit.</p>
           <textarea class="form-input" id="briefInput" placeholder="e.g. My client is 34, in Delhi, and wants someone who loves animals, stays close to family, and enjoys travelling well."></textarea>
+          <label class="pair-label">Who is this for? (optional — helps the team search)</label>
+          <select class="form-input" id="briefClientSelect">
+            <option value="">They're not on Ethos / prefer not to say</option>
+          </select>
+          <div id="briefOffApp">
+            <input class="form-input" id="briefClientName" maxlength="120" placeholder="Their first name" style="margin-top:0.5rem;">
+            <input type="file" class="form-input" id="briefClientPhoto" accept="image/*" style="margin-top:0.5rem;">
+            <p class="filters-note" style="margin-top:0.25rem;">A photo is optional and stays private to the Ethos team.</p>
+          </div>
           <div style="margin-top:0.75rem;"><button class="search-btn" id="briefBtn">Send to the team</button></div>
           <p class="form-error" id="briefError"></p>
           <p class="form-ok" id="briefOk"></p>
           <div id="requestsList"></div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Your clients</h2>
+          <p class="card-sub">Share your personal link — clients who confirm appear here, and you can view their full profile and set them up right away. Their compatibility answers and contact details stay private.</p>
+          <div class="share-row">
+            <input class="form-input" id="clientLink" readonly value="">
+            <button class="search-btn" id="copyLinkBtn">Copy link</button>
+          </div>
+          <div id="clientsList"><p class="empty-note">No clients yet — share your link to bring them onto Ethos.</p></div>
         </div>
 
         <div class="card">
@@ -303,6 +328,38 @@
           <h2 class="card-title">Member introductions</h2>
           <p class="card-sub">Two members you've introduced to each other. When both say yes, they plan their date inside Ethos — you'll see it progress here.</p>
           <div id="memberPairs"><p class="empty-note">No member introductions yet — select two candidates above with their Pair buttons.</p></div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Your profile</h2>
+          <p class="card-sub">This is what members see on your card in the app — keep it yours.</p>
+          <div class="grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+            <div>
+              <label class="pair-label">Name</label>
+              <input class="form-input" id="profName" maxlength="120">
+              <label class="pair-label">Company</label>
+              <input class="form-input" id="profCompany" maxlength="120">
+              <label class="pair-label">Specialties (comma-separated)</label>
+              <input class="form-input" id="profSpecialties" placeholder="Marriage-minded, Cross-city">
+            </div>
+            <div>
+              <label class="pair-label">Your photo</label>
+              <div style="display:flex;align-items:center;gap:0.75rem;">
+                <img id="profPhotoPrev" class="hidden" style="height:64px;width:64px;border-radius:50%;object-fit:cover;" alt="">
+                <input type="file" class="form-input" id="profPhotoFile" accept="image/*">
+              </div>
+              <label class="pair-label">Company logo</label>
+              <div style="display:flex;align-items:center;gap:0.75rem;">
+                <img id="profLogoPrev" class="hidden" style="height:40px;max-width:120px;object-fit:contain;" alt="">
+                <input type="file" class="form-input" id="profLogoFile" accept="image/*">
+              </div>
+            </div>
+          </div>
+          <label class="pair-label">Bio</label>
+          <textarea class="form-input" id="profBio" maxlength="600" placeholder="Who you are, how you work, who you work with."></textarea>
+          <div style="margin-top:0.75rem;"><button class="search-btn" id="profSaveBtn">Save profile</button></div>
+          <p class="form-error" id="profError"></p>
+          <p class="form-ok" id="profOk"></p>
         </div>
 
         <div class="card">
@@ -476,7 +533,9 @@
               '<button class="intro-btn messages-btn">Messages' +
               (i.unread_count ? '<span class="msg-badge">' + i.unread_count + '</span>' : '') +
               '</button>'
-            : '') + '</td></tr>' +
+            : i.status === 'pending'
+              ? '<button class="intro-btn withdraw-btn">Withdraw</button>'
+              : '') + '</td></tr>' +
           '<tr class="profile-row hidden" data-for="' + esc(i.id) + '"><td colspan="5"><div class="profile-panel"></div></td></tr>' +
           '<tr class="chat-row hidden" data-for-chat="' + esc(i.id) + '"><td colspan="5"><div class="chat-panel"></div></td></tr>'
         ).join('') + '</tbody></table>';
@@ -514,6 +573,8 @@
         loadRequests();
         loadMemberPairs();
         loadConsults();
+        loadClients();
+        loadMyProfile();
       } catch (err) {
         localStorage.removeItem(TOKEN_KEY);
         showAuth();
@@ -592,6 +653,12 @@
         '<div class="req">' +
           '<span class="status-chip status-' + esc(r.status) + '">' + esc(r.status) + '</span>' +
           ' <span style="font-family:var(--font-sans);font-size:0.75rem;color:var(--color-text-light);">' + fmtDate(r.created_at) + '</span>' +
+          ' <button class="req-dismiss" data-rid="' + esc(r.id) + '" title="Remove from your list">Dismiss</button>' +
+          (r.for
+            ? '<div class="req-note">For: ' +
+              (r.for.photo_url ? '<img src="' + esc(r.for.photo_url) + '" style="height:28px;width:28px;border-radius:50%;object-fit:cover;vertical-align:middle;margin-right:0.3rem;" alt=""> ' : '') +
+              esc(r.for.name || 'their client') + (r.for.is_member ? ' · Ethos member' : '') + '</div>'
+            : '') +
           '<div class="req-brief">' + esc(r.brief) + '</div>' +
           (r.admin_note ? '<div class="req-note">Ethos team: ' + esc(r.admin_note) + '</div>' : '') +
           (r.results && r.results.length ? r.results.map(c => candCardHtml(c, c.note)).join('') : '') +
@@ -615,9 +682,23 @@
       btn.disabled = true; btn.textContent = 'Sending…';
       try {
         const token = localStorage.getItem(TOKEN_KEY);
-        await portal('submit_search_request', { token, brief: document.getElementById('briefInput').value.trim() });
+        const payload = { token, brief: document.getElementById('briefInput').value.trim() };
+        const clientId = document.getElementById('briefClientSelect').value;
+        if (clientId) {
+          payload.client_user_id = clientId;
+        } else {
+          const cn = document.getElementById('briefClientName').value.trim();
+          if (cn) payload.client_name = cn;
+          const photoFile = document.getElementById('briefClientPhoto').files[0];
+          if (photoFile) payload.client_photo_b64 = await fileToB64(photoFile, 800);
+        }
+        await portal('submit_search_request', payload);
         okEl.textContent = 'Sent — the team will search and send profiles back here.';
         document.getElementById('briefInput').value = '';
+        document.getElementById('briefClientSelect').value = '';
+        document.getElementById('briefClientName').value = '';
+        document.getElementById('briefClientPhoto').value = '';
+        document.getElementById('briefOffApp').classList.remove('hidden');
         loadRequests();
       } catch (err) {
         errEl.textContent = err.message;
@@ -686,6 +767,154 @@
       }
     });
 
+    // ── Shared: downscale an image file to a base64 JPEG ──────────────────
+    function fileToB64(file, maxDim) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', 0.85));
+          URL.revokeObjectURL(img.src);
+        };
+        img.onerror = reject;
+        img.src = URL.createObjectURL(file);
+      });
+    }
+    function fmtDT(iso) {
+      return new Date(iso).toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+    }
+
+    // ── Your profile ──────────────────────────────────────────────────────
+    async function loadMyProfile() {
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const r = await portal('my_profile', { token });
+        const p = r.body && r.body.profile;
+        if (!p) return;
+        document.getElementById('profName').value = p.name || '';
+        document.getElementById('profCompany').value = p.company_name || '';
+        document.getElementById('profSpecialties').value = (p.specialties || []).join(', ');
+        document.getElementById('profBio').value = p.bio || '';
+        if (p.photo_url) { const el = document.getElementById('profPhotoPrev'); el.src = p.photo_url; el.classList.remove('hidden'); }
+        if (p.company_logo_url) { const el = document.getElementById('profLogoPrev'); el.src = p.company_logo_url; el.classList.remove('hidden'); }
+      } catch (_) { /* non-fatal */ }
+    }
+    document.getElementById('profPhotoFile').addEventListener('change', async (e) => {
+      if (!e.target.files[0]) return;
+      const b64 = await fileToB64(e.target.files[0], 800);
+      const el = document.getElementById('profPhotoPrev');
+      el.src = b64; el.classList.remove('hidden'); el.dataset.b64 = b64;
+    });
+    document.getElementById('profLogoFile').addEventListener('change', async (e) => {
+      if (!e.target.files[0]) return;
+      const b64 = await fileToB64(e.target.files[0], 600);
+      const el = document.getElementById('profLogoPrev');
+      el.src = b64; el.classList.remove('hidden'); el.dataset.b64 = b64;
+    });
+    document.getElementById('profSaveBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('profSaveBtn');
+      const errEl = document.getElementById('profError');
+      const okEl = document.getElementById('profOk');
+      errEl.textContent = ''; okEl.textContent = '';
+      btn.disabled = true; btn.textContent = 'Saving…';
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const payload = {
+          token,
+          name: document.getElementById('profName').value.trim(),
+          company_name: document.getElementById('profCompany').value.trim(),
+          specialties: document.getElementById('profSpecialties').value.trim(),
+          bio: document.getElementById('profBio').value.trim(),
+        };
+        const photoB64 = document.getElementById('profPhotoPrev').dataset.b64;
+        const logoB64 = document.getElementById('profLogoPrev').dataset.b64;
+        if (photoB64) payload.photo_b64 = photoB64;
+        if (logoB64) payload.logo_b64 = logoB64;
+        await portal('update_profile', payload);
+        okEl.textContent = 'Saved — members see the update immediately.';
+      } catch (err) {
+        errEl.textContent = err.message;
+      } finally { btn.disabled = false; btn.textContent = 'Save profile'; }
+    });
+
+    // ── Your clients ──────────────────────────────────────────────────────
+    const APP_BASE = IS_DEV ? 'http://localhost:8082' : 'https://app.ethosapp.co';
+    function clientCardHtml(c) {
+      return '<div class="cand" data-uid="' + esc(c.user_id) + '">' +
+        '<div class="cand-row">' +
+          '<div class="cand-left">' +
+            (c.photo_url ? '<img class="cand-photo" src="' + esc(c.photo_url) + '" alt="">' : '<div class="cand-photo-empty"></div>') +
+            '<div style="min-width:0;"><div class="cand-name">' + esc(c.first_name) + (c.paused ? ' <span class="status-chip">paused</span>' : '') + '</div>' +
+            '<div class="cand-meta">' + [c.age, c.city ? esc(String(c.city).split(',')[0]) : null, c.occupation ? esc(c.occupation) : null, c.height_cm ? c.height_cm + ' cm' : null].filter(Boolean).join(' · ') + '</div></div>' +
+          '</div>' +
+          '<button class="intro-btn client-profile-btn">View profile</button>' +
+        '</div>' +
+        '<div class="client-profile-panel hidden"></div>' +
+      '</div>';
+    }
+
+    let myClients = [];
+    async function loadClients() {
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const r = await portal('clients', { token });
+        if (r.body && r.body.client_code) {
+          document.getElementById('clientLink').value = APP_BASE + '/matchmakers?client=' + r.body.client_code;
+        }
+        myClients = r.body.clients || [];
+        // Brief "who is this for" selector mirrors the client roster.
+        const sel = document.getElementById('briefClientSelect');
+        sel.innerHTML = '<option value="">They\'re not on Ethos / prefer not to say</option>' +
+          myClients.map(c => '<option value="' + esc(c.user_id) + '">' + esc(c.first_name) + (c.city ? ' · ' + esc(String(c.city).split(',')[0]) : '') + ' (your client)</option>').join('');
+        const el = document.getElementById('clientsList');
+        if (!myClients.length) {
+          el.innerHTML = '<p class="empty-note">No clients yet — share your link to bring them onto Ethos.</p>';
+          return;
+        }
+        el.innerHTML = myClients.map(clientCardHtml).join('');
+      } catch (_) { /* non-fatal */ }
+    }
+    document.getElementById('briefClientSelect').addEventListener('change', (e) => {
+      document.getElementById('briefOffApp').classList.toggle('hidden', !!e.target.value);
+    });
+
+    document.getElementById('copyLinkBtn').addEventListener('click', async () => {
+      const input = document.getElementById('clientLink');
+      const btn = document.getElementById('copyLinkBtn');
+      try {
+        await navigator.clipboard.writeText(input.value);
+      } catch (_) {
+        input.select();
+        document.execCommand('copy');
+      }
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy link'; }, 1800);
+    });
+
+    document.getElementById('clientsList').addEventListener('click', async (e) => {
+      if (!e.target.classList.contains('client-profile-btn')) return;
+      const cand = e.target.closest('.cand');
+      const panel = cand.querySelector('.client-profile-panel');
+      if (!panel.classList.contains('hidden')) { panel.classList.add('hidden'); return; }
+      e.target.disabled = true; e.target.textContent = 'Loading…';
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const data = await portal('member_profile', { token, client_user_id: cand.dataset.uid });
+        panel.classList.add('profile-panel');
+        renderProfile(panel, data);
+        panel.classList.remove('hidden');
+      } catch (err) {
+        panel.innerHTML = '<p class="empty-note" style="color:var(--color-error);">' + esc(err.message) + '</p>';
+        panel.classList.remove('hidden');
+      } finally {
+        e.target.disabled = false; e.target.textContent = 'View profile';
+      }
+    });
+
     // ── Consultations ─────────────────────────────────────────────────────
     async function loadConsults() {
       try {
@@ -698,48 +927,113 @@
           return;
         }
         el.innerHTML = rows.map(c => {
-          const who = esc(c.member_first_name) + (c.member_city ? ' · ' + esc(String(c.member_city).split(',')[0]) : '');
+          const meta = [c.member_age, c.member_city ? esc(String(c.member_city).split(',')[0]) : null, c.member_occupation ? esc(c.member_occupation) : null].filter(Boolean).join(' · ');
+          const live = c.status === 'requested' || c.status === 'confirmed';
+          const memberCard =
+            '<div class="consult-member">' +
+              (c.member_photo_url ? '<img src="' + esc(c.member_photo_url) + '" alt="">' : '') +
+              '<div><div style="font-family:var(--font-serif);font-size:1.0625rem;font-weight:600;">' + esc(c.member_first_name) +
+              (c.is_client ? ' <span class="status-chip">your client</span>' : '') + '</div>' +
+              (meta ? '<div class="cand-meta">' + meta + '</div>' : '') + '</div>' +
+              (c.is_client ? '<button class="intro-btn consult-profile-btn" data-uid="' + esc(c.user_id) + '" style="margin-left:auto;">View profile</button>' : '') +
+            '</div>';
           let bodyHtml = '';
           if (c.status === 'requested') {
             bodyHtml =
               '<div class="req-note">Pick a time that works:</div>' +
               '<div style="margin-top:0.4rem;display:flex;flex-wrap:wrap;gap:0.4rem;">' +
               (c.proposed_times || []).map(t =>
-                '<button class="intro-btn consult-confirm" data-cid="' + esc(c.id) + '" data-time="' + esc(t) + '">' +
-                new Date(t).toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) +
-                '</button>').join('') +
+                '<button class="intro-btn consult-confirm" data-cid="' + esc(c.id) + '" data-time="' + esc(t) + '">' + fmtDT(t) + '</button>').join('') +
               ' <button class="intro-btn consult-decline" data-cid="' + esc(c.id) + '">Decline</button></div>';
           } else if (c.status === 'confirmed') {
+            const others = (c.proposed_times || []).filter(t =>
+              new Date(t).getTime() !== new Date(c.scheduled_at).getTime() && new Date(t) > new Date());
             bodyHtml =
-              '<div class="req-note">Confirmed for ' + new Date(c.scheduled_at).toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) + '.' +
+              '<div class="req-note">Confirmed for ' + fmtDT(c.scheduled_at) + '.' +
               (c.join_url
                 ? ' <a class="intro-btn" style="display:inline-block;text-decoration:none;" href="' + esc(c.join_url) + '" target="_blank" rel="noopener">Join the call</a>'
-                : ' The join button appears here 15 minutes before.') + '</div>';
+                : ' The join button appears here 15 minutes before.') + '</div>' +
+              '<div style="margin-top:0.4rem;display:flex;flex-wrap:wrap;gap:0.4rem;align-items:center;">' +
+              (others.length ? '<span class="cand-meta">Move to:</span> ' + others.map(t =>
+                '<button class="intro-btn consult-confirm" data-cid="' + esc(c.id) + '" data-time="' + esc(t) + '">' + fmtDT(t) + '</button>').join('') : '') +
+              ' <button class="intro-btn consult-decline" data-cid="' + esc(c.id) + '">Cancel consultation</button></div>';
           } else {
             bodyHtml = '<div class="req-note">' + esc(c.status) + '</div>';
           }
+          const noteRow = live
+            ? '<div class="chat-compose" style="margin-top:0.5rem;">' +
+              '<input class="form-input consult-note-input" data-cid="' + esc(c.id) + '" maxlength="300" placeholder="A short note they\'ll see on their card" value="' + esc(c.mm_note || '') + '">' +
+              '<button class="intro-btn consult-note-save" data-cid="' + esc(c.id) + '">Save note</button></div>'
+            : '';
           return '<div class="req">' +
             '<span class="status-chip status-' + esc(c.status) + '">' + esc(c.status) + '</span>' +
-            ' <span style="font-family:var(--font-serif);font-size:1.0625rem;font-weight:600;">' + who + '</span>' +
+            memberCard +
             (c.note ? '<div class="req-brief">' + esc(c.note) + '</div>' : '') +
-            bodyHtml +
+            bodyHtml + noteRow +
+            '<div class="consult-profile-panel hidden"></div>' +
           '</div>';
         }).join('');
       } catch (_) { /* non-fatal */ }
     }
 
     document.getElementById('consultsList').addEventListener('click', async (e) => {
+      const token = localStorage.getItem(TOKEN_KEY);
+      // View a client's profile straight from the consultation row.
+      if (e.target.classList.contains('consult-profile-btn')) {
+        const req = e.target.closest('.req');
+        const panel = req.querySelector('.consult-profile-panel');
+        if (!panel.classList.contains('hidden')) { panel.classList.add('hidden'); return; }
+        e.target.disabled = true; e.target.textContent = 'Loading…';
+        try {
+          const data = await portal('member_profile', { token, client_user_id: e.target.dataset.uid });
+          panel.classList.add('profile-panel');
+          renderProfile(panel, data);
+          panel.classList.remove('hidden');
+        } catch (err) {
+          panel.innerHTML = '<p class="empty-note" style="color:var(--color-error);">' + esc(err.message) + '</p>';
+          panel.classList.remove('hidden');
+        } finally { e.target.disabled = false; e.target.textContent = 'View profile'; }
+        return;
+      }
+
       const cid = e.target.dataset && e.target.dataset.cid;
       if (!cid) return;
-      const token = localStorage.getItem(TOKEN_KEY);
       e.target.disabled = true;
       try {
         if (e.target.classList.contains('consult-confirm')) {
           await portal('confirm_consult', { token, consult_id: cid, time: e.target.dataset.time });
+          loadConsults();
         } else if (e.target.classList.contains('consult-decline')) {
+          if (e.target.dataset.armed !== '1') {
+            e.target.dataset.armed = '1';
+            e.target.textContent = 'Tap again to confirm';
+            e.target.disabled = false;
+            return;
+          }
           await portal('decline_consult', { token, consult_id: cid });
+          loadConsults();
+        } else if (e.target.classList.contains('consult-note-save')) {
+          const input = e.target.closest('.chat-compose').querySelector('.consult-note-input');
+          await portal('consult_note', { token, consult_id: cid, note: input.value.trim() });
+          e.target.textContent = 'Saved!';
+          setTimeout(() => { e.target.textContent = 'Save note'; }, 1500);
+          e.target.disabled = false;
+          return;
         }
-        loadConsults();
+      } catch (err) {
+        alert(err.message || 'Something went wrong.');
+        e.target.disabled = false;
+      }
+    });
+
+    // Dismiss an answered / stale concierge request.
+    document.getElementById('requestsList').addEventListener('click', async (e) => {
+      if (!e.target.classList.contains('req-dismiss')) return;
+      e.target.disabled = true;
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        await portal('close_search_request', { token, request_id: e.target.dataset.rid });
+        loadRequests();
       } catch (err) {
         alert(err.message || 'Something went wrong.');
         e.target.disabled = false;
@@ -881,6 +1175,26 @@
     }
 
     document.getElementById('pipeline').addEventListener('click', async (e) => {
+      // Withdraw a pending introduction (two-tap confirm).
+      if (e.target.classList.contains('withdraw-btn')) {
+        if (e.target.dataset.armed !== '1') {
+          e.target.dataset.armed = '1';
+          e.target.textContent = 'Tap again to withdraw';
+          return;
+        }
+        e.target.disabled = true;
+        try {
+          const token = localStorage.getItem(TOKEN_KEY);
+          await portal('withdraw_intro', { token, introduction_id: e.target.closest('tr').dataset.intro });
+          const d = await portal('dashboard', { token });
+          renderPipeline(d.introductions || []);
+        } catch (err) {
+          alert(err.message || 'Something went wrong.');
+          e.target.disabled = false;
+        }
+        return;
+      }
+
       const chatPanel = e.target.closest('.chat-panel');
       if (chatPanel && e.target.classList.contains('chat-send')) {
         const introId = chatPanel.closest('.chat-row').dataset.forChat;
