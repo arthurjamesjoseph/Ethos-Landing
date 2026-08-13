@@ -523,8 +523,18 @@
     function filterSummary(f) {
       const parts = [];
       if (f.gender) parts.push('Seeking: ' + (f.gender === 'male' ? 'men' : 'women'));
-      if (f.age_min || f.age_max) parts.push('Age ' + (f.age_min || '—') + '–' + (f.age_max || '—'));
+      if (f.age_min && f.age_max) parts.push('Age ' + f.age_min + '–' + f.age_max);
+      else if (f.age_max) parts.push('Under ' + (f.age_max + 1));
+      else if (f.age_min) parts.push(f.age_min + '+');
       if (f.city) parts.push(f.city);
+      if (f.religion) parts.push(f.religion.charAt(0).toUpperCase() + f.religion.slice(1));
+      if (f.marital_status) parts.push(f.marital_status.replace('-', ' '));
+      if (f.smoking === 'never') parts.push('non-smoker');
+      else if (f.smoking) parts.push('smokes ' + f.smoking);
+      if (f.drinking === 'never') parts.push("doesn't drink");
+      else if (f.drinking) parts.push('drinks ' + f.drinking);
+      if (f.education_min) parts.push(f.education_min + '+');
+      if (f.height_min_cm) parts.push(f.height_min_cm + 'cm+');
       return parts.length ? 'Understood as — ' + parts.join(' · ') : '';
     }
 
