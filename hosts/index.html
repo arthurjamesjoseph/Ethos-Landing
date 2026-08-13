@@ -97,6 +97,9 @@
     .app-footer { padding: 1.5rem 2.5rem 2rem; }
     .app-footer-copy { font-family: var(--font-serif); font-size: 0.8125rem; color: var(--color-text-light); text-align: center; }
     .hidden { display: none !important; }
+    .apply-link-row { margin-top: 1.25rem; text-align: center; font-family: var(--font-serif); font-size: 1rem; color: var(--color-text-light); }
+    .apply-link { background: none; border: none; cursor: pointer; font-family: var(--font-serif); font-size: 1rem; color: var(--color-gold); text-decoration: underline; padding: 0; }
+    #applyCard .form-label { margin-top: 0; }
     @media (max-width: 720px) {
       .main { padding: 1.75rem 1rem 3rem; }
       .card { padding: 1.375rem 1.125rem; }
@@ -139,6 +142,28 @@
               <p class="form-error" id="otpError"></p>
               <p class="form-hint"><button id="backBtn">Use a different email</button></p>
             </div>
+          </div>
+
+          <p class="apply-link-row">New here? <button class="apply-link" id="applyToggle">Apply to host with Ethos</button></p>
+
+          <div class="form-card hidden" id="applyCard" style="margin-top: 1rem;">
+            <div id="applyForm">
+              <h2 class="form-title">Host with Ethos</h2>
+              <p class="form-subtitle">Tell us about you and your events — our team reviews every application personally.</p>
+              <label class="form-label" for="applyName">Your name</label>
+              <input class="form-input" id="applyName" maxlength="120" autocomplete="name">
+              <label class="form-label" for="applyEmail" style="margin-top: 0.75rem;">Email</label>
+              <input class="form-input" type="email" id="applyEmail" maxlength="254" autocomplete="email">
+              <label class="form-label" for="applyCompany" style="margin-top: 0.75rem;">Organisation or venue (optional)</label>
+              <input class="form-input" id="applyCompany" maxlength="120">
+              <label class="form-label" for="applyCity" style="margin-top: 0.75rem;">City you host in</label>
+              <input class="form-input" id="applyCity" maxlength="80" placeholder="e.g. Mumbai">
+              <label class="form-label" for="applyMessage" style="margin-top: 0.75rem;">About your events</label>
+              <textarea class="form-input" id="applyMessage" maxlength="1000" placeholder="What kind of evenings you run, typical size, anything you'd like us to know."></textarea>
+              <button class="submit-btn" id="applyBtn">Send application</button>
+              <p class="form-error" id="applyError"></p>
+            </div>
+            <p class="form-ok hidden" id="applyOk" style="margin: 0;">Thank you — we review every application personally and will be in touch by email.</p>
           </div>
         </div>
       </div>
@@ -266,6 +291,31 @@
 
     document.getElementById('backBtn').addEventListener('click', () => {
       otpStep.classList.add('hidden'); emailStep.classList.remove('hidden');
+    });
+
+    // ── Self-serve application ────────────────────────────────────────────
+    document.getElementById('applyToggle').addEventListener('click', () => {
+      document.getElementById('applyCard').classList.toggle('hidden');
+    });
+    document.getElementById('applyBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('applyBtn');
+      const errEl = document.getElementById('applyError');
+      errEl.textContent = '';
+      btn.disabled = true; btn.textContent = 'Sending…';
+      try {
+        await portal('apply', {
+          name: document.getElementById('applyName').value.trim(),
+          email: document.getElementById('applyEmail').value.trim(),
+          company: document.getElementById('applyCompany').value.trim(),
+          city: document.getElementById('applyCity').value.trim(),
+          message: document.getElementById('applyMessage').value.trim(),
+        });
+        document.getElementById('applyForm').classList.add('hidden');
+        document.getElementById('applyOk').classList.remove('hidden');
+      } catch (err) {
+        errEl.textContent = err.message;
+        btn.disabled = false; btn.textContent = 'Send application';
+      }
     });
 
     document.getElementById('verifyBtn').addEventListener('click', async () => {

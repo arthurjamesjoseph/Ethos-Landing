@@ -160,6 +160,9 @@
     .pair-title { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 600; }
     .pair-clear { font-family: var(--font-sans); font-size: 0.8125rem; color: var(--color-text-light); background: none; border: none; cursor: pointer; text-decoration: underline; }
     .pair-label { display: block; margin-top: 0.75rem; font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-light); }
+    .apply-link-row { margin-top: 1.25rem; text-align: center; font-family: var(--font-serif); font-size: 1rem; color: var(--color-text-light); }
+    .apply-link { background: none; border: none; cursor: pointer; font-family: var(--font-serif); font-size: 1rem; color: var(--color-gold); text-decoration: underline; padding: 0; }
+    #applyCard .form-label { margin-top: 0; }
     .chat-panel { padding: 0.75rem 0 0.5rem; }
     .chat-scroll { max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; padding: 0.25rem 0; }
     .chat-bubble { max-width: 75%; padding: 0.5rem 0.875rem; border-radius: 14px; font-size: 0.9688rem; line-height: 1.5; }
@@ -227,6 +230,28 @@
               <p class="form-error" id="otpError"></p>
               <p class="form-hint"><button id="backBtn">Use a different email</button></p>
             </div>
+          </div>
+
+          <p class="apply-link-row">New here? <button class="apply-link" id="applyToggle">Apply to become an Ethos matchmaker</button></p>
+
+          <div class="form-card hidden" id="applyCard" style="margin-top: 1rem;">
+            <div id="applyForm">
+              <h2 class="form-title">Work with Ethos</h2>
+              <p class="form-subtitle">Tell us about yourself — our team reviews every application personally.</p>
+              <label class="form-label" for="applyName">Your name</label>
+              <input class="form-input" id="applyName" maxlength="120" autocomplete="name">
+              <label class="form-label" for="applyEmail" style="margin-top: 0.75rem;">Email</label>
+              <input class="form-input" type="email" id="applyEmail" maxlength="254" autocomplete="email">
+              <label class="form-label" for="applyCompany" style="margin-top: 0.75rem;">Company (optional)</label>
+              <input class="form-input" id="applyCompany" maxlength="120">
+              <label class="form-label" for="applyCity" style="margin-top: 0.75rem;">City you work in</label>
+              <input class="form-input" id="applyCity" maxlength="80" placeholder="e.g. Mumbai">
+              <label class="form-label" for="applyMessage" style="margin-top: 0.75rem;">About your matchmaking</label>
+              <textarea class="form-input" id="applyMessage" maxlength="1000" placeholder="How long you've been matchmaking, who you work with, anything you'd like us to know."></textarea>
+              <button class="submit-btn" id="applyBtn">Send application</button>
+              <p class="form-error" id="applyError"></p>
+            </div>
+            <p class="form-ok hidden" id="applyOk" style="margin: 0;">Thank you — we review every application personally and will be in touch by email.</p>
           </div>
         </div>
       </div>
@@ -376,6 +401,31 @@
         emailError.textContent = err.message;
       } finally {
         btn.disabled = false; btn.textContent = 'Send code';
+      }
+    });
+
+    // ── Self-serve application ────────────────────────────────────────────
+    document.getElementById('applyToggle').addEventListener('click', () => {
+      document.getElementById('applyCard').classList.toggle('hidden');
+    });
+    document.getElementById('applyBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('applyBtn');
+      const errEl = document.getElementById('applyError');
+      errEl.textContent = '';
+      btn.disabled = true; btn.textContent = 'Sending…';
+      try {
+        await portal('apply', {
+          name: document.getElementById('applyName').value.trim(),
+          email: document.getElementById('applyEmail').value.trim(),
+          company: document.getElementById('applyCompany').value.trim(),
+          city: document.getElementById('applyCity').value.trim(),
+          message: document.getElementById('applyMessage').value.trim(),
+        });
+        document.getElementById('applyForm').classList.add('hidden');
+        document.getElementById('applyOk').classList.remove('hidden');
+      } catch (err) {
+        errEl.textContent = err.message;
+        btn.disabled = false; btn.textContent = 'Send application';
       }
     });
 
