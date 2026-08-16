@@ -160,6 +160,15 @@
     .pair-title { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 600; }
     .pair-clear { font-family: var(--font-sans); font-size: 0.8125rem; color: var(--color-text-light); background: none; border: none; cursor: pointer; text-decoration: underline; }
     .req-dismiss { float: right; font-family: var(--font-sans); font-size: 0.75rem; color: var(--color-text-light); background: none; border: none; cursor: pointer; text-decoration: underline; }
+    .portal-tabs { display: flex; gap: 0.375rem; flex-wrap: wrap; margin-bottom: 1.5rem; position: sticky; top: 64px; z-index: 50; background: var(--color-cream); padding: 0.5rem 0; }
+    .portal-tabs button {
+      font-family: var(--font-sans); font-size: 0.875rem; font-weight: 600; letter-spacing: 0.02em;
+      color: var(--color-text-light); background: var(--color-card); border: 1px solid var(--color-input-border);
+      border-radius: 999px; padding: 0.5rem 1.125rem; cursor: pointer; transition: all 0.15s;
+    }
+    .portal-tabs button.active { color: var(--color-white); background: var(--color-gold); border-color: var(--color-gold); }
+    .tabpane { display: none; }
+    .tabpane.visible { display: block; }
     .consult-member { display: flex; align-items: center; gap: 0.625rem; margin: 0.5rem 0; }
     .consult-member img { height: 44px; width: 44px; border-radius: 50%; object-fit: cover; }
     .pair-label { display: block; margin-top: 0.75rem; font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-light); }
@@ -277,7 +286,15 @@
           Ethos and to the member.
         </div>
 
-        <div class="card">
+        <nav class="portal-tabs" id="portalTabs">
+          <button data-tab="introduce" class="active">Introduce</button>
+          <button data-tab="clients">Clients</button>
+          <button data-tab="consult">Consultations</button>
+          <button data-tab="ask">Ask Ethos</button>
+          <button data-tab="profile">Profile</button>
+        </nav>
+
+        <div class="card tabpane tab-introduce">
           <h2 class="card-title">Find candidates</h2>
           <p class="card-sub">Describe who your client is looking for, in your own words. This early tool filters by age, city and who they're seeking — for the nuanced things only the compatibility questionnaire knows, ask the Ethos team below.</p>
           <div class="search-row">
@@ -289,18 +306,20 @@
           <div id="pairTray" class="pair-tray hidden"></div>
         </div>
 
-        <div class="card">
+        <div class="card tabpane tab-ask">
           <h2 class="card-title">Ask the Ethos team</h2>
           <p class="card-sub">Send your client's brief in your own words — including the things only the compatibility questionnaire knows. Our team searches and sends back profiles that fit.</p>
           <textarea class="form-input" id="briefInput" placeholder="e.g. My client is 34, in Delhi, and wants someone who loves animals, stays close to family, and enjoys travelling well."></textarea>
-          <label class="pair-label">Who is this for? (optional — helps the team search)</label>
-          <select class="form-input" id="briefClientSelect">
-            <option value="">They're not on Ethos / prefer not to say</option>
-          </select>
+          <label class="pair-label">Who is the client? (optional — gives the team someone to go by)</label>
+          <div id="briefClientPicker" class="hidden">
+            <select class="form-input" id="briefClientSelect">
+              <option value="">They're not on Ethos yet</option>
+            </select>
+          </div>
           <div id="briefOffApp">
-            <input class="form-input" id="briefClientName" maxlength="120" placeholder="Their first name" style="margin-top:0.5rem;">
+            <input class="form-input" id="briefClientName" maxlength="120" placeholder="Their first name (optional)" style="margin-top:0.5rem;">
             <input type="file" class="form-input" id="briefClientPhoto" accept="image/*" style="margin-top:0.5rem;">
-            <p class="filters-note" style="margin-top:0.25rem;">A photo is optional and stays private to the Ethos team.</p>
+            <p class="filters-note" style="margin-top:0.25rem;">A photo is optional and is only ever seen by the Ethos team — never by members.</p>
           </div>
           <div style="margin-top:0.75rem;"><button class="search-btn" id="briefBtn">Send to the team</button></div>
           <p class="form-error" id="briefError"></p>
@@ -308,7 +327,7 @@
           <div id="requestsList"></div>
         </div>
 
-        <div class="card">
+        <div class="card tabpane tab-clients">
           <h2 class="card-title">Your clients</h2>
           <p class="card-sub">Share your personal link — clients who confirm appear here, and you can view their full profile and set them up right away. Their compatibility answers and contact details stay private.</p>
           <div class="share-row">
@@ -318,19 +337,31 @@
           <div id="clientsList"><p class="empty-note">No clients yet — share your link to bring them onto Ethos.</p></div>
         </div>
 
-        <div class="card">
+        <div class="card tabpane tab-consult">
+          <h2 class="card-title">Your availability</h2>
+          <p class="card-sub">Publish the times you're free for consultations — members book them with one tap and you're both confirmed instantly. Booked times show who took them.</p>
+          <div class="share-row">
+            <input type="datetime-local" class="form-input" id="slotInput">
+            <button class="search-btn" id="addSlotBtn">Add time</button>
+          </div>
+          <p class="form-error" id="slotError"></p>
+          <p class="form-ok" id="slotOk"></p>
+          <div id="slotsList"><p class="empty-note">No times published yet — without them, members propose their own and wait for you to confirm.</p></div>
+        </div>
+
+        <div class="card tabpane tab-consult">
           <h2 class="card-title">Consultations</h2>
           <p class="card-sub">Members who'd like a video call with you. Confirm one of their times — the call happens right here in your browser, and in their app.</p>
           <div id="consultsList"><p class="empty-note">No consultation requests yet.</p></div>
         </div>
 
-        <div class="card">
+        <div class="card tabpane tab-introduce">
           <h2 class="card-title">Member introductions</h2>
           <p class="card-sub">Two members you've introduced to each other. When both say yes, they plan their date inside Ethos — you'll see it progress here.</p>
           <div id="memberPairs"><p class="empty-note">No member introductions yet — select two candidates above with their Pair buttons.</p></div>
         </div>
 
-        <div class="card">
+        <div class="card tabpane tab-profile">
           <h2 class="card-title">Your profile</h2>
           <p class="card-sub">This is what members see on your card in the app — keep it yours.</p>
           <div class="grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
@@ -355,14 +386,37 @@
               </div>
             </div>
           </div>
-          <label class="pair-label">Bio</label>
-          <textarea class="form-input" id="profBio" maxlength="600" placeholder="Who you are, how you work, who you work with."></textarea>
+          <label class="pair-label">Tagline (one line under your name)</label>
+          <input class="form-input" id="profTagline" maxlength="80" placeholder="e.g. Marriage-minded matchmaking, done personally">
+          <div class="grid-2" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;">
+            <div>
+              <label class="pair-label">Years of experience</label>
+              <input class="form-input" id="profYears" type="number" min="0" max="60">
+            </div>
+            <div>
+              <label class="pair-label">Matches made</label>
+              <input class="form-input" id="profMatches" maxlength="60" placeholder="e.g. 150+ couples">
+            </div>
+            <div>
+              <label class="pair-label">Languages</label>
+              <input class="form-input" id="profLanguages" maxlength="120" placeholder="e.g. English, Hindi">
+            </div>
+          </div>
+          <label class="pair-label">Banner image (wide, shown across the top of your profile)</label>
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <img id="profBannerPrev" class="hidden" style="height:56px;width:160px;border-radius:8px;object-fit:cover;" alt="">
+            <input type="file" class="form-input" id="profBannerFile" accept="image/*">
+          </div>
+          <label class="pair-label">About you</label>
+          <textarea class="form-input" id="profBio" maxlength="600" placeholder="Who you are, who you work with, what members can expect."></textarea>
+          <label class="pair-label">How you work</label>
+          <textarea class="form-input" id="profApproach" maxlength="1000" placeholder="Your process — how you get to know clients, how you make introductions, what a consultation looks like."></textarea>
           <div style="margin-top:0.75rem;"><button class="search-btn" id="profSaveBtn">Save profile</button></div>
           <p class="form-error" id="profError"></p>
           <p class="form-ok" id="profOk"></p>
         </div>
 
-        <div class="card">
+        <div class="card tabpane tab-introduce">
           <h2 class="card-title">Your introductions</h2>
           <p class="card-sub">Members answer in the Ethos app; accepted members can hear more from you through Ethos.</p>
           <div id="pipeline"><p class="empty-note">Loading…</p></div>
@@ -575,6 +629,7 @@
         loadConsults();
         loadClients();
         loadMyProfile();
+        loadSlots();
       } catch (err) {
         localStorage.removeItem(TOKEN_KEY);
         showAuth();
@@ -630,6 +685,7 @@
             (c.photo_url ? '<img class="cand-photo" src="' + esc(c.photo_url) + '" alt="">' : '<div class="cand-photo-empty"></div>') +
             '<div style="min-width:0;"><div class="cand-name">' + esc(c.first_name) + '</div>' +
             '<div class="cand-meta">' + [c.age, c.city ? esc(String(c.city).split(',')[0]) : null, c.occupation ? esc(c.occupation) : null, c.height_cm ? c.height_cm + ' cm' : null].filter(Boolean).join(' · ') + '</div>' +
+            (c.member_note ? '<div class="req-note">In their words: “' + esc(c.member_note) + '”</div>' : '') +
             (extraNote ? '<div class="req-note">' + esc(extraNote) + '</div>' : '') + '</div>' +
           '</div>' +
           '<span style="white-space:nowrap;"><button class="intro-btn pair-btn" data-name="' + esc(c.first_name) + '">Pair</button> ' +
@@ -767,6 +823,20 @@
       }
     });
 
+    // ── Dashboard tabs ────────────────────────────────────────────────────
+    function switchTab(name) {
+      document.querySelectorAll('#portalTabs button').forEach(b =>
+        b.classList.toggle('active', b.dataset.tab === name));
+      document.querySelectorAll('.tabpane').forEach(p =>
+        p.classList.toggle('visible', p.classList.contains('tab-' + name)));
+      try { localStorage.setItem('ethos_mm_tab', name); } catch (_) { /* private mode */ }
+    }
+    document.getElementById('portalTabs').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-tab]');
+      if (btn) switchTab(btn.dataset.tab);
+    });
+    switchTab(localStorage.getItem('ethos_mm_tab') || 'introduce');
+
     // ── Shared: downscale an image file to a base64 JPEG ──────────────────
     function fileToB64(file, maxDim) {
       return new Promise((resolve, reject) => {
@@ -799,8 +869,14 @@
         document.getElementById('profCompany').value = p.company_name || '';
         document.getElementById('profSpecialties').value = (p.specialties || []).join(', ');
         document.getElementById('profBio').value = p.bio || '';
+        document.getElementById('profTagline').value = p.tagline || '';
+        document.getElementById('profYears').value = p.years_experience != null ? p.years_experience : '';
+        document.getElementById('profMatches').value = p.matches_made || '';
+        document.getElementById('profLanguages').value = p.languages || '';
+        document.getElementById('profApproach').value = p.approach || '';
         if (p.photo_url) { const el = document.getElementById('profPhotoPrev'); el.src = p.photo_url; el.classList.remove('hidden'); }
         if (p.company_logo_url) { const el = document.getElementById('profLogoPrev'); el.src = p.company_logo_url; el.classList.remove('hidden'); }
+        if (p.banner_url) { const el = document.getElementById('profBannerPrev'); el.src = p.banner_url; el.classList.remove('hidden'); }
       } catch (_) { /* non-fatal */ }
     }
     document.getElementById('profPhotoFile').addEventListener('change', async (e) => {
@@ -813,6 +889,12 @@
       if (!e.target.files[0]) return;
       const b64 = await fileToB64(e.target.files[0], 600);
       const el = document.getElementById('profLogoPrev');
+      el.src = b64; el.classList.remove('hidden'); el.dataset.b64 = b64;
+    });
+    document.getElementById('profBannerFile').addEventListener('change', async (e) => {
+      if (!e.target.files[0]) return;
+      const b64 = await fileToB64(e.target.files[0], 1600);
+      const el = document.getElementById('profBannerPrev');
       el.src = b64; el.classList.remove('hidden'); el.dataset.b64 = b64;
     });
     document.getElementById('profSaveBtn').addEventListener('click', async () => {
@@ -829,11 +911,19 @@
           company_name: document.getElementById('profCompany').value.trim(),
           specialties: document.getElementById('profSpecialties').value.trim(),
           bio: document.getElementById('profBio').value.trim(),
+          tagline: document.getElementById('profTagline').value.trim(),
+          matches_made: document.getElementById('profMatches').value.trim(),
+          languages: document.getElementById('profLanguages').value.trim(),
+          approach: document.getElementById('profApproach').value.trim(),
         };
+        const yearsVal = document.getElementById('profYears').value;
+        if (yearsVal !== '') payload.years_experience = Number(yearsVal);
         const photoB64 = document.getElementById('profPhotoPrev').dataset.b64;
         const logoB64 = document.getElementById('profLogoPrev').dataset.b64;
+        const bannerB64 = document.getElementById('profBannerPrev').dataset.b64;
         if (photoB64) payload.photo_b64 = photoB64;
         if (logoB64) payload.logo_b64 = logoB64;
+        if (bannerB64) payload.banner_b64 = bannerB64;
         await portal('update_profile', payload);
         okEl.textContent = 'Saved — members see the update immediately.';
       } catch (err) {
@@ -849,7 +939,8 @@
           '<div class="cand-left">' +
             (c.photo_url ? '<img class="cand-photo" src="' + esc(c.photo_url) + '" alt="">' : '<div class="cand-photo-empty"></div>') +
             '<div style="min-width:0;"><div class="cand-name">' + esc(c.first_name) + (c.paused ? ' <span class="status-chip">paused</span>' : '') + '</div>' +
-            '<div class="cand-meta">' + [c.age, c.city ? esc(String(c.city).split(',')[0]) : null, c.occupation ? esc(c.occupation) : null, c.height_cm ? c.height_cm + ' cm' : null].filter(Boolean).join(' · ') + '</div></div>' +
+            '<div class="cand-meta">' + [c.age, c.city ? esc(String(c.city).split(',')[0]) : null, c.occupation ? esc(c.occupation) : null, c.height_cm ? c.height_cm + ' cm' : null].filter(Boolean).join(' · ') + '</div>' +
+            (c.member_note ? '<div class="req-note">In their words: “' + esc(c.member_note) + '”</div>' : '') + '</div>' +
           '</div>' +
           '<button class="intro-btn client-profile-btn">View profile</button>' +
         '</div>' +
@@ -866,10 +957,12 @@
           document.getElementById('clientLink').value = APP_BASE + '/matchmakers?client=' + r.body.client_code;
         }
         myClients = r.body.clients || [];
-        // Brief "who is this for" selector mirrors the client roster.
+        // Brief "who is the client" selector mirrors the roster — hidden
+        // entirely until there are actual clients to pick from.
         const sel = document.getElementById('briefClientSelect');
-        sel.innerHTML = '<option value="">They\'re not on Ethos / prefer not to say</option>' +
+        sel.innerHTML = '<option value="">They\'re not on Ethos yet</option>' +
           myClients.map(c => '<option value="' + esc(c.user_id) + '">' + esc(c.first_name) + (c.city ? ' · ' + esc(String(c.city).split(',')[0]) : '') + ' (your client)</option>').join('');
+        document.getElementById('briefClientPicker').classList.toggle('hidden', !myClients.length);
         const el = document.getElementById('clientsList');
         if (!myClients.length) {
           el.innerHTML = '<p class="empty-note">No clients yet — share your link to bring them onto Ethos.</p>';
@@ -915,6 +1008,55 @@
       }
     });
 
+    // ── Availability ──────────────────────────────────────────────────────
+    async function loadSlots() {
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const r = await portal('availability', { token });
+        const el = document.getElementById('slotsList');
+        const slots = (r.body && r.body.slots) || [];
+        if (!slots.length) {
+          el.innerHTML = '<p class="empty-note">No times published yet — without them, members propose their own and wait for you to confirm.</p>';
+          return;
+        }
+        el.innerHTML = '<div style="display:flex;flex-wrap:wrap;gap:0.4rem;">' + slots.map(s =>
+          '<span class="intro-btn" style="cursor:default;display:inline-flex;align-items:center;gap:0.4rem;">' +
+            fmtDT(s.starts_at) +
+            (s.booked_by
+              ? ' <span class="status-chip status-accepted">booked · ' + esc(s.booked_by) + '</span>'
+              : ' <button class="pair-clear slot-remove" data-sid="' + esc(s.id) + '" title="Remove">✕</button>') +
+          '</span>').join('') + '</div>';
+      } catch (_) { /* non-fatal */ }
+    }
+    document.getElementById('addSlotBtn').addEventListener('click', async () => {
+      const input = document.getElementById('slotInput');
+      const errEl = document.getElementById('slotError');
+      errEl.textContent = '';
+      if (!input.value) { errEl.textContent = 'Pick a date and time first.'; return; }
+      const btn = document.getElementById('addSlotBtn');
+      btn.disabled = true;
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        await portal('add_availability', { token, starts_at: new Date(input.value).toISOString() });
+        input.value = '';
+        const okEl = document.getElementById('slotOk');
+        okEl.textContent = 'Added — members can book it now.';
+        setTimeout(() => { okEl.textContent = ''; }, 2500);
+        loadSlots();
+      } catch (err) {
+        errEl.textContent = err.message;
+      } finally { btn.disabled = false; }
+    });
+    document.getElementById('slotsList').addEventListener('click', async (e) => {
+      if (!e.target.classList.contains('slot-remove')) return;
+      e.target.disabled = true;
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        await portal('remove_availability', { token, slot_id: e.target.dataset.sid });
+        loadSlots();
+      } catch (_) { e.target.disabled = false; }
+    });
+
     // ── Consultations ─────────────────────────────────────────────────────
     async function loadConsults() {
       try {
@@ -934,7 +1076,8 @@
               (c.member_photo_url ? '<img src="' + esc(c.member_photo_url) + '" alt="">' : '') +
               '<div><div style="font-family:var(--font-serif);font-size:1.0625rem;font-weight:600;">' + esc(c.member_first_name) +
               (c.is_client ? ' <span class="status-chip">your client</span>' : '') + '</div>' +
-              (meta ? '<div class="cand-meta">' + meta + '</div>' : '') + '</div>' +
+              (meta ? '<div class="cand-meta">' + meta + '</div>' : '') +
+              (c.member_note ? '<div class="req-note">In their words: “' + esc(c.member_note) + '”</div>' : '') + '</div>' +
               (c.is_client ? '<button class="intro-btn consult-profile-btn" data-uid="' + esc(c.user_id) + '" style="margin-left:auto;">View profile</button>' : '') +
             '</div>';
           let bodyHtml = '';
@@ -1040,6 +1183,24 @@
       }
     });
 
+    document.getElementById('memberPairs').addEventListener('click', async (e) => {
+      if (!e.target.classList.contains('pair-withdraw')) return;
+      if (e.target.dataset.armed !== '1') {
+        e.target.dataset.armed = '1';
+        e.target.textContent = 'Tap again to withdraw';
+        return;
+      }
+      e.target.disabled = true;
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        await portal('withdraw_member_intro', { token, pair_id: e.target.dataset.pid });
+        loadMemberPairs();
+      } catch (err) {
+        alert(err.message || 'Something went wrong.');
+        e.target.disabled = false;
+      }
+    });
+
     function pairStatusChip(name, status) {
       return esc(name) + ' <span class="status-chip status-' + esc(status) + '">' + esc(status) + '</span>';
     }
@@ -1063,7 +1224,9 @@
                 : (p.a_status === 'accepted' && p.b_status === 'accepted')
                   ? 'Both said yes — waiting for them to plan the date.'
                   : 'Waiting for their answers.';
+          const canWithdraw = !(p.date_status && ['pending', 'accepted'].includes(p.date_status));
           return '<div class="req">' +
+            (canWithdraw ? '<button class="req-dismiss pair-withdraw" data-pid="' + esc(p.id) + '">Withdraw</button>' : '') +
             '<div class="req-brief">' + pairStatusChip(p.a_first_name, p.a_status) + ' &nbsp;↔&nbsp; ' + pairStatusChip(p.b_first_name, p.b_status) + '</div>' +
             '<div class="req-note">' + line + ' <span style="font-family:var(--font-sans);font-size:0.75rem;color:var(--color-text-light);">' + fmtDate(p.created_at) + '</span></div>' +
           '</div>';

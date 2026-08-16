@@ -97,6 +97,15 @@
     .app-footer { padding: 1.5rem 2.5rem 2rem; }
     .app-footer-copy { font-family: var(--font-serif); font-size: 0.8125rem; color: var(--color-text-light); text-align: center; }
     .hidden { display: none !important; }
+    .portal-tabs { display: flex; gap: 0.375rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .portal-tabs button {
+      font-family: var(--font-sans); font-size: 0.875rem; font-weight: 600; letter-spacing: 0.02em;
+      color: var(--color-text-light); background: var(--color-card); border: 1px solid var(--color-input-border);
+      border-radius: 999px; padding: 0.5rem 1.125rem; cursor: pointer; transition: all 0.15s;
+    }
+    .portal-tabs button.active { color: var(--color-white); background: var(--color-gold); border-color: var(--color-gold); }
+    .tabpane { display: none; }
+    .tabpane.visible { display: block; }
     .apply-link-row { margin-top: 1.25rem; text-align: center; font-family: var(--font-serif); font-size: 1rem; color: var(--color-text-light); }
     .apply-link { background: none; border: none; cursor: pointer; font-family: var(--font-serif); font-size: 1rem; color: var(--color-gold); text-decoration: underline; padding: 0; }
     #applyCard .form-label { margin-top: 0; }
@@ -175,13 +184,18 @@
         </div>
         <p class="dash-terms">Submitted events are reviewed by the Ethos team before going live.</p>
 
-        <div class="card">
+        <nav class="portal-tabs" id="portalTabs">
+          <button data-tab="events" class="active">Your events</button>
+          <button data-tab="submit">Submit an event</button>
+        </nav>
+
+        <div class="card tabpane tab-events">
           <h2 class="card-title">Your events</h2>
           <p class="card-sub">Sales update live; open the guest list on the night to check people in.</p>
           <div id="eventsList"><p class="empty-note">Loading…</p></div>
         </div>
 
-        <div class="card">
+        <div class="card tabpane tab-submit">
           <h2 class="card-title">Submit an event</h2>
           <p class="card-sub">Times are in the event city's local time. We'll review and publish, and add your poster with you.</p>
           <div class="field"><label class="form-label">Title</label><input class="form-input" id="evTitle"></div>
@@ -292,6 +306,20 @@
     document.getElementById('backBtn').addEventListener('click', () => {
       otpStep.classList.add('hidden'); emailStep.classList.remove('hidden');
     });
+
+    // ── Dashboard tabs ────────────────────────────────────────────────────
+    function switchTab(name) {
+      document.querySelectorAll('#portalTabs button').forEach(b =>
+        b.classList.toggle('active', b.dataset.tab === name));
+      document.querySelectorAll('.tabpane').forEach(p =>
+        p.classList.toggle('visible', p.classList.contains('tab-' + name)));
+      try { localStorage.setItem('ethos_host_tab', name); } catch (_) { /* private mode */ }
+    }
+    document.getElementById('portalTabs').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-tab]');
+      if (btn) switchTab(btn.dataset.tab);
+    });
+    switchTab(localStorage.getItem('ethos_host_tab') || 'events');
 
     // ── Self-serve application ────────────────────────────────────────────
     document.getElementById('applyToggle').addEventListener('click', () => {
