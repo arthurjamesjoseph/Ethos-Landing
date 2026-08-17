@@ -340,12 +340,16 @@
         <div class="card tabpane tab-consult">
           <h2 class="card-title">Your availability</h2>
           <p class="card-sub">Publish the times you're free for consultations — members book them with one tap and you're both confirmed instantly. Booked times show who took them.</p>
-          <div class="share-row">
-            <input type="datetime-local" class="form-input" id="slotInput">
-            <button class="search-btn" id="addSlotBtn">Add time</button>
+          <label class="pair-label">Pick a day, then tap the times you're free</label>
+          <input type="date" class="form-input" id="slotDate" style="max-width:220px;">
+          <div id="slotTimeChips" style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;"></div>
+          <div class="share-row" style="margin-top:0.5rem;max-width:340px;">
+            <input type="time" class="form-input" id="slotCustomTime">
+            <button class="search-btn" id="addSlotBtn">Add this time</button>
           </div>
           <p class="form-error" id="slotError"></p>
           <p class="form-ok" id="slotOk"></p>
+          <label class="pair-label" style="margin-top:1rem;">Your published times</label>
           <div id="slotsList"><p class="empty-note">No times published yet — without them, members propose their own and wait for you to confirm.</p></div>
         </div>
 
@@ -407,6 +411,9 @@
             <img id="profBannerPrev" class="hidden" style="height:56px;width:160px;border-radius:8px;object-fit:cover;" alt="">
             <input type="file" class="form-input" id="profBannerFile" accept="image/*">
           </div>
+          <label class="pair-label">Services you offer (shown on your profile with prices)</label>
+          <div id="servicesList"></div>
+          <button class="intro-btn" id="addServiceBtn" style="margin-top:0.375rem;">+ Add a service</button>
           <label class="pair-label">About you</label>
           <textarea class="form-input" id="profBio" maxlength="600" placeholder="Who you are, who you work with, what members can expect."></textarea>
           <label class="pair-label">How you work</label>
@@ -858,12 +865,36 @@
       return new Date(iso).toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
     }
 
+    // ── Services editor (name + display price + line) ─────────────────────
+    function serviceRowHtml(s) {
+      s = s || {};
+      return '<div class="service-row" style="display:grid;grid-template-columns:2fr 1fr auto;gap:0.5rem;margin-top:0.5rem;align-items:start;">' +
+        '<div><input class="form-input svc-name" maxlength="80" placeholder="e.g. Introductory consultation" value="' + esc(s.name || '') + '">' +
+        '<input class="form-input svc-desc" maxlength="200" placeholder="One line on what it includes (optional)" value="' + esc(s.description || '') + '" style="margin-top:0.375rem;"></div>' +
+        '<input class="form-input svc-price" maxlength="40" placeholder="e.g. ₹2,000 / Free" value="' + esc(s.price || '') + '">' +
+        '<button class="pair-clear svc-remove" title="Remove">✕</button>' +
+      '</div>';
+    }
+    document.getElementById('addServiceBtn').addEventListener('click', () => {
+      document.getElementById('servicesList').insertAdjacentHTML('beforeend', serviceRowHtml());
+    });
+    document.getElementById('servicesList').addEventListener('click', (e) => {
+      if (e.target.classList.contains('svc-remove')) e.target.closest('.service-row').remove();
+    });
+    function collectServices() {
+      return [...document.querySelectorAll('#servicesList .service-row')].map(row => ({
+        name: row.querySelector('.svc-name').value.trim(),
+        price: row.querySelector('.svc-price').value.trim(),
+        description: row.querySelector('.svc-desc').value.trim(),
+      })).filter(s => s.name);
+    }
+
     // ── Your profile ──────────────────────────────────────────────────────
     async function loadMyProfile() {
       try {
         const token = localStorage.getItem(TOKEN_KEY);
         const r = await portal('my_profile', { token });
-        const p = r.body && r.body.profile;
+        const p = r.profile;
         if (!p) return;
         document.getElementById('profName').value = p.name || '';
         document.getElementById('profCompany').value = p.company_name || '';
@@ -874,6 +905,7 @@
         document.getElementById('profMatches').value = p.matches_made || '';
         document.getElementById('profLanguages').value = p.languages || '';
         document.getElementById('profApproach').value = p.approach || '';
+        document.getElementById('servicesList').innerHTML = (p.services || []).map(serviceRowHtml).join('');
         if (p.photo_url) { const el = document.getElementById('profPhotoPrev'); el.src = p.photo_url; el.classList.remove('hidden'); }
         if (p.company_logo_url) { const el = document.getElementById('profLogoPrev'); el.src = p.company_logo_url; el.classList.remove('hidden'); }
         if (p.banner_url) { const el = document.getElementById('profBannerPrev'); el.src = p.banner_url; el.classList.remove('hidden'); }
@@ -915,6 +947,7 @@
           matches_made: document.getElementById('profMatches').value.trim(),
           languages: document.getElementById('profLanguages').value.trim(),
           approach: document.getElementById('profApproach').value.trim(),
+          services: collectServices(),
         };
         const yearsVal = document.getElementById('profYears').value;
         if (yearsVal !== '') payload.years_experience = Number(yearsVal);
@@ -953,10 +986,10 @@
       try {
         const token = localStorage.getItem(TOKEN_KEY);
         const r = await portal('clients', { token });
-        if (r.body && r.body.client_code) {
-          document.getElementById('clientLink').value = APP_BASE + '/matchmakers?client=' + r.body.client_code;
+        if (r.client_code) {
+          document.getElementById('clientLink').value = APP_BASE + '/matchmakers?client=' + r.client_code;
         }
-        myClients = r.body.clients || [];
+        myClients = r.clients || [];
         // Brief "who is the client" selector mirrors the roster — hidden
         // entirely until there are actual clients to pick from.
         const sel = document.getElementById('briefClientSelect');
@@ -1009,40 +1042,107 @@
     });
 
     // ── Availability ──────────────────────────────────────────────────────
+    // Pick a day, tap the times you're free — each tap publishes instantly;
+    // already-published times show active and tap-off removes them.
+    const PRESET_TIMES = ['10:00', '11:00', '12:00', '14:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
+    let mySlots = [];
+
+    function slotFlash(msg) {
+      const okEl = document.getElementById('slotOk');
+      okEl.textContent = msg;
+      setTimeout(() => { okEl.textContent = ''; }, 2500);
+    }
+    function selectedDate() {
+      return document.getElementById('slotDate').value;
+    }
+    function slotAt(dateStr, timeStr) {
+      const target = new Date(dateStr + 'T' + timeStr).getTime();
+      return mySlots.find(s => new Date(s.starts_at).getTime() === target) || null;
+    }
+    function renderTimeChips() {
+      const el = document.getElementById('slotTimeChips');
+      const dateStr = selectedDate();
+      if (!dateStr) { el.innerHTML = '<p class="filters-note" style="margin:0;">Choose a day above to lay out your times.</p>'; return; }
+      el.innerHTML = PRESET_TIMES.map(t => {
+        const existing = slotAt(dateStr, t);
+        const past = new Date(dateStr + 'T' + t).getTime() < Date.now() + 2 * 3600 * 1000;
+        const cls = existing ? 'background:var(--color-gold);color:#fff;border-color:var(--color-gold);' : past ? 'opacity:0.35;cursor:default;' : '';
+        return '<button class="intro-btn time-chip" data-time="' + t + '" ' + (past && !existing ? 'disabled' : '') + ' style="' + cls + '">' + t + (existing && existing.booked_by ? ' · ' + esc(existing.booked_by) : '') + '</button>';
+      }).join('');
+    }
+    function renderSlotsList() {
+      const el = document.getElementById('slotsList');
+      if (!mySlots.length) {
+        el.innerHTML = '<p class="empty-note">No times published yet — without them, members propose their own and wait for you to confirm.</p>';
+        return;
+      }
+      // Grouped by day, chronological.
+      const byDay = {};
+      for (const s of mySlots) {
+        const d = new Date(s.starts_at);
+        const key = d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+        (byDay[key] = byDay[key] || []).push(s);
+      }
+      el.innerHTML = Object.entries(byDay).map(([day, slots]) =>
+        '<div style="margin-top:0.75rem;">' +
+          '<div class="cand-meta" style="margin-bottom:0.375rem;">' + esc(day) + '</div>' +
+          '<div style="display:flex;flex-wrap:wrap;gap:0.4rem;">' + slots.map(s =>
+            '<span class="intro-btn" style="cursor:default;display:inline-flex;align-items:center;gap:0.4rem;">' +
+              new Date(s.starts_at).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) +
+              (s.booked_by
+                ? ' <span class="status-chip status-accepted">booked · ' + esc(s.booked_by) + '</span>'
+                : ' <button class="pair-clear slot-remove" data-sid="' + esc(s.id) + '" title="Remove">✕</button>') +
+            '</span>').join('') + '</div>' +
+        '</div>').join('');
+    }
     async function loadSlots() {
       try {
         const token = localStorage.getItem(TOKEN_KEY);
         const r = await portal('availability', { token });
-        const el = document.getElementById('slotsList');
-        const slots = (r.body && r.body.slots) || [];
-        if (!slots.length) {
-          el.innerHTML = '<p class="empty-note">No times published yet — without them, members propose their own and wait for you to confirm.</p>';
-          return;
-        }
-        el.innerHTML = '<div style="display:flex;flex-wrap:wrap;gap:0.4rem;">' + slots.map(s =>
-          '<span class="intro-btn" style="cursor:default;display:inline-flex;align-items:center;gap:0.4rem;">' +
-            fmtDT(s.starts_at) +
-            (s.booked_by
-              ? ' <span class="status-chip status-accepted">booked · ' + esc(s.booked_by) + '</span>'
-              : ' <button class="pair-clear slot-remove" data-sid="' + esc(s.id) + '" title="Remove">✕</button>') +
-          '</span>').join('') + '</div>';
+        mySlots = r.slots || [];
+        renderSlotsList();
+        renderTimeChips();
       } catch (_) { /* non-fatal */ }
     }
-    document.getElementById('addSlotBtn').addEventListener('click', async () => {
-      const input = document.getElementById('slotInput');
+    async function publishSlot(dateStr, timeStr) {
+      const token = localStorage.getItem(TOKEN_KEY);
+      await portal('add_availability', { token, starts_at: new Date(dateStr + 'T' + timeStr).toISOString() });
+      slotFlash('Added — members can book it now.');
+      loadSlots();
+    }
+    document.getElementById('slotDate').addEventListener('change', renderTimeChips);
+    document.getElementById('slotTimeChips').addEventListener('click', async (e) => {
+      const chip = e.target.closest('.time-chip');
+      if (!chip || chip.disabled) return;
+      const dateStr = selectedDate();
       const errEl = document.getElementById('slotError');
       errEl.textContent = '';
-      if (!input.value) { errEl.textContent = 'Pick a date and time first.'; return; }
+      const existing = slotAt(dateStr, chip.dataset.time);
+      chip.disabled = true;
+      try {
+        if (existing && !existing.booked_by) {
+          const token = localStorage.getItem(TOKEN_KEY);
+          await portal('remove_availability', { token, slot_id: existing.id });
+          loadSlots();
+        } else if (!existing) {
+          await publishSlot(dateStr, chip.dataset.time);
+        }
+      } catch (err) {
+        errEl.textContent = err.message;
+        chip.disabled = false;
+      }
+    });
+    document.getElementById('addSlotBtn').addEventListener('click', async () => {
+      const errEl = document.getElementById('slotError');
+      errEl.textContent = '';
+      const dateStr = selectedDate();
+      const timeStr = document.getElementById('slotCustomTime').value;
+      if (!dateStr || !timeStr) { errEl.textContent = 'Pick a day and a time first.'; return; }
       const btn = document.getElementById('addSlotBtn');
       btn.disabled = true;
       try {
-        const token = localStorage.getItem(TOKEN_KEY);
-        await portal('add_availability', { token, starts_at: new Date(input.value).toISOString() });
-        input.value = '';
-        const okEl = document.getElementById('slotOk');
-        okEl.textContent = 'Added — members can book it now.';
-        setTimeout(() => { okEl.textContent = ''; }, 2500);
-        loadSlots();
+        await publishSlot(dateStr, timeStr);
+        document.getElementById('slotCustomTime').value = '';
       } catch (err) {
         errEl.textContent = err.message;
       } finally { btn.disabled = false; }
