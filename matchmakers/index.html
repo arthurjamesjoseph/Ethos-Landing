@@ -363,6 +363,46 @@
             <button class="search-btn" id="copyLinkBtn">Copy link</button>
           </div>
           <div id="clientsList"><p class="empty-note">No clients yet — share your link to bring them onto Ethos.</p></div>
+
+          <label class="pair-label" style="margin-top:1.5rem;">People you work with off Ethos</label>
+          <p class="card-sub" style="margin-bottom:0.5rem;">Create a card for a client who isn't on Ethos — two photos and the basics — then introduce them to members. Members see your notes in place of a compatibility score.</p>
+          <div id="guestsList"></div>
+          <button class="intro-btn" id="guestAddBtn" style="margin-top:0.5rem;">+ Add someone</button>
+          <div id="guestForm" class="hidden" style="margin-top:0.75rem;border:1px solid var(--color-input-border);border-radius:10px;padding:0.875rem;">
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;">
+              <div><div class="cand-meta">First name</div><input class="form-input" id="gFirst" maxlength="60"></div>
+              <div><div class="cand-meta">Gender</div><select class="form-input" id="gGender"><option value="">—</option><option value="female">Woman</option><option value="male">Man</option></select></div>
+              <div><div class="cand-meta">Age</div><input class="form-input" id="gAge" type="number" min="18" max="99"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.5rem;">
+              <div><div class="cand-meta">City</div><input class="form-input" id="gCity" maxlength="80" placeholder="e.g. Mumbai, India"></div>
+              <div><div class="cand-meta">Occupation</div><input class="form-input" id="gOccupation" maxlength="120"></div>
+              <div><div class="cand-meta">Education</div><input class="form-input" id="gEducation" maxlength="120"></div>
+              <div><div class="cand-meta">Height (cm)</div><input class="form-input" id="gHeight" type="number" min="120" max="230"></div>
+              <div><div class="cand-meta">Religion</div><input class="form-input" id="gReligion" maxlength="60"></div>
+              <div><div class="cand-meta">Languages</div><input class="form-input" id="gLanguages" maxlength="120"></div>
+            </div>
+            <div class="cand-meta" style="margin-top:0.5rem;">Your notes — what a member should know before saying yes to a date</div>
+            <textarea class="form-input" id="gNotes" maxlength="1000" placeholder="Who they are, what they're looking for, why you vouch for them."></textarea>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.5rem;">
+              <div>
+                <div class="cand-meta">Headshot</div>
+                <img id="gHeadPrev" class="hidden" style="height:64px;width:64px;border-radius:50%;object-fit:cover;margin:0.375rem 0;" alt="">
+                <input type="file" class="form-input" id="gHeadFile" accept="image/*">
+              </div>
+              <div>
+                <div class="cand-meta">Full-length photo</div>
+                <img id="gFullPrev" class="hidden" style="height:80px;width:60px;border-radius:8px;object-fit:cover;margin:0.375rem 0;" alt="">
+                <input type="file" class="form-input" id="gFullFile" accept="image/*">
+              </div>
+            </div>
+            <div style="margin-top:0.75rem;display:flex;gap:0.5rem;">
+              <button class="search-btn" id="gSaveBtn" style="width:auto;padding:0.5rem 1.25rem;">Save</button>
+              <button class="intro-btn" id="gCancelBtn">Cancel</button>
+            </div>
+            <p class="form-error" id="gError"></p>
+            <p class="form-ok" id="gOk"></p>
+          </div>
         </div>
 
         <div class="card tabpane tab-consult">
@@ -391,6 +431,9 @@
           <h2 class="card-title">Member introductions</h2>
           <p class="card-sub">Two members you've introduced to each other. When both say yes, they plan their date inside Ethos — you'll see it progress here.</p>
           <div id="memberPairs"><p class="empty-note">No member introductions yet — select two candidates above with their Pair buttons.</p></div>
+          <label class="pair-label" style="margin-top:1.25rem;">Client introductions</label>
+          <p class="card-sub" style="margin-bottom:0.5rem;">Your off-Ethos clients proposed to members. The member sees their card and your notes, and answers in the app.</p>
+          <div id="guestIntros"><p class="empty-note">None yet — open a client's card in Your clients and tap Introduce to a member.</p></div>
         </div>
 
         <div class="card tabpane tab-profile">
@@ -446,6 +489,20 @@
           <label class="pair-label">Services you offer (shown on your profile with prices)</label>
           <div id="servicesList"></div>
           <button class="intro-btn" id="addServiceBtn" style="margin-top:0.375rem;">+ Add a service</button>
+          <label class="pair-label" style="margin-top:1rem;">Who can see you (optional)</label>
+          <div class="cand-meta" style="margin-bottom:0.375rem;">Limit which members find you in the directory. Leave everything empty to be visible to everyone.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+            <div>
+              <div class="cand-meta">Youngest age</div>
+              <input class="form-input" id="profAudMin" type="number" min="18" max="99" placeholder="Any">
+            </div>
+            <div>
+              <div class="cand-meta">Oldest age</div>
+              <input class="form-input" id="profAudMax" type="number" min="18" max="99" placeholder="Any">
+            </div>
+          </div>
+          <div class="cand-meta" style="margin-top:0.5rem;">Professions (none selected = all professions)</div>
+          <div id="profAudProfs" style="display:flex;flex-wrap:wrap;gap:0.375rem;margin-top:0.375rem;"></div>
           <label class="pair-label">About you</label>
           <textarea class="form-input" id="profBio" maxlength="600" placeholder="Who you are, who you work with, what members can expect."></textarea>
           <label class="pair-label">How you work</label>
@@ -681,6 +738,8 @@
         loadMemberPairs();
         loadConsults();
         loadClients();
+        loadGuests();
+        loadGuestIntros();
         loadMyProfile();
         loadSlots();
       } catch (err) {
@@ -820,8 +879,29 @@
     // date inside Ethos.
     const pairSelection = new Map(); // user_id -> first_name
 
+    // Guest-intro mode: introducing an off-Ethos client to one member. Set
+    // from a guest card in Your clients; while active, Pair buttons pick the
+    // member instead of building a two-member pair.
+    let guestIntroActive = null; // {id, name}
+    let guestPick = null;        // {uid, name}
+
     function renderPairTray() {
       const tray = document.getElementById('pairTray');
+      if (guestIntroActive) {
+        tray.classList.remove('hidden');
+        tray.innerHTML =
+          '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+          '<span class="pair-title">Introducing your client ' + esc(guestIntroActive.name) +
+          (guestPick ? ' to ' + esc(guestPick.name) : ' — pick a member below with their Pair button') + '</span>' +
+          '<button class="pair-clear">Cancel</button></div>' +
+          (guestPick
+            ? '<label class="pair-label">Your note to ' + esc(guestPick.name) + ' (about ' + esc(guestIntroActive.name) + ')</label>' +
+              '<textarea class="form-input" id="guestNote" rows="2" placeholder="Why you think ' + esc(guestIntroActive.name) + ' is right for them."></textarea>' +
+              '<div style="margin-top:0.75rem;"><button class="search-btn" id="guestSendBtn">Introduce them</button></div>' +
+              '<p class="form-error" id="pairError"></p><p class="form-ok" id="pairOk"></p>'
+            : '');
+        return;
+      }
       const picks = [...pairSelection.entries()];
       if (!picks.length) { tray.classList.add('hidden'); tray.innerHTML = ''; return; }
       tray.classList.remove('hidden');
@@ -848,7 +928,31 @@
     document.getElementById('pairTray').addEventListener('click', async (e) => {
       if (e.target.classList.contains('pair-clear')) {
         pairSelection.clear();
+        guestIntroActive = null; guestPick = null;
         renderPairTray();
+        return;
+      }
+      if (e.target.id === 'guestSendBtn') {
+        const note = document.getElementById('guestNote').value.trim();
+        const errEl = document.getElementById('pairError');
+        errEl.textContent = '';
+        e.target.disabled = true; e.target.textContent = 'Sending…';
+        try {
+          const token = localStorage.getItem(TOKEN_KEY);
+          await portal('propose_guest_intro', {
+            token, guest_id: guestIntroActive.id, user_id: guestPick.uid, note,
+          });
+          const name = guestIntroActive.name;
+          guestIntroActive = null; guestPick = null;
+          renderPairTray();
+          const tray = document.getElementById('pairTray');
+          tray.classList.remove('hidden');
+          tray.innerHTML = '<p class="form-ok" style="margin:0;">Introduction sent — they\'ll see ' + esc(name) + '\'s card and your notes in the app.</p>';
+          loadGuestIntros();
+        } catch (err) {
+          errEl.textContent = err.message;
+          e.target.disabled = false; e.target.textContent = 'Introduce them';
+        }
         return;
       }
       if (e.target.id !== 'pairSendBtn') return;
@@ -1035,8 +1139,27 @@
         if (p.photo_url) { const el = document.getElementById('profPhotoPrev'); el.src = p.photo_url; el.classList.remove('hidden'); }
         if (p.company_logo_url) { const el = document.getElementById('profLogoPrev'); el.src = p.company_logo_url; el.classList.remove('hidden'); }
         if (p.banner_url) { const el = document.getElementById('profBannerPrev'); el.src = p.banner_url; el.classList.remove('hidden'); }
+        document.getElementById('profAudMin').value = p.audience_age_min != null ? p.audience_age_min : '';
+        document.getElementById('profAudMax').value = p.audience_age_max != null ? p.audience_age_max : '';
+        renderAudProfs(p.profession_catalog || [], p.audience_professions || []);
       } catch (_) { /* non-fatal */ }
     }
+    // Profession chips: toggle on/off; none selected = visible to all.
+    function renderAudProfs(catalog, selected) {
+      const el = document.getElementById('profAudProfs');
+      el.innerHTML = catalog.map(c =>
+        '<button type="button" class="intro-btn aud-prof' + (selected.includes(c) ? ' active' : '') + '" data-prof="' + esc(c) + '"' +
+        (selected.includes(c) ? ' style="background:var(--color-gold);color:#fff;border-color:var(--color-gold);"' : '') + '>' + esc(c) + '</button>'
+      ).join('');
+    }
+    document.getElementById('profAudProfs').addEventListener('click', (e) => {
+      const btn = e.target.closest('.aud-prof');
+      if (!btn) return;
+      const on = btn.classList.toggle('active');
+      btn.style.background = on ? 'var(--color-gold)' : '';
+      btn.style.color = on ? '#fff' : '';
+      btn.style.borderColor = on ? 'var(--color-gold)' : '';
+    });
     // Each upload crops to the shape it will actually occupy in the app:
     // photo = circle (square crop), banner = wide, logo = compact wide.
     document.getElementById('profPhotoFile').addEventListener('change', (e) => {
@@ -1082,7 +1205,12 @@
           languages: document.getElementById('profLanguages').value.trim(),
           approach: document.getElementById('profApproach').value.trim(),
           services: collectServices(),
+          audience_professions: [...document.querySelectorAll('#profAudProfs .aud-prof.active')].map(b => b.dataset.prof),
         };
+        const audMin = document.getElementById('profAudMin').value;
+        const audMax = document.getElementById('profAudMax').value;
+        if (audMin !== '') payload.audience_age_min = Number(audMin);
+        if (audMax !== '') payload.audience_age_max = Number(audMax);
         const yearsVal = document.getElementById('profYears').value;
         if (yearsVal !== '') payload.years_experience = Number(yearsVal);
         const photoB64 = document.getElementById('profPhotoPrev').dataset.b64;
@@ -1096,6 +1224,179 @@
       } catch (err) {
         errEl.textContent = err.message;
       } finally { btn.disabled = false; btn.textContent = 'Save profile'; }
+    });
+
+    // ── Off-Ethos clients (guest profiles) ────────────────────────────────
+    let myGuests = [];
+    function guestCardHtml(g) {
+      return '<div class="cand" data-gid="' + esc(g.id) + '">' +
+        '<div class="cand-row">' +
+          '<div class="cand-left">' +
+            (g.headshot_url ? '<img class="cand-photo" src="' + esc(g.headshot_url) + '" alt="">' : '<div class="cand-photo-empty"></div>') +
+            '<div style="min-width:0;"><div class="cand-name">' + esc(g.first_name) + ' <span class="status-chip">off Ethos</span></div>' +
+            '<div class="cand-meta">' + [g.age, g.city_name ? esc(String(g.city_name).split(',')[0]) : null, g.occupation ? esc(g.occupation) : null, g.height_cm ? g.height_cm + ' cm' : null].filter(Boolean).join(' · ') + '</div></div>' +
+          '</div>' +
+          '<span style="white-space:nowrap;">' +
+            '<button class="intro-btn guest-introduce" data-name="' + esc(g.first_name) + '">Introduce to a member</button> ' +
+            '<button class="intro-btn guest-edit">Edit</button> ' +
+            '<button class="req-dismiss guest-remove">Remove</button>' +
+          '</span>' +
+        '</div>' +
+      '</div>';
+    }
+    async function loadGuests() {
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const r = await portal('guests', { token });
+        myGuests = r.guests || [];
+        document.getElementById('guestsList').innerHTML = myGuests.map(guestCardHtml).join('');
+      } catch (_) { /* non-fatal */ }
+    }
+    function resetGuestForm() {
+      const form = document.getElementById('guestForm');
+      form.dataset.gid = '';
+      ['gFirst','gCity','gOccupation','gEducation','gLanguages','gReligion','gNotes'].forEach(id => { document.getElementById(id).value = ''; });
+      ['gAge','gHeight'].forEach(id => { document.getElementById(id).value = ''; });
+      document.getElementById('gGender').value = '';
+      ['gHeadPrev','gFullPrev'].forEach(id => { const el = document.getElementById(id); el.classList.add('hidden'); el.src = ''; delete el.dataset.b64; });
+      document.getElementById('gError').textContent = '';
+      document.getElementById('gOk').textContent = '';
+    }
+    document.getElementById('guestAddBtn').addEventListener('click', () => {
+      resetGuestForm();
+      document.getElementById('guestForm').classList.remove('hidden');
+      document.getElementById('gFirst').focus();
+    });
+    document.getElementById('gCancelBtn').addEventListener('click', () => {
+      document.getElementById('guestForm').classList.add('hidden');
+    });
+    document.getElementById('gHeadFile').addEventListener('change', (e) => {
+      if (!e.target.files[0]) return;
+      openCrop(e.target.files[0], 1, 'Adjust the headshot', (b64) => {
+        const el = document.getElementById('gHeadPrev');
+        el.src = b64; el.classList.remove('hidden'); el.dataset.b64 = b64;
+      });
+      e.target.value = '';
+    });
+    document.getElementById('gFullFile').addEventListener('change', (e) => {
+      if (!e.target.files[0]) return;
+      openCrop(e.target.files[0], 0.75, 'Adjust the full-length photo', (b64) => {
+        const el = document.getElementById('gFullPrev');
+        el.src = b64; el.classList.remove('hidden'); el.dataset.b64 = b64;
+      });
+      e.target.value = '';
+    });
+    document.getElementById('gSaveBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('gSaveBtn');
+      const errEl = document.getElementById('gError');
+      const okEl = document.getElementById('gOk');
+      errEl.textContent = ''; okEl.textContent = '';
+      btn.disabled = true; btn.textContent = 'Saving…';
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const payload = {
+          token,
+          guest_id: document.getElementById('guestForm').dataset.gid || undefined,
+          first_name: document.getElementById('gFirst').value.trim(),
+          gender: document.getElementById('gGender').value,
+          age: document.getElementById('gAge').value || undefined,
+          city_name: document.getElementById('gCity').value.trim(),
+          occupation: document.getElementById('gOccupation').value.trim(),
+          education: document.getElementById('gEducation').value.trim(),
+          height_cm: document.getElementById('gHeight').value || undefined,
+          religion: document.getElementById('gReligion').value.trim(),
+          languages: document.getElementById('gLanguages').value.trim(),
+          mm_notes: document.getElementById('gNotes').value.trim(),
+        };
+        const headB64 = document.getElementById('gHeadPrev').dataset.b64;
+        const fullB64 = document.getElementById('gFullPrev').dataset.b64;
+        if (headB64) payload.headshot_b64 = headB64;
+        if (fullB64) payload.fulllength_b64 = fullB64;
+        await portal('save_guest', payload);
+        document.getElementById('guestForm').classList.add('hidden');
+        loadGuests();
+      } catch (err) {
+        errEl.textContent = err.message;
+      } finally { btn.disabled = false; btn.textContent = 'Save'; }
+    });
+    document.getElementById('guestsList').addEventListener('click', async (e) => {
+      const card = e.target.closest('.cand');
+      if (!card) return;
+      const gid = card.dataset.gid;
+      if (e.target.classList.contains('guest-introduce')) {
+        guestIntroActive = { id: gid, name: e.target.dataset.name || 'your client' };
+        guestPick = null;
+        switchTab('introduce');
+        renderPairTray();
+        document.getElementById('pairTray').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return;
+      }
+      if (e.target.classList.contains('guest-edit')) {
+        const g = myGuests.find(x => x.id === gid);
+        if (!g) return;
+        resetGuestForm();
+        const form = document.getElementById('guestForm');
+        form.dataset.gid = gid;
+        document.getElementById('gFirst').value = g.first_name || '';
+        document.getElementById('gGender').value = g.gender || '';
+        document.getElementById('gAge').value = g.age != null ? g.age : '';
+        document.getElementById('gCity').value = g.city_name || '';
+        document.getElementById('gOccupation').value = g.occupation || '';
+        document.getElementById('gEducation').value = g.education || '';
+        document.getElementById('gHeight').value = g.height_cm != null ? g.height_cm : '';
+        document.getElementById('gReligion').value = g.religion || '';
+        document.getElementById('gLanguages').value = g.languages || '';
+        document.getElementById('gNotes').value = g.mm_notes || '';
+        if (g.headshot_url) { const el = document.getElementById('gHeadPrev'); el.src = g.headshot_url; el.classList.remove('hidden'); }
+        form.classList.remove('hidden');
+        form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return;
+      }
+      if (e.target.classList.contains('guest-remove')) {
+        // Two-tap confirm, same pattern as consult cancels.
+        if (e.target.dataset.arm !== '1') {
+          e.target.dataset.arm = '1'; e.target.textContent = 'Remove — are you sure?';
+          setTimeout(() => { e.target.dataset.arm = ''; e.target.textContent = 'Remove'; }, 4000);
+          return;
+        }
+        try {
+          const token = localStorage.getItem(TOKEN_KEY);
+          await portal('remove_guest', { token, guest_id: gid });
+          loadGuests();
+        } catch (err) { alert(err.message); }
+      }
+    });
+
+    async function loadGuestIntros() {
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const r = await portal('guest_intros', { token });
+        const rows = r.intros || [];
+        const el = document.getElementById('guestIntros');
+        if (!rows.length) {
+          el.innerHTML = '<p class="empty-note">None yet — open a client\'s card in Your clients and tap Introduce to a member.</p>';
+          return;
+        }
+        el.innerHTML = rows.map(i => {
+          const line = i.status === 'accepted'
+            ? 'Said yes — reach out to both sides to set up the date. 🎉'
+            : i.status === 'declined' ? 'Didn\'t go ahead.' : 'Waiting for their answer.';
+          return '<div class="req">' +
+            (i.status === 'pending' ? '<button class="req-dismiss guest-intro-withdraw" data-iid="' + esc(i.id) + '">Withdraw</button>' : '') +
+            '<div class="req-brief">' + esc(i.guest_first_name) + ' <span class="status-chip">off Ethos</span> &nbsp;→&nbsp; ' + esc(i.member_first_name) + '</div>' +
+            '<div class="req-note">' + line + ' <span style="font-family:var(--font-sans);font-size:0.75rem;color:var(--color-text-light);">' + fmtDate(i.created_at) + '</span></div>' +
+          '</div>';
+        }).join('');
+      } catch (_) { /* non-fatal */ }
+    }
+    document.getElementById('guestIntros').addEventListener('click', async (e) => {
+      if (!e.target.classList.contains('guest-intro-withdraw')) return;
+      e.target.disabled = true;
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        await portal('withdraw_guest_intro', { token, intro_id: e.target.dataset.iid });
+        loadGuestIntros();
+      } catch (err) { alert(err.message); e.target.disabled = false; }
     });
 
     // ── Your clients ──────────────────────────────────────────────────────
@@ -1475,6 +1776,12 @@
       const status = cand.querySelector('.cand-status');
       if (e.target.classList.contains('pair-btn')) {
         const uid = cand.dataset.uid;
+        if (guestIntroActive) {
+          guestPick = { uid, name: e.target.dataset.name || 'Member' };
+          renderPairTray();
+          document.getElementById('pairTray').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          return;
+        }
         if (pairSelection.has(uid)) {
           pairSelection.delete(uid);
         } else {

@@ -112,6 +112,13 @@
     }
     .tabpane { display: none; }
     .tabpane.visible { display: block; }
+    .crop-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(30, 26, 22, 0.55); display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .crop-modal { background: var(--color-card); border-radius: 14px; padding: 1.5rem; box-shadow: 0 12px 48px rgba(0,0,0,0.25); max-width: 380px; width: 100%; }
+    .crop-modal h3 { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem; }
+    #cropCanvas { display: block; margin: 0 auto; border-radius: 10px; background: #eee; touch-action: none; cursor: grab; max-width: 100%; }
+    .crop-zoom { width: 100%; margin-top: 0.875rem; accent-color: var(--color-gold); }
+    .crop-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
+    .crop-hint { font-family: var(--font-sans); font-size: 0.75rem; color: var(--color-text-light); text-align: center; margin-top: 0.5rem; }
     .apply-link-row { margin-top: 1.25rem; text-align: center; font-family: var(--font-serif); font-size: 1rem; color: var(--color-text-light); }
     .apply-link { background: none; border: none; cursor: pointer; font-family: var(--font-serif); font-size: 1rem; color: var(--color-gold); text-decoration: underline; padding: 0; }
     #applyCard .form-label { margin-top: 0; }
@@ -199,7 +206,34 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"/></svg>
             Submit an event
           </button>
+          <button data-tab="profile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Profile
+          </button>
         </nav>
+
+        <div class="card tabpane tab-profile">
+          <h2 class="card-title">Your profile</h2>
+          <p class="card-sub">Members see this when they tap "Hosted by you" on an event — a face and a line or two builds a lot of trust.</p>
+          <div class="grid-2">
+            <div class="field"><label class="form-label">Name</label><input class="form-input" id="hpName" maxlength="120"></div>
+            <div class="field"><label class="form-label">Organisation</label><input class="form-input" id="hpOrg" maxlength="120"></div>
+          </div>
+          <div class="field">
+            <label class="form-label">About you (a line or two)</label>
+            <textarea class="form-input" id="hpBlurb" maxlength="400" placeholder="Who you are and what your evenings are like."></textarea>
+          </div>
+          <div class="field">
+            <label class="form-label">Photo or logo</label>
+            <div style="display:flex;align-items:center;gap:0.75rem;">
+              <img id="hpPhotoPrev" class="hidden" style="height:64px;width:64px;border-radius:50%;object-fit:cover;" alt="">
+              <input type="file" class="form-input" id="hpPhotoFile" accept="image/*">
+            </div>
+          </div>
+          <button class="submit-btn" id="hpSaveBtn" style="max-width:220px;">Save profile</button>
+          <p class="form-error" id="hpError"></p>
+          <p class="form-ok" id="hpOk"></p>
+        </div>
 
         <div class="card tabpane tab-events">
           <h2 class="card-title">Your events</h2>
@@ -250,6 +284,19 @@
     <footer class="app-footer">
       <p class="app-footer-copy">&copy; 2026 Ethos Labs Pty Ltd &middot; <a href="https://ethosapp.co">ethosapp.co</a></p>
     </footer>
+  </div>
+
+  <div class="crop-overlay hidden" id="cropOverlay">
+    <div class="crop-modal">
+      <h3 id="cropTitle">Adjust your photo</h3>
+      <canvas id="cropCanvas" width="320" height="320"></canvas>
+      <p class="crop-hint">Drag to position · slide to zoom</p>
+      <input type="range" class="crop-zoom" id="cropZoom" min="100" max="300" value="100">
+      <div class="crop-actions">
+        <button class="intro-btn" id="cropCancel" style="font-family:var(--font-serif);font-size:0.9375rem;background:var(--color-input-bg);border:1px solid var(--color-input-border);border-radius:8px;padding:0.5rem 1rem;cursor:pointer;">Cancel</button>
+        <button class="submit-btn" id="cropUse" style="width:auto;padding:0.5rem 1.25rem;margin:0;">Use this</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -527,7 +574,118 @@
       } finally { btn.disabled = false; btn.textContent = 'Submit for review'; }
     });
 
-    loadDashboard();
+    // ── Crop modal (square) — same pan/zoom pattern as the matchmakers portal ──
+    const cropOverlay = document.getElementById('cropOverlay');
+    const cropCanvas = document.getElementById('cropCanvas');
+    const cropZoom = document.getElementById('cropZoom');
+    let cropImg = null, cropCb = null, cropScale = 1, cropMinScale = 1, cropX = 0, cropY = 0;
+
+    function drawCrop() {
+      const ctx = cropCanvas.getContext('2d');
+      ctx.fillStyle = '#eee';
+      ctx.fillRect(0, 0, cropCanvas.width, cropCanvas.height);
+      ctx.drawImage(cropImg, cropX, cropY, cropImg.width * cropScale, cropImg.height * cropScale);
+    }
+    function clampCrop() {
+      cropX = Math.min(0, Math.max(cropCanvas.width - cropImg.width * cropScale, cropX));
+      cropY = Math.min(0, Math.max(cropCanvas.height - cropImg.height * cropScale, cropY));
+    }
+    function openCrop(file, cb) {
+      const img = new Image();
+      img.onload = () => {
+        cropImg = img; cropCb = cb;
+        cropMinScale = Math.max(cropCanvas.width / img.width, cropCanvas.height / img.height);
+        cropScale = cropMinScale;
+        cropX = (cropCanvas.width - img.width * cropScale) / 2;
+        cropY = (cropCanvas.height - img.height * cropScale) / 2;
+        cropZoom.value = 100;
+        cropOverlay.classList.remove('hidden');
+        drawCrop();
+        URL.revokeObjectURL(img.src);
+      };
+      img.src = URL.createObjectURL(file);
+    }
+    cropZoom.addEventListener('input', () => {
+      const cx = cropCanvas.width / 2, cy = cropCanvas.height / 2;
+      const next = cropMinScale * (Number(cropZoom.value) / 100);
+      cropX = cx - ((cx - cropX) / cropScale) * next;
+      cropY = cy - ((cy - cropY) / cropScale) * next;
+      cropScale = next;
+      clampCrop(); drawCrop();
+    });
+    let dragging = false, lastPX = 0, lastPY = 0;
+    cropCanvas.addEventListener('pointerdown', (e) => { dragging = true; lastPX = e.clientX; lastPY = e.clientY; cropCanvas.setPointerCapture(e.pointerId); });
+    cropCanvas.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      cropX += e.clientX - lastPX; cropY += e.clientY - lastPY;
+      lastPX = e.clientX; lastPY = e.clientY;
+      clampCrop(); drawCrop();
+    });
+    cropCanvas.addEventListener('pointerup', () => { dragging = false; });
+    document.getElementById('cropCancel').addEventListener('click', () => { cropOverlay.classList.add('hidden'); cropImg = null; });
+    document.getElementById('cropUse').addEventListener('click', () => {
+      const OUT = 900;
+      const out = document.createElement('canvas');
+      out.width = OUT; out.height = OUT;
+      const k = OUT / cropCanvas.width;
+      out.getContext('2d').drawImage(cropImg, cropX * k, cropY * k, cropImg.width * cropScale * k, cropImg.height * cropScale * k);
+      cropOverlay.classList.add('hidden');
+      const b64 = out.toDataURL('image/jpeg', 0.88);
+      if (cropCb) cropCb(b64);
+      cropImg = null;
+    });
+
+    // ── Host profile ──────────────────────────────────────────────────────
+    let hostPhotoB64 = null;
+    document.getElementById('hpPhotoFile').addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      openCrop(file, (b64) => {
+        hostPhotoB64 = b64;
+        const prev = document.getElementById('hpPhotoPrev');
+        prev.src = b64; prev.classList.remove('hidden');
+      });
+      e.target.value = '';
+    });
+
+    async function loadHostProfile() {
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const r = await portal('my_profile', { token });
+        const p = r.profile || {};
+        document.getElementById('hpName').value = p.name || '';
+        document.getElementById('hpOrg').value = p.organization || '';
+        document.getElementById('hpBlurb').value = p.blurb || '';
+        if (p.photo_url) {
+          const prev = document.getElementById('hpPhotoPrev');
+          prev.src = p.photo_url; prev.classList.remove('hidden');
+        }
+      } catch (_) { /* non-blocking */ }
+    }
+
+    document.getElementById('hpSaveBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('hpSaveBtn');
+      const errEl = document.getElementById('hpError');
+      const okEl = document.getElementById('hpOk');
+      errEl.textContent = ''; okEl.textContent = '';
+      btn.disabled = true; btn.textContent = 'Saving…';
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        await portal('update_profile', {
+          token,
+          name: document.getElementById('hpName').value,
+          organization: document.getElementById('hpOrg').value,
+          blurb: document.getElementById('hpBlurb').value,
+          photo_b64: hostPhotoB64,
+        });
+        hostPhotoB64 = null;
+        okEl.textContent = 'Saved — members will see this on your events.';
+      } catch (err) {
+        errEl.textContent = err.message;
+      } finally { btn.disabled = false; btn.textContent = 'Save profile'; }
+    });
+
+    loadDashboard().then(loadHostProfile);
   </script>
 </body>
 </html>
