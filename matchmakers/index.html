@@ -400,26 +400,16 @@
             <div>
               <label class="pair-label">Name</label>
               <input class="form-input" id="profName" maxlength="120">
-              <label class="pair-label">Company</label>
-              <input class="form-input" id="profCompany" maxlength="120">
-              <label class="pair-label">Specialties (comma-separated)</label>
-              <input class="form-input" id="profSpecialties" placeholder="Marriage-minded, Cross-city">
             </div>
             <div>
-              <label class="pair-label">Your photo</label>
-              <div style="display:flex;align-items:center;gap:0.75rem;">
-                <img id="profPhotoPrev" class="hidden" style="height:64px;width:64px;border-radius:50%;object-fit:cover;" alt="">
-                <input type="file" class="form-input" id="profPhotoFile" accept="image/*">
-              </div>
-              <label class="pair-label">Company logo</label>
-              <div style="display:flex;align-items:center;gap:0.75rem;">
-                <img id="profLogoPrev" class="hidden" style="height:40px;max-width:120px;object-fit:contain;" alt="">
-                <input type="file" class="form-input" id="profLogoFile" accept="image/*">
-              </div>
+              <label class="pair-label">Company</label>
+              <input class="form-input" id="profCompany" maxlength="120">
             </div>
           </div>
           <label class="pair-label">Tagline (one line under your name)</label>
           <input class="form-input" id="profTagline" maxlength="80" placeholder="e.g. Marriage-minded matchmaking, done personally">
+          <label class="pair-label">Specialties (comma-separated)</label>
+          <input class="form-input" id="profSpecialties" placeholder="Marriage-minded, Cross-city">
           <div class="grid-2" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;">
             <div>
               <label class="pair-label">Years of experience</label>
@@ -434,10 +424,24 @@
               <input class="form-input" id="profLanguages" maxlength="120" placeholder="e.g. English, Hindi">
             </div>
           </div>
-          <label class="pair-label">Banner image (wide, shown across the top of your profile)</label>
-          <div style="display:flex;align-items:center;gap:0.75rem;">
-            <img id="profBannerPrev" class="hidden" style="height:56px;width:160px;border-radius:8px;object-fit:cover;" alt="">
-            <input type="file" class="form-input" id="profBannerFile" accept="image/*">
+
+          <label class="pair-label" style="margin-top:1rem;">Your images — three separate pictures, each cropped to its space</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-top:0.375rem;">
+            <div>
+              <div class="cand-meta">Portrait — your circular photo</div>
+              <img id="profPhotoPrev" class="hidden" style="height:64px;width:64px;border-radius:50%;object-fit:cover;margin:0.375rem 0;" alt="">
+              <input type="file" class="form-input" id="profPhotoFile" accept="image/*">
+            </div>
+            <div>
+              <div class="cand-meta">Banner — wide, across the top of your profile</div>
+              <img id="profBannerPrev" class="hidden" style="height:44px;width:110px;border-radius:8px;object-fit:cover;margin:0.375rem 0;" alt="">
+              <input type="file" class="form-input" id="profBannerFile" accept="image/*">
+            </div>
+            <div>
+              <div class="cand-meta">Logo — small, beside your company name</div>
+              <img id="profLogoPrev" class="hidden" style="height:32px;max-width:110px;object-fit:contain;margin:0.375rem 0;" alt="">
+              <input type="file" class="form-input" id="profLogoFile" accept="image/*">
+            </div>
           </div>
           <label class="pair-label">Services you offer (shown on your profile with prices)</label>
           <div id="servicesList"></div>
