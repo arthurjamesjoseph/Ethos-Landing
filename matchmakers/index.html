@@ -910,6 +910,10 @@
     function openCrop(file, aspect, title, cb) {
       const img = new Image();
       img.onload = () => {
+        // 'auto' (logos): the window takes the image's own shape, clamped
+        // between square and 3:1 — square marks stay square, wordmarks stay
+        // wide, and the crop just trims padding.
+        if (aspect === 'auto') aspect = Math.min(3, Math.max(1, img.width / img.height));
         crop.img = img; crop.aspect = aspect; crop.cb = cb; crop.zoom = 1;
         const cw = 320, ch = Math.round(320 / aspect);
         cropCanvas.width = cw; cropCanvas.height = ch;
@@ -1045,7 +1049,7 @@
     });
     document.getElementById('profLogoFile').addEventListener('change', (e) => {
       if (!e.target.files[0]) return;
-      openCrop(e.target.files[0], 2, 'Adjust your logo', (b64) => {
+      openCrop(e.target.files[0], 'auto', 'Adjust your logo', (b64) => {
         const el = document.getElementById('profLogoPrev');
         el.src = b64; el.classList.remove('hidden'); el.dataset.b64 = b64;
       });
