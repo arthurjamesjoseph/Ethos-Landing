@@ -1379,8 +1379,10 @@
         }
         el.innerHTML = rows.map(i => {
           const line = i.status === 'accepted'
-            ? 'Said yes — reach out to both sides to set up the date. 🎉'
-            : i.status === 'declined' ? 'Didn\'t go ahead.' : 'Waiting for their answer.';
+            ? 'Said yes — a chat with them is open in the app; use it to set up the date. 🎉'
+            : i.status === 'declined' ? 'Didn\'t go ahead.'
+            : i.status === 'expired' ? 'Lapsed after 14 days without an answer — you can propose them again.'
+            : 'Waiting for their answer.';
           return '<div class="req">' +
             (i.status === 'pending' ? '<button class="req-dismiss guest-intro-withdraw" data-iid="' + esc(i.id) + '">Withdraw</button>' : '') +
             '<div class="req-brief">' + esc(i.guest_first_name) + ' <span class="status-chip">off Ethos</span> &nbsp;→&nbsp; ' + esc(i.member_first_name) + '</div>' +
@@ -1756,9 +1758,11 @@
               ? 'Both said yes — a date invite is underway.'
               : (p.a_status === 'declined' || p.b_status === 'declined')
                 ? 'Didn\'t go ahead.'
-                : (p.a_status === 'accepted' && p.b_status === 'accepted')
-                  ? 'Both said yes — waiting for them to plan the date.'
-                  : 'Waiting for their answers.';
+                : (p.a_status === 'expired' || p.b_status === 'expired')
+                  ? 'Lapsed after 14 days without an answer — you can propose them again.'
+                  : (p.a_status === 'accepted' && p.b_status === 'accepted')
+                    ? 'Both said yes — waiting for them to plan the date.'
+                    : 'Waiting for their answers.';
           const canWithdraw = !(p.date_status && ['pending', 'accepted'].includes(p.date_status));
           return '<div class="req">' +
             (canWithdraw ? '<button class="req-dismiss pair-withdraw" data-pid="' + esc(p.id) + '">Withdraw</button>' : '') +
