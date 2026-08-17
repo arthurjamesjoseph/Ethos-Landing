@@ -175,6 +175,13 @@
     }
     .tabpane { display: none; }
     .tabpane.visible { display: block; }
+    .crop-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(30, 26, 22, 0.55); display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .crop-modal { background: var(--color-card); border-radius: 14px; padding: 1.5rem; box-shadow: 0 12px 48px rgba(0,0,0,0.25); max-width: 380px; width: 100%; }
+    .crop-modal h3 { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem; }
+    #cropCanvas { display: block; margin: 0 auto; border-radius: 10px; background: #eee; touch-action: none; cursor: grab; max-width: 100%; }
+    .crop-zoom { width: 100%; margin-top: 0.875rem; accent-color: var(--color-gold); }
+    .crop-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
+    .crop-hint { font-family: var(--font-sans); font-size: 0.75rem; color: var(--color-text-light); text-align: center; margin-top: 0.5rem; }
     .consult-member { display: flex; align-items: center; gap: 0.625rem; margin: 0.5rem 0; }
     .consult-member img { height: 44px; width: 44px; border-radius: 50%; object-fit: cover; }
     .pair-label { display: block; margin-top: 0.75rem; font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-light); }
@@ -455,6 +462,20 @@
     <footer class="app-footer">
       <p class="app-footer-copy">&copy; 2026 Ethos Labs Pty Ltd &middot; <a href="https://ethosapp.co">ethosapp.co</a></p>
     </footer>
+  </div>
+
+  <!-- Crop modal: pan + zoom an image into the exact shape it will occupy. -->
+  <div class="crop-overlay hidden" id="cropOverlay">
+    <div class="crop-modal">
+      <h3 id="cropTitle">Adjust your photo</h3>
+      <canvas id="cropCanvas" width="320" height="320"></canvas>
+      <p class="crop-hint">Drag to position · slide to zoom</p>
+      <input type="range" class="crop-zoom" id="cropZoom" min="100" max="300" value="100">
+      <div class="crop-actions">
+        <button class="intro-btn" id="cropCancel">Cancel</button>
+        <button class="search-btn" id="cropUse" style="padding:0.5rem 1.25rem;">Use this</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -865,6 +886,82 @@
     });
     switchTab(localStorage.getItem('ethos_mm_tab') || 'introduce');
 
+    // ── Crop modal: pan + zoom into the exact target shape ────────────────
+    const crop = { img: null, aspect: 1, base: 1, zoom: 1, ox: 0, oy: 0, cb: null, dragging: false, lastX: 0, lastY: 0 };
+    const cropCanvas = document.getElementById('cropCanvas');
+    const cropCtx = cropCanvas.getContext('2d');
+
+    function cropClamp() {
+      const cw = cropCanvas.width, ch = cropCanvas.height;
+      const s = crop.base * crop.zoom;
+      const iw = crop.img.width * s, ih = crop.img.height * s;
+      crop.ox = Math.min(0, Math.max(cw - iw, crop.ox));
+      crop.oy = Math.min(0, Math.max(ch - ih, crop.oy));
+    }
+    function cropDraw() {
+      const s = crop.base * crop.zoom;
+      cropCtx.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+      cropCtx.drawImage(crop.img, crop.ox, crop.oy, crop.img.width * s, crop.img.height * s);
+    }
+    function openCrop(file, aspect, title, cb) {
+      const img = new Image();
+      img.onload = () => {
+        crop.img = img; crop.aspect = aspect; crop.cb = cb; crop.zoom = 1;
+        const cw = 320, ch = Math.round(320 / aspect);
+        cropCanvas.width = cw; cropCanvas.height = ch;
+        crop.base = Math.max(cw / img.width, ch / img.height);
+        crop.ox = (cw - img.width * crop.base) / 2;
+        crop.oy = (ch - img.height * crop.base) / 2;
+        document.getElementById('cropTitle').textContent = title;
+        document.getElementById('cropZoom').value = 100;
+        document.getElementById('cropOverlay').classList.remove('hidden');
+        cropDraw();
+      };
+      img.onerror = () => alert('We couldn\'t read that image — please try another.');
+      img.src = URL.createObjectURL(file);
+    }
+    cropCanvas.addEventListener('pointerdown', (e) => {
+      crop.dragging = true; crop.lastX = e.clientX; crop.lastY = e.clientY;
+      cropCanvas.setPointerCapture(e.pointerId);
+    });
+    cropCanvas.addEventListener('pointermove', (e) => {
+      if (!crop.dragging || !crop.img) return;
+      crop.ox += e.clientX - crop.lastX;
+      crop.oy += e.clientY - crop.lastY;
+      crop.lastX = e.clientX; crop.lastY = e.clientY;
+      cropClamp(); cropDraw();
+    });
+    cropCanvas.addEventListener('pointerup', () => { crop.dragging = false; });
+    document.getElementById('cropZoom').addEventListener('input', (e) => {
+      if (!crop.img) return;
+      const cw = cropCanvas.width, ch = cropCanvas.height;
+      // Zoom around the canvas centre.
+      const prev = crop.base * crop.zoom;
+      crop.zoom = Number(e.target.value) / 100;
+      const next = crop.base * crop.zoom;
+      crop.ox = cw / 2 - ((cw / 2 - crop.ox) / prev) * next;
+      crop.oy = ch / 2 - ((ch / 2 - crop.oy) / prev) * next;
+      cropClamp(); cropDraw();
+    });
+    document.getElementById('cropCancel').addEventListener('click', () => {
+      document.getElementById('cropOverlay').classList.add('hidden');
+      crop.img = null;
+    });
+    document.getElementById('cropUse').addEventListener('click', () => {
+      if (!crop.img) return;
+      // Export at print-worthy resolution: 900px wide in the target shape.
+      const out = document.createElement('canvas');
+      const scaleUp = 900 / cropCanvas.width;
+      out.width = 900; out.height = Math.round(cropCanvas.height * scaleUp);
+      const s = crop.base * crop.zoom * scaleUp;
+      out.getContext('2d').drawImage(crop.img, crop.ox * scaleUp, crop.oy * scaleUp, crop.img.width * s, crop.img.height * s);
+      const b64 = out.toDataURL('image/jpeg', 0.88);
+      document.getElementById('cropOverlay').classList.add('hidden');
+      const cb = crop.cb;
+      crop.img = null;
+      if (cb) cb(b64);
+    });
+
     // ── Shared: downscale an image file to a base64 JPEG ──────────────────
     function fileToB64(file, maxDim) {
       return new Promise((resolve, reject) => {
@@ -932,23 +1029,31 @@
         if (p.banner_url) { const el = document.getElementById('profBannerPrev'); el.src = p.banner_url; el.classList.remove('hidden'); }
       } catch (_) { /* non-fatal */ }
     }
-    document.getElementById('profPhotoFile').addEventListener('change', async (e) => {
+    // Each upload crops to the shape it will actually occupy in the app:
+    // photo = circle (square crop), banner = wide, logo = compact wide.
+    document.getElementById('profPhotoFile').addEventListener('change', (e) => {
       if (!e.target.files[0]) return;
-      const b64 = await fileToB64(e.target.files[0], 800);
-      const el = document.getElementById('profPhotoPrev');
-      el.src = b64; el.classList.remove('hidden'); el.dataset.b64 = b64;
+      openCrop(e.target.files[0], 1, 'Adjust your photo', (b64) => {
+        const el = document.getElementById('profPhotoPrev');
+        el.src = b64; el.classList.remove('hidden'); el.dataset.b64 = b64;
+      });
+      e.target.value = '';
     });
-    document.getElementById('profLogoFile').addEventListener('change', async (e) => {
+    document.getElementById('profLogoFile').addEventListener('change', (e) => {
       if (!e.target.files[0]) return;
-      const b64 = await fileToB64(e.target.files[0], 600);
-      const el = document.getElementById('profLogoPrev');
-      el.src = b64; el.classList.remove('hidden'); el.dataset.b64 = b64;
+      openCrop(e.target.files[0], 2, 'Adjust your logo', (b64) => {
+        const el = document.getElementById('profLogoPrev');
+        el.src = b64; el.classList.remove('hidden'); el.dataset.b64 = b64;
+      });
+      e.target.value = '';
     });
-    document.getElementById('profBannerFile').addEventListener('change', async (e) => {
+    document.getElementById('profBannerFile').addEventListener('change', (e) => {
       if (!e.target.files[0]) return;
-      const b64 = await fileToB64(e.target.files[0], 1600);
-      const el = document.getElementById('profBannerPrev');
-      el.src = b64; el.classList.remove('hidden'); el.dataset.b64 = b64;
+      openCrop(e.target.files[0], 2.5, 'Adjust your banner', (b64) => {
+        const el = document.getElementById('profBannerPrev');
+        el.src = b64; el.classList.remove('hidden'); el.dataset.b64 = b64;
+      });
+      e.target.value = '';
     });
     document.getElementById('profSaveBtn').addEventListener('click', async () => {
       const btn = document.getElementById('profSaveBtn');
