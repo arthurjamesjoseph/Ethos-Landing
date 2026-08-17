@@ -1378,27 +1378,83 @@
           return;
         }
         el.innerHTML = rows.map(i => {
+          const hasDate = i.date && i.date.status === 'scheduled';
           const line = i.status === 'accepted'
-            ? 'Said yes — a chat with them is open in the app; use it to set up the date. 🎉'
+            ? (hasDate
+                ? 'Date set for ' + new Date(i.date.date_time).toLocaleString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) + (i.date.location_text ? ' · ' + esc(i.date.location_text) : '') + ' — it shows in their Plans. 🎉'
+                : 'Said yes — set the date below and it appears in their Plans.')
             : i.status === 'declined' ? 'Didn\'t go ahead.'
             : i.status === 'expired' ? 'Lapsed after 14 days without an answer — you can propose them again.'
             : 'Waiting for their answer.';
-          return '<div class="req">' +
+          return '<div class="req" data-iid="' + esc(i.id) + '">' +
             (i.status === 'pending' ? '<button class="req-dismiss guest-intro-withdraw" data-iid="' + esc(i.id) + '">Withdraw</button>' : '') +
             '<div class="req-brief">' + esc(i.guest_first_name) + ' <span class="status-chip">off Ethos</span> &nbsp;→&nbsp; ' + esc(i.member_first_name) + '</div>' +
             '<div class="req-note">' + line + ' <span style="font-family:var(--font-sans);font-size:0.75rem;color:var(--color-text-light);">' + fmtDate(i.created_at) + '</span></div>' +
+            (i.status === 'accepted'
+              ? '<div style="margin-top:0.5rem;">' +
+                  '<button class="intro-btn gd-toggle">' + (hasDate ? 'Move the date' : 'Set the date') + '</button>' +
+                  (hasDate ? ' <button class="req-dismiss gd-cancel">Cancel date</button>' : '') +
+                  '<div class="gd-form hidden" style="margin-top:0.5rem;display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;">' +
+                    '<input type="datetime-local" class="form-input gd-when" style="max-width:220px;"' + (hasDate ? ' value="' + esc(i.date.date_time.slice(0, 16)) + '"' : '') + '>' +
+                    '<input class="form-input gd-where" maxlength="200" placeholder="Where (e.g. Bar Palladio, 8pm table)" style="max-width:280px;"' + (hasDate && i.date.location_text ? ' value="' + esc(i.date.location_text) + '"' : '') + '>' +
+                    '<button class="search-btn gd-save" style="width:auto;padding:0.5rem 1rem;">Confirm</button>' +
+                  '</div>' +
+                  '<p class="form-error gd-err" style="margin:0.25rem 0 0;"></p>' +
+                '</div>'
+              : '') +
           '</div>';
         }).join('');
       } catch (_) { /* non-fatal */ }
     }
     document.getElementById('guestIntros').addEventListener('click', async (e) => {
-      if (!e.target.classList.contains('guest-intro-withdraw')) return;
-      e.target.disabled = true;
-      try {
-        const token = localStorage.getItem(TOKEN_KEY);
-        await portal('withdraw_guest_intro', { token, intro_id: e.target.dataset.iid });
-        loadGuestIntros();
-      } catch (err) { alert(err.message); e.target.disabled = false; }
+      const card = e.target.closest('.req');
+      if (e.target.classList.contains('guest-intro-withdraw')) {
+        e.target.disabled = true;
+        try {
+          const token = localStorage.getItem(TOKEN_KEY);
+          await portal('withdraw_guest_intro', { token, intro_id: e.target.dataset.iid });
+          loadGuestIntros();
+        } catch (err) { alert(err.message); e.target.disabled = false; }
+        return;
+      }
+      if (e.target.classList.contains('gd-toggle')) {
+        card.querySelector('.gd-form').classList.toggle('hidden');
+        return;
+      }
+      if (e.target.classList.contains('gd-save')) {
+        const errEl = card.querySelector('.gd-err');
+        errEl.textContent = '';
+        const when = card.querySelector('.gd-when').value;
+        if (!when) { errEl.textContent = 'Pick a date and time.'; return; }
+        e.target.disabled = true; e.target.textContent = 'Saving…';
+        try {
+          const token = localStorage.getItem(TOKEN_KEY);
+          await portal('schedule_guest_date', {
+            token, intro_id: card.dataset.iid,
+            date_time: new Date(when).toISOString(),
+            location_text: card.querySelector('.gd-where').value.trim(),
+          });
+          loadGuestIntros();
+        } catch (err) {
+          errEl.textContent = err.message;
+          e.target.disabled = false; e.target.textContent = 'Confirm';
+        }
+        return;
+      }
+      if (e.target.classList.contains('gd-cancel')) {
+        // Two-tap confirm, same pattern as elsewhere.
+        if (e.target.dataset.arm !== '1') {
+          e.target.dataset.arm = '1'; e.target.textContent = 'Cancel date — are you sure?';
+          setTimeout(() => { e.target.dataset.arm = ''; e.target.textContent = 'Cancel date'; }, 4000);
+          return;
+        }
+        e.target.disabled = true;
+        try {
+          const token = localStorage.getItem(TOKEN_KEY);
+          await portal('cancel_guest_date', { token, intro_id: card.dataset.iid });
+          loadGuestIntros();
+        } catch (err) { alert(err.message); e.target.disabled = false; }
+      }
     });
 
     // ── Your clients ──────────────────────────────────────────────────────
