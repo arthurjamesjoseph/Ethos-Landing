@@ -1276,7 +1276,10 @@
     // Renders the live question set generically (single/multi select, range
     // slider) with conditional show/hide and optional dealbreaker flags —
     // the matchmaker answers on the client's behalf, sitting together.
-    const quiz = { guestId: null, questions: [], answers: new Map() };
+    const quiz = { guestId: null, questions: [], answers: new Map(), basics: {}, basicsCatalog: {} };
+    const BASICS_LABELS = { religion: 'Religion', smoking: 'Smoking', drinking: 'Drinking', drugs: 'Recreational drugs', diet: 'Diet' };
+    const BASICS_VALUE_LABELS = { 'no-restrictions': 'No restrictions', never: 'Never', occasionally: 'Occasionally', socially: 'Socially', regularly: 'Regularly', recreational: 'Recreationally' };
+    const basicsLabel = (v) => BASICS_VALUE_LABELS[v] || (v.charAt(0).toUpperCase() + v.slice(1));
 
     function quizVisible(q) {
       if (!q.is_conditional || !q.condition_logic) return true;
@@ -1288,9 +1291,25 @@
 
     function renderQuiz() {
       const visible = quiz.questions.filter(quizVisible);
+      const basicsFields = Object.keys(quiz.basicsCatalog);
+      const basicsDone = basicsFields.filter(f => quiz.basics[f]).length;
       const answered = visible.filter(q => quiz.answers.has(q.question_key)).length;
-      document.getElementById('quizProgress').textContent = answered + ' of ' + visible.length + ' answered';
-      document.getElementById('quizBody').innerHTML = visible.map(q => {
+      document.getElementById('quizProgress').textContent = (answered + basicsDone) + ' of ' + (visible.length + basicsFields.length) + ' answered';
+      // "The basics" — the lifestyle fields the dealbreaker checks read.
+      const basicsHtml = basicsFields.length
+        ? '<div style="margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--color-input-border);">' +
+          '<div style="font-family:var(--font-serif);font-weight:600;margin-bottom:0.25rem;">The basics</div>' +
+          '<div class="cand-meta" style="margin-bottom:0.625rem;">These feed the compatibility checks — all five are required.</div>' +
+          basicsFields.map(f =>
+            '<div style="margin-bottom:0.5rem;"><span class="cand-meta" style="display:inline-block;min-width:130px;">' + BASICS_LABELS[f] + '</span>' +
+            '<select class="form-input qz-basic" data-f="' + f + '" style="display:inline-block;width:auto;">' +
+              '<option value=""' + (!quiz.basics[f] ? ' selected' : '') + '>Choose…</option>' +
+              quiz.basicsCatalog[f].map(v => '<option value="' + esc(v) + '"' + (quiz.basics[f] === v ? ' selected' : '') + '>' + esc(basicsLabel(v)) + '</option>').join('') +
+            '</select></div>'
+          ).join('') +
+          '</div>'
+        : '';
+      document.getElementById('quizBody').innerHTML = basicsHtml + visible.map(q => {
         const a = quiz.answers.get(q.question_key);
         let controls = '';
         if (q.question_type === 'single_select') {
@@ -1342,6 +1361,12 @@
         quiz.guestId = guestId;
         quiz.questions = r.questions || [];
         quiz.answers = new Map((r.answers || []).map(a => [a.question_key, a]));
+        quiz.basicsCatalog = r.basics_catalog || {};
+        quiz.basics = {};
+        for (const f of Object.keys(quiz.basicsCatalog)) {
+          const v = r.basics && r.basics[f];
+          if (v && quiz.basicsCatalog[f].includes(v)) quiz.basics[f] = v;
+        }
         renderQuiz();
       } catch (err) {
         document.getElementById('quizBody').innerHTML = '<p class="empty-note" style="color:var(--color-error);">' + esc(err.message) + '</p>';
@@ -1368,6 +1393,12 @@
       }
     });
     document.getElementById('quizBody').addEventListener('change', (e) => {
+      if (e.target.classList.contains('qz-basic')) {
+        if (e.target.value) quiz.basics[e.target.dataset.f] = e.target.value;
+        else delete quiz.basics[e.target.dataset.f];
+        renderQuiz();
+        return;
+      }
       if (e.target.classList.contains('qz-span')) {
         const key = e.target.dataset.q;
         const q = quiz.questions.find(x => x.question_key === key);
@@ -1408,9 +1439,9 @@
         // to hidden conditionals don't linger.
         const visibleKeys = new Set(quiz.questions.filter(quizVisible).map(q => q.question_key));
         const payload = [...quiz.answers.values()].filter(a => visibleKeys.has(a.question_key));
-        const r = await portal('save_guest_quiz', { token, guest_id: quiz.guestId, answers: payload });
+        const r = await portal('save_guest_quiz', { token, guest_id: quiz.guestId, answers: payload, basics: quiz.basics });
         if (finish && !r.completed) {
-          errEl.textContent = r.missing + ' question' + (r.missing === 1 ? '' : 's') + ' still to answer.';
+          errEl.textContent = r.missing + ' item' + (r.missing === 1 ? '' : 's') + ' still to answer' + (r.missing_basics ? ' (including ' + r.missing_basics + ' in The basics)' : '') + '.';
         } else {
           document.getElementById('quizOverlay').classList.add('hidden');
           loadGuests();
