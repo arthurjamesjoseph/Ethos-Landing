@@ -471,11 +471,13 @@
             <input class="form-input" id="clientLink" readonly value="">
             <button class="search-btn" id="copyLinkBtn">Copy link</button>
           </div>
-          <label class="pair-label" style="margin-top:1.5rem;">Your Clients</label>
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-top:1.5rem;">
+            <label class="pair-label" style="margin-top:0;">Your Clients</label>
+            <button class="intro-btn" id="guestAddBtn">+ Add Client</button>
+          </div>
           <div id="clientsList"></div>
           <div id="guestsList"></div>
           <p class="empty-note" id="clientsEmpty">No clients yet — share your link to bring them onto Ethos, or add a client card yourself.</p>
-          <button class="intro-btn" id="guestAddBtn" style="margin-top:0.5rem;">+ Add Client</button>
           <div id="guestForm" class="hidden guest-overlay">
             <div class="guest-modal">
             <h3 class="guest-modal-title">Client details</h3>
@@ -1631,24 +1633,32 @@
       document.getElementById('clientSearchResults').innerHTML = '';
       document.getElementById('clientSearchError').textContent = '';
     }
-    async function runClientSearch() {
+    let clientSearchSeq = 0;
+    async function runClientSearch(silent) {
       const errEl = document.getElementById('clientSearchError');
       const resEl = document.getElementById('clientSearchResults');
-      errEl.textContent = ''; resEl.innerHTML = '';
+      errEl.textContent = '';
       const q = document.getElementById('clientSearchInput').value.trim();
-      if (q.length < 3) { errEl.textContent = 'Type at least 3 characters.'; return; }
+      if (q.length < 3) {
+        resEl.innerHTML = '';
+        if (!silent) errEl.textContent = 'Type at least 3 characters.';
+        return;
+      }
+      const seq = ++clientSearchSeq;
       const btn = document.getElementById('clientSearchBtn');
       btn.disabled = true; btn.textContent = 'Finding…';
       try {
         const token = localStorage.getItem(TOKEN_KEY);
         const r = await portal('client_search', { token, query: q });
+        if (seq !== clientSearchSeq) return; // a newer keystroke superseded this one
+        resEl.innerHTML = '';
         if (!(r.results || []).length) {
           resEl.innerHTML = '<p class="empty-note" style="margin-top:0.375rem;">No member found' + (q.includes('@') ? ' with that exact email.' : ' by that name in your cities.') + '</p>';
           return;
         }
         resEl.innerHTML = r.results.map(m =>
           '<div class="day-slot"><span>' +
-            '<span class="day-slot-time">' + esc(m.first_name || 'Member') + '</span> ' +
+            '<span class="day-slot-time">' + esc([m.first_name, m.last_name].filter(Boolean).join(' ') || 'Member') + '</span> ' +
             '<span class="cand-meta">' + [m.age, m.city ? esc(String(m.city).split(',')[0]) : null].filter(Boolean).join(' · ') + '</span></span>' +
           (m.relationship === 'active'
             ? '<span class="status-chip status-accepted">already your client</span>'
@@ -1657,12 +1667,18 @@
               : '<button class="intro-btn invite-client-btn" data-uid="' + esc(m.user_id) + '">Invite as client</button>') +
           '</div>').join('');
       } catch (err) {
-        errEl.textContent = err.message;
+        if (seq === clientSearchSeq) errEl.textContent = err.message;
       } finally { btn.disabled = false; btn.textContent = 'Find'; }
     }
-    document.getElementById('clientSearchBtn').addEventListener('click', runClientSearch);
+    document.getElementById('clientSearchBtn').addEventListener('click', () => runClientSearch(false));
     document.getElementById('clientSearchInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); runClientSearch(); }
+      if (e.key === 'Enter') { e.preventDefault(); runClientSearch(false); }
+    });
+    // Live results while typing (debounced).
+    let clientSearchTimer = null;
+    document.getElementById('clientSearchInput').addEventListener('input', () => {
+      clearTimeout(clientSearchTimer);
+      clientSearchTimer = setTimeout(() => runClientSearch(true), 350);
     });
     document.getElementById('clientSearchResults').addEventListener('click', async (e) => {
       const btn = e.target.closest('.invite-client-btn');
