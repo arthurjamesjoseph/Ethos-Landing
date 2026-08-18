@@ -26,8 +26,8 @@
     :root {
       --color-cream: #f5f2ed;
       --color-card: #f9f7f4;
-      --color-input-bg: #ffffff;
-      --color-input-border: #e8e4de;
+      --color-input-bg: hsl(48 20% 94%);   /* app --muted: shaded ivory input fill */
+      --color-input-border: hsl(48 15% 90%); /* app --border: subtle ivory border */
       --color-gold: #b5a178;
       --color-gold-hover: #a6926b;
       --color-text: #3d3630;
@@ -40,6 +40,8 @@
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    html[data-textsize="small"] { font-size: 15px; }
+    html[data-textsize="large"] { font-size: 18px; }
     html, body { min-height: 100%; }
     body { font-family: var(--font-sans); color: var(--color-text); background: var(--color-cream); line-height: 1.6; }
     .page { min-height: 100vh; display: flex; flex-direction: column; }
@@ -50,7 +52,7 @@
     .logo-img { height: 32px; width: auto; }
     .logo-text { font-family: var(--font-serif); font-size: 1.375rem; font-weight: 600; letter-spacing: 0.01em; }
 
-    .main { flex: 1; width: 100%; max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    .main { flex: 1; width: 100%; max-width: 53.75rem; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
     .eyebrow { font-family: var(--font-sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--color-gold); text-align: center; margin-bottom: 0.75rem; }
     .page-title { font-family: var(--font-serif); font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 500; line-height: 1.15; text-align: center; letter-spacing: -0.01em; margin-bottom: 0.5rem; }
     .page-sub { font-family: var(--font-serif); font-size: 1.125rem; color: var(--color-text-light); text-align: center; max-width: 34rem; margin: 0 auto 2.5rem; }
@@ -67,7 +69,7 @@
       transition: border-color 0.2s, box-shadow 0.2s;
     }
     .form-input:focus { outline: none; border-color: var(--color-gold); box-shadow: 0 0 0 3px rgba(181, 161, 120, 0.15); }
-    textarea.form-input { resize: vertical; min-height: 92px; font-size: 1.0625rem; }
+    textarea.form-input { resize: vertical; min-height: 92px; }
     .code-input { text-align: center; font-size: 1.5rem; letter-spacing: 0.5em; font-weight: 600; }
     .submit-btn {
       width: 100%; padding: 1rem 1.5rem; margin-top: 1.25rem;
@@ -77,7 +79,7 @@
     }
     .submit-btn:hover:not(:disabled) { background: var(--color-gold-hover); }
     .submit-btn:disabled { opacity: 0.55; cursor: default; }
-    .form-error { font-family: var(--font-serif); font-size: 0.9rem; color: var(--color-error); text-align: center; min-height: 1.4rem; margin-top: 0.875rem; }
+    .form-error { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-error); text-align: center; min-height: 1.4rem; margin-top: 0.875rem; }
     .form-hint { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light); text-align: center; margin-top: 0.875rem; }
     .form-hint button { background: none; border: none; font: inherit; color: var(--color-gold); cursor: pointer; text-decoration: underline; }
 
@@ -105,11 +107,21 @@
 
     .cand { border-top: 1px solid var(--color-input-border); padding: 1rem 0; }
     .cand:first-of-type { margin-top: 1rem; }
+    /* Clients render as shaded boxes — same fill as the app's Encounters cards. */
+    #clientsList .cand, #guestsList .cand {
+      border-top: none; background: #F5F1EA; border: 1px solid #E8E4DD;
+      border-radius: 16px; padding: 1rem 1.125rem; margin-top: 0.75rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
     .cand-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
     .cand-left { display: flex; align-items: center; gap: 0.875rem; min-width: 0; }
     .cand-photo { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
     .cand-photo-empty { width: 64px; height: 64px; border-radius: 10px; background: var(--color-input-border); flex-shrink: 0; }
     .cand-name { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 600; }
+    #results .cand-name.view-cand-btn { cursor: pointer; }
+    #results .cand-name.view-cand-btn:hover { color: var(--color-gold); text-decoration: underline; text-underline-offset: 3px; }
+    .name-link { cursor: pointer; }
+    .name-link:hover { color: var(--color-gold); text-decoration: underline; text-underline-offset: 3px; }
     .cand-meta { font-family: var(--font-serif); font-size: 0.9375rem; color: var(--color-text-light); }
     .intro-btn {
       font-family: var(--font-serif); font-size: 0.9375rem; font-weight: 600; color: var(--color-text);
@@ -117,6 +129,8 @@
       padding: 0.5rem 1rem; cursor: pointer; transition: border-color 0.2s; white-space: nowrap;
     }
     .intro-btn:hover { border-color: var(--color-gold); }
+    .intro-btn.danger { color: #8f3a2b; background: rgba(196, 92, 74, 0.18); border-color: rgba(196, 92, 74, 0.5); }
+    .intro-btn.danger:hover { border-color: #8f3a2b; background: rgba(196, 92, 74, 0.26); }
     .intro-form { margin-top: 0.875rem; }
     .intro-actions { display: flex; gap: 0.625rem; margin-top: 0.625rem; }
     .intro-send {
@@ -135,7 +149,7 @@
       text-transform: uppercase; color: var(--color-text-light); text-align: left;
       padding: 0 0.75rem 0.625rem 0; border-bottom: 1px solid var(--color-input-border);
     }
-    .pipe-table td { padding: 0.875rem 0.75rem 0.875rem 0; border-bottom: 1px solid var(--color-input-border); vertical-align: top; font-family: var(--font-serif); font-size: 0.9688rem; }
+    .pipe-table td { padding: 0.875rem 0.75rem 0.875rem 0; border-bottom: 1px solid var(--color-input-border); vertical-align: top; font-family: var(--font-serif); font-size: 0.9375rem; }
     .pipe-table tr:last-child td { border-bottom: none; }
     .pipe-msg { color: var(--color-text-light); font-size: 0.875rem; max-width: 34ch; }
     .status-chip { display: inline-block; font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 999px; padding: 0.2rem 0.7rem; }
@@ -146,9 +160,11 @@
     .status-answered { background: rgba(90, 122, 90, 0.14); color: var(--color-success); }
     .status-closed { background: rgba(107, 95, 84, 0.12); color: var(--color-text-light); }
     .req { border-top: 1px solid var(--color-input-border); padding: 1rem 0; }
-    .req-brief { font-family: var(--font-serif); font-size: 0.9688rem; margin-top: 0.375rem; }
-    .req-note { font-family: var(--font-serif); font-size: 0.9rem; color: var(--color-text-light); margin-top: 0.375rem; }
-    .form-ok { font-family: var(--font-serif); font-size: 0.9rem; color: var(--color-success); min-height: 1.4rem; margin-top: 0.5rem; }
+    .req-brief { font-family: var(--font-serif); font-size: 0.9375rem; margin-top: 0.375rem; }
+    .pair-avatar { height: 32px; width: 32px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 0.4rem; }
+    .pair-avatar-empty { display: inline-block; background: var(--color-input-border); }
+    .req-note { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-text-light); margin-top: 0.375rem; }
+    .form-ok { font-family: var(--font-serif); font-size: 0.875rem; color: var(--color-success); min-height: 1.4rem; margin-top: 0.5rem; }
     .empty-note { font-family: var(--font-serif); font-size: 0.9375rem; color: var(--color-text-light); }
 
     .profile-panel { padding: 0.75rem 0 0.5rem; }
@@ -175,13 +191,90 @@
     }
     .tabpane { display: none; }
     .tabpane.visible { display: block; }
+    .subtabs { margin: -0.5rem 0 1.25rem; }
+    .subtabs.visible { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .subtabs button {
+      font-family: var(--font-sans); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.03em;
+      color: var(--color-text-light); background: transparent; border: 1px solid var(--color-input-border);
+      border-radius: 999px; padding: 0.5rem 1.125rem; cursor: pointer; transition: all 0.15s;
+    }
+    .subtabs button:hover { border-color: var(--color-gold); color: var(--color-text); }
+    .subtabs button.active { color: var(--color-white); background: var(--color-gold); border-color: var(--color-gold); }
+    .textsize-row { display: flex; gap: 0.5rem; margin-top: 0.375rem; }
+    .textsize-row button {
+      font-family: var(--font-sans); font-size: 0.875rem; font-weight: 600; letter-spacing: 0.03em;
+      color: var(--color-text-light); background: var(--color-input-bg); border: 1px solid var(--color-input-border);
+      border-radius: 999px; padding: 0.5rem 1.125rem; cursor: pointer; transition: all 0.15s;
+    }
+    .textsize-row button:hover { border-color: var(--color-gold); color: var(--color-text); }
+    .textsize-row button.active { color: var(--color-white); background: var(--color-gold); border-color: var(--color-gold); }
     .crop-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(30, 26, 22, 0.55); display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .guest-overlay { position: fixed; inset: 0; z-index: 190; background: rgba(30, 26, 22, 0.55); display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .guest-modal {
+      background: var(--color-card); border-radius: 14px; padding: 1.5rem;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25); max-width: 640px; width: 100%;
+      max-height: 88vh; overflow-y: auto;
+    }
+    .guest-modal-title { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 600; margin-bottom: 0.875rem; }
     .crop-modal { background: var(--color-card); border-radius: 14px; padding: 1.5rem; box-shadow: 0 12px 48px rgba(0,0,0,0.25); max-width: 380px; width: 100%; }
     .crop-modal h3 { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem; }
     #cropCanvas { display: block; margin: 0 auto; border-radius: 10px; background: #eee; touch-action: none; cursor: grab; max-width: 100%; }
     .crop-zoom { width: 100%; margin-top: 0.875rem; accent-color: var(--color-gold); }
     .crop-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1rem; }
     .crop-hint { font-family: var(--font-sans); font-size: 0.75rem; color: var(--color-text-light); text-align: center; margin-top: 0.5rem; }
+    .cal-head { display: flex; align-items: center; gap: 0.5rem 0.75rem; margin-bottom: 0.625rem; flex-wrap: wrap; }
+    .cal-head .intro-btn { padding: 0.25rem 0.75rem; font-size: 1.125rem; line-height: 1; }
+    /* Fixed width so ‹ › / Today / Week–Month never shift when the label changes. */
+    .cal-title { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 600; width: 12.5rem; text-align: center; white-space: nowrap; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.25rem; max-width: 32.5rem; }
+    .cal-dow { font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-light); text-align: center; padding: 0.25rem 0; }
+    .cal-day {
+      position: relative; aspect-ratio: 1; border: 1px solid var(--color-input-border); border-radius: 10px;
+      background: var(--color-input-bg); font-family: var(--font-serif); font-size: 0.9375rem; color: var(--color-text);
+      cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+      transition: border-color 0.15s;
+    }
+    .cal-day:hover:not(.past):not(.blank) { border-color: var(--color-gold); }
+    .cal-day.selected { background: var(--color-gold); border-color: var(--color-gold); color: var(--color-white); }
+    .cal-day.past { opacity: 0.35; cursor: default; }
+    .cal-day.blank { visibility: hidden; }
+    .cal-day.today:not(.selected), .cal-wday.today:not(.selected) { border-color: var(--color-gold); border-style: dashed; }
+    .cal-dots { display: flex; gap: 3px; height: 5px; }
+    .cal-dot { width: 5px; height: 5px; border-radius: 50%; }
+    .cal-dot.free { background: var(--color-gold); }
+    .cal-dot.booked { background: var(--color-success); }
+    .cal-day.selected .cal-dot.free { background: var(--color-white); }
+    .cal-head .subtabs { display: flex; gap: 0.5rem; margin-bottom: 0; }
+    /* Same footprint as the month grid so toggling views doesn't jump the page:
+       the month grid's height is width-driven (square cells), so the week grid
+       mirrors it with the equivalent aspect ratio instead of a fixed height. */
+    .cal-week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.25rem; aspect-ratio: 52 / 47; }
+    .cal-wday {
+      border: 1px solid var(--color-input-border); border-radius: 10px; background: var(--color-input-bg);
+      padding: 0.375rem; cursor: pointer; display: flex; flex-direction: column; gap: 3px;
+      transition: border-color 0.15s; text-align: left;
+    }
+    .cal-wday:hover:not(.past) { border-color: var(--color-gold); }
+    .cal-wday.selected { border-color: var(--color-gold); box-shadow: 0 0 0 2px rgba(181, 161, 120, 0.3); }
+    .cal-wday.past { opacity: 0.35; cursor: default; }
+    .cal-wday-head { font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-light); }
+    .cal-wday.selected .cal-wday-head { color: var(--color-gold); }
+    .wk-slot { font-family: var(--font-sans); font-size: 0.6875rem; border-radius: 6px; padding: 0.15rem 0.3rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .wk-slot.free { background: rgba(181, 161, 120, 0.18); color: #7d6a49; }
+    .wk-slot.booked { background: rgba(90, 122, 90, 0.14); color: var(--color-success); }
+    .cal-wrap { display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap; }
+    .cal-left { flex: 1 1 21.25rem; max-width: 32.5rem; min-width: 0; }
+    .cal-day-panel {
+      flex: 1 1 17rem; min-width: 17rem;
+      border: 1px solid var(--color-input-border); border-radius: 12px;
+      background: var(--color-input-bg); padding: 1rem 1.125rem;
+    }
+    .cal-day-panel-title { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 600; }
+    .cal-day-panel-sub { font-family: var(--font-sans); font-size: 0.75rem; color: var(--color-text-light); margin-top: 0.25rem; }
+    .day-slot { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid var(--color-input-border); }
+    .day-slot:last-child { border-bottom: none; }
+    .day-slot-time { font-family: var(--font-serif); font-size: 1rem; font-weight: 600; }
+    .req.jump-flash { background: rgba(181, 161, 120, 0.14); border-radius: 10px; transition: background 1.2s; }
     .consult-member { display: flex; align-items: center; gap: 0.625rem; margin: 0.5rem 0; }
     .consult-member img { height: 44px; width: 44px; border-radius: 50%; object-fit: cover; }
     .pair-label { display: block; margin-top: 0.75rem; font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-light); }
@@ -193,7 +286,7 @@
     #applyCard .form-label { margin-top: 0; }
     .chat-panel { padding: 0.75rem 0 0.5rem; }
     .chat-scroll { max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; padding: 0.25rem 0; }
-    .chat-bubble { max-width: 75%; padding: 0.5rem 0.875rem; border-radius: 14px; font-size: 0.9688rem; line-height: 1.5; }
+    .chat-bubble { max-width: 75%; padding: 0.5rem 0.875rem; border-radius: 14px; font-size: 0.9375rem; line-height: 1.5; }
     .chat-bubble.mm { align-self: flex-end; background: var(--color-gold); color: var(--color-white); }
     .chat-bubble.member { align-self: flex-start; background: var(--color-input-bg); border: 1px solid var(--color-input-border); }
     .chat-compose { display: flex; gap: 0.5rem; margin-top: 0.625rem; }
@@ -201,7 +294,7 @@
     .chat-send { width: auto; padding: 0.6rem 1.4rem; margin: 0; }
     .facts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.625rem 1.25rem; margin-top: 0.875rem; }
     .fact { display: flex; flex-direction: column; }
-    .fact-k { font-family: var(--font-sans); font-size: 0.6563rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-light); }
+    .fact-k { font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-light); }
     .fact-v { font-family: var(--font-serif); font-size: 1rem; }
 
     .privacy-strip {
@@ -300,13 +393,13 @@
         </div>
 
         <nav class="portal-tabs" id="portalTabs">
-          <button data-tab="introduce" class="active">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-            Introduce
-          </button>
-          <button data-tab="clients">
+          <button data-tab="clients" class="active">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             Clients
+          </button>
+          <button data-tab="matchmaking">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            Match Making
           </button>
           <button data-tab="consult">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>
@@ -320,14 +413,29 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             Profile
           </button>
+          <button data-tab="settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            Settings
+          </button>
         </nav>
 
-        <div class="card tabpane tab-introduce">
+        <nav class="tabpane tab-matchmaking subtabs" id="mmSubtabs">
+          <button data-sub="find">Find Candidates</button>
+          <button data-sub="intros">Member Introductions</button>
+        </nav>
+
+        <div class="card tabpane tab-matchmaking sub-find">
           <h2 class="card-title">Find candidates</h2>
-          <p class="card-sub">Describe who your client is looking for, in your own words. This early tool filters by age, city and who they're seeking — for the nuanced things only the compatibility questionnaire knows, ask the Ethos team below.</p>
+          <div id="searchUi">
+          <p class="card-sub">Describe who your client is looking for, in your own words — or just type a member's name. This early tool filters by age, city and who they're seeking; for the nuanced things only the compatibility questionnaire knows, ask the Ethos team below.</p>
+          <label class="pair-label" style="margin-top:0;">Searching for</label>
+          <select class="form-input" id="introForSel" style="margin-bottom:0.75rem;">
+            <option value="">Select a client (optional)</option>
+          </select>
           <div class="search-row">
             <textarea class="form-input" id="searchInput" placeholder="e.g. My client is a 32-year-old woman in Delhi looking for a marriage-minded man between 30 and 40."></textarea>
             <button class="search-btn" id="searchBtn">Search</button>
+          </div>
           </div>
           <p class="filters-note" id="filtersNote"></p>
           <div id="results"></div>
@@ -357,30 +465,52 @@
 
         <div class="card tabpane tab-clients">
           <h2 class="card-title">Your clients</h2>
-          <p class="card-sub">Share your personal link — clients who confirm appear here, and you can view their full profile and set them up right away. Their compatibility answers and contact details stay private.</p>
+          <p class="card-sub">Clients who join through your link appear here with their full Ethos profile; you can also add a card yourself for a client who isn't on Ethos — members see your notes in place of a compatibility score. Compatibility answers and contact details stay private.</p>
+          <label class="pair-label" style="margin-top:0;">Your Ethos Link</label>
           <div class="share-row">
             <input class="form-input" id="clientLink" readonly value="">
             <button class="search-btn" id="copyLinkBtn">Copy link</button>
           </div>
-          <div id="clientsList"><p class="empty-note">No clients yet — share your link to bring them onto Ethos.</p></div>
-
-          <label class="pair-label" style="margin-top:1.5rem;">People you work with off Ethos</label>
-          <p class="card-sub" style="margin-bottom:0.5rem;">Create a card for a client who isn't on Ethos — two photos and the basics — then introduce them to members. Members see your notes in place of a compatibility score.</p>
+          <label class="pair-label" style="margin-top:1.5rem;">Your Clients</label>
+          <div id="clientsList"></div>
           <div id="guestsList"></div>
-          <button class="intro-btn" id="guestAddBtn" style="margin-top:0.5rem;">+ Add someone</button>
-          <div id="guestForm" class="hidden" style="margin-top:0.75rem;border:1px solid var(--color-input-border);border-radius:10px;padding:0.875rem;">
+          <p class="empty-note" id="clientsEmpty">No clients yet — share your link to bring them onto Ethos, or add a client card yourself.</p>
+          <button class="intro-btn" id="guestAddBtn" style="margin-top:0.5rem;">+ Add Client</button>
+          <div id="guestForm" class="hidden guest-overlay">
+            <div class="guest-modal">
+            <h3 class="guest-modal-title">Client details</h3>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;">
               <div><div class="cand-meta">First name</div><input class="form-input" id="gFirst" maxlength="60"></div>
               <div><div class="cand-meta">Gender</div><select class="form-input" id="gGender"><option value="">—</option><option value="female">Woman</option><option value="male">Man</option></select></div>
               <div><div class="cand-meta">Age</div><input class="form-input" id="gAge" type="number" min="18" max="99"></div>
             </div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.5rem;">
-              <div><div class="cand-meta">City</div><input class="form-input" id="gCity" maxlength="80" placeholder="e.g. Mumbai, India"></div>
+              <div><div class="cand-meta">City</div><input class="form-input" id="gCity" maxlength="80" list="ethosCityList" placeholder="Start typing — e.g. Mumbai, India" autocomplete="off"></div>
               <div><div class="cand-meta">Occupation</div><input class="form-input" id="gOccupation" maxlength="120"></div>
-              <div><div class="cand-meta">Education</div><input class="form-input" id="gEducation" maxlength="120"></div>
-              <div><div class="cand-meta">Height (cm)</div><input class="form-input" id="gHeight" type="number" min="120" max="230"></div>
-              <div><div class="cand-meta">Religion</div><input class="form-input" id="gReligion" maxlength="60"></div>
-              <div><div class="cand-meta">Languages</div><input class="form-input" id="gLanguages" maxlength="120"></div>
+              <div><div class="cand-meta">Education</div><select class="form-input" id="gEducation">
+                <option value="">—</option>
+                <option>High school or equivalent</option>
+                <option>Post-secondary education</option>
+                <option>Bachelor's degree</option>
+                <option>Master's degree</option>
+                <option>Doctorate (PhD or equivalent)</option>
+              </select></div>
+              <div><div class="cand-meta">Height (cm)</div><input class="form-input" id="gHeight" type="number" min="120" max="250"><div class="filters-note" id="gHeightHint" style="margin-top:0.25rem;"></div></div>
+              <div><div class="cand-meta">Religion</div><select class="form-input" id="gReligion">
+                <option value="">—</option>
+                <option>Agnostic</option>
+                <option>Atheist</option>
+                <option>Buddhist</option>
+                <option>Christian</option>
+                <option>Hindu</option>
+                <option>Jain</option>
+                <option>Jewish</option>
+                <option>Muslim</option>
+                <option>Sikh</option>
+                <option>Spiritual</option>
+                <option>Other</option>
+              </select></div>
+              <div><div class="cand-meta">Languages</div><input class="form-input" id="gLanguages" maxlength="120" placeholder="e.g. English, Hindi"></div>
             </div>
             <div class="cand-meta" style="margin-top:0.5rem;">Your notes — what a member should know before saying yes to a date</div>
             <textarea class="form-input" id="gNotes" maxlength="1000" placeholder="Who they are, what they're looking for, why you vouch for them."></textarea>
@@ -402,35 +532,101 @@
             </div>
             <p class="form-error" id="gError"></p>
             <p class="form-ok" id="gOk"></p>
+            </div>
           </div>
         </div>
 
         <div class="card tabpane tab-consult">
           <h2 class="card-title">Your availability</h2>
-          <p class="card-sub">Publish the times you're free for consultations — members book them with one tap and you're both confirmed instantly. Booked times show who took them.</p>
-          <label class="pair-label">Pick a day, then tap the times you're free</label>
-          <input type="date" class="form-input" id="slotDate" style="max-width:220px;">
-          <div id="slotTimeChips" style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem;"></div>
-          <div class="share-row" style="margin-top:0.5rem;max-width:340px;">
-            <input type="time" class="form-input" id="slotCustomTime">
-            <button class="search-btn" id="addSlotBtn">Add this time</button>
+          <p class="card-sub">Publish the times you're free for consultations — members book them with one tap and you're both confirmed instantly. Booked times show who took them. <span id="tzNote"></span></p>
+          <p class="form-error" id="slotError" style="min-height:0;margin:0;"></p>
+          <p class="form-ok" id="slotOk" style="min-height:0;margin:0;"></p>
+          <div id="addTimeOverlay" class="hidden guest-overlay">
+            <div class="guest-modal" style="max-width:320px;">
+              <h3 class="guest-modal-title">Add a time</h3>
+              <input type="time" class="form-input" id="slotCustomTime">
+              <div style="margin-top:0.75rem;display:flex;gap:0.5rem;">
+                <button class="search-btn" id="addSlotBtn" style="width:auto;padding:0.5rem 1.25rem;">Add this time</button>
+                <button class="intro-btn" id="addTimeCancel">Cancel</button>
+              </div>
+              <p class="form-error" id="addTimeError"></p>
+            </div>
           </div>
-          <p class="form-error" id="slotError"></p>
-          <p class="form-ok" id="slotOk"></p>
-          <label class="pair-label" style="margin-top:1rem;">Your published times</label>
-          <div id="slotsList"><p class="empty-note">No times published yet — without them, members propose their own and wait for you to confirm.</p></div>
+          <div id="recurOverlay" class="hidden guest-overlay">
+            <div class="guest-modal" style="max-width:420px;">
+              <h3 class="guest-modal-title">Recurring times</h3>
+              <p class="card-sub" style="margin-bottom:0.75rem;">Publish the same time on the same days every week — members can book any of them.</p>
+              <label class="pair-label" style="margin-top:0;">On these days</label>
+              <div class="textsize-row" id="recurDows" style="flex-wrap:wrap;">
+                <button data-dow="0">Mon</button><button data-dow="1">Tue</button><button data-dow="2">Wed</button>
+                <button data-dow="3">Thu</button><button data-dow="4">Fri</button><button data-dow="5">Sat</button>
+                <button data-dow="6">Sun</button>
+              </div>
+              <label class="pair-label">At these times</label>
+              <div class="textsize-row" id="recurTimes" style="flex-wrap:wrap;"></div>
+              <div class="share-row" style="margin-top:0.5rem;max-width:260px;">
+                <input type="time" class="form-input" id="recurCustomTime">
+                <button class="intro-btn" id="recurAddTime" style="white-space:nowrap;">Add time</button>
+              </div>
+              <label class="pair-label">For the next</label>
+              <select class="form-input" id="recurWeeks" style="max-width:160px;">
+                <option value="4">4 weeks</option>
+                <option value="8">8 weeks</option>
+                <option value="12">12 weeks</option>
+              </select>
+              <div style="margin-top:1rem;display:flex;gap:0.5rem;">
+                <button class="search-btn" id="recurCreateBtn" style="width:auto;padding:0.5rem 1.25rem;">Create times</button>
+                <button class="intro-btn" id="recurCancel">Cancel</button>
+              </div>
+              <p class="form-error" id="recurError"></p>
+            </div>
+          </div>
+          <div id="profileOverlay" class="hidden guest-overlay">
+            <div class="guest-modal" style="max-width:640px;">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:1rem;">
+                <h3 class="guest-modal-title" id="profileModalTitle">Profile</h3>
+                <button class="pair-clear" id="profileModalClose">Close</button>
+              </div>
+              <div id="profileModalBody" class="profile-panel"></div>
+            </div>
+          </div>
+          <div class="cal-wrap" style="margin-top:0.75rem;">
+            <div class="cal-left">
+              <div class="cal-head">
+                <button class="intro-btn" id="calPrev" aria-label="Previous">‹</button>
+                <span class="cal-title" id="calTitle"></span>
+                <button class="intro-btn" id="calNext" aria-label="Next">›</button>
+                <button class="intro-btn" id="calToday" style="font-size:0.875rem;">Today</button>
+                <nav class="subtabs" id="calViewToggle" style="margin:0 0 0 auto;">
+                  <button data-view="week">Week</button>
+                  <button data-view="month">Month</button>
+                </nav>
+              </div>
+              <div class="cal-grid" id="calGrid"></div>
+              <div class="filters-note" style="margin-top:0.5rem;"><span class="cal-dot free" style="display:inline-block;vertical-align:middle;"></span> available &nbsp; <span class="cal-dot booked" style="display:inline-block;vertical-align:middle;"></span> booked</div>
+            </div>
+            <div class="cal-day-panel" id="dayPanel">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:0.75rem;">
+                <div class="cal-day-panel-title" id="dayPanelTitle">Pick a day</div>
+                <button class="pair-clear" id="recurBtn" style="white-space:nowrap;">↻ Recurring</button>
+              </div>
+              <div class="cal-day-panel-sub" id="dayPanelSub">Tap the times you're free — tap again to remove.</div>
+              <div id="slotTimeChips" style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.625rem;"></div>
+            </div>
+          </div>
         </div>
 
         <div class="card tabpane tab-consult">
           <h2 class="card-title">Consultations</h2>
           <p class="card-sub">Members who'd like a video call with you. Confirm one of their times — the call happens right here in your browser, and in their app.</p>
+          <p class="filters-note" id="consultsFilterNote" style="margin-bottom:0.5rem;"></p>
           <div id="consultsList"><p class="empty-note">No consultation requests yet.</p></div>
         </div>
 
-        <div class="card tabpane tab-introduce">
+        <div class="card tabpane tab-matchmaking sub-intros">
           <h2 class="card-title">Member introductions</h2>
           <p class="card-sub">Two members you've introduced to each other. When both say yes, they plan their date inside Ethos — you'll see it progress here.</p>
-          <div id="memberPairs"><p class="empty-note">No member introductions yet — select two candidates above with their Pair buttons.</p></div>
+          <div id="memberPairs"><p class="empty-note">No member introductions yet — pair two people in Find Candidates.</p></div>
           <label class="pair-label" style="margin-top:1.25rem;">Client introductions</label>
           <p class="card-sub" style="margin-bottom:0.5rem;">Your off-Ethos clients proposed to members. The member sees their card and your notes, and answers in the app.</p>
           <div id="guestIntros"><p class="empty-note">None yet — open a client's card in Your clients and tap Introduce to a member.</p></div>
@@ -512,7 +708,30 @@
           <p class="form-ok" id="profOk"></p>
         </div>
 
-        <div class="card tabpane tab-introduce">
+        <div class="card tabpane tab-settings">
+          <h2 class="card-title">Settings</h2>
+          <p class="card-sub">How the portal looks for you on this device.</p>
+          <label class="pair-label" style="margin-top:0;">Text size</label>
+          <div class="textsize-row" id="textSizeRow">
+            <button data-size="small">Small</button>
+            <button data-size="medium">Medium</button>
+            <button data-size="large">Large</button>
+          </div>
+        </div>
+
+        <div class="card tabpane tab-settings">
+          <h2 class="card-title">Calendar</h2>
+          <p class="card-sub">Connect your calendar — booked Ethos consultations appear in it automatically, and Ethos hides your published slots whenever your own calendar is busy. Synced every 15 minutes. Apple Calendar users: connect the Google or Outlook account your Apple Calendar already syncs with.</p>
+          <div id="gcalStatus" class="empty-note">Checking…</div>
+          <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+            <button class="search-btn hidden" id="gcalConnectBtn">Connect Google Calendar</button>
+            <button class="search-btn hidden" id="msConnectBtn">Connect Outlook</button>
+            <button class="intro-btn danger hidden" id="gcalDisconnectBtn">Disconnect</button>
+          </div>
+          <p class="form-error" id="gcalError" style="min-height:0;margin:0.5rem 0 0;"></p>
+        </div>
+
+        <div class="card tabpane tab-matchmaking sub-intros">
           <h2 class="card-title">Your introductions</h2>
           <p class="card-sub">Members answer in the Ethos app; accepted members can hear more from you through Ethos.</p>
           <div id="pipeline"><p class="empty-note">Loading…</p></div>
@@ -681,7 +900,7 @@
     function renderPipeline(introductions) {
       const el = document.getElementById('pipeline');
       if (!introductions.length) {
-        el.innerHTML = '<p class="empty-note">No introductions yet — search above to find candidates for your clients.</p>';
+        el.innerHTML = '<p class="empty-note">No introductions yet — use Find Candidates to search for your clients.</p>';
         return;
       }
       el.innerHTML = '<table class="pipe-table"><thead><tr>' +
@@ -705,7 +924,7 @@
         ).join('') + '</tbody></table>';
     }
 
-    function renderProfile(panel, data) {
+    function renderProfile(panel, data, noteOverride) {
       const p = data.profile || {};
       const facts = [
         ['Age', p.age], ['City', p.city ? String(p.city).split(',')[0] : null],
@@ -723,20 +942,25 @@
         '<div class="facts-grid">' +
         facts.map(([k, v]) => '<div class="fact"><span class="fact-k">' + esc(k) + '</span><span class="fact-v">' + esc(v) + '</span></div>').join('') +
         '</div>' +
-        '<p class="card-note">Shared with you because ' + esc(p.first_name || 'this member') + ' accepted your introduction. Please treat it confidentially — it stays inside Ethos.</p>';
+        '<p class="card-note">' + (noteOverride || ('Shared with you because ' + esc(p.first_name || 'this member') + ' accepted your introduction. Please treat it confidentially — it stays inside Ethos.')) + '</p>';
     }
 
     async function loadDashboard() {
       const token = localStorage.getItem(TOKEN_KEY);
       if (!token) { showAuth(); return; }
       try {
-        const d = await portal('dashboard', { token });
+        // Browser timezone rides along so notification emails can render
+        // slot times in the matchmaker's local time.
+        let tz = null;
+        try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch (_) { /* old browser */ }
+        const d = await portal('dashboard', { token, tz });
         document.getElementById('welcomeName').textContent = 'Welcome, ' + d.matchmaker_name.split(' ')[0];
         renderPipeline(d.introductions || []);
         showDash();
         loadRequests();
         loadMemberPairs();
         loadConsults();
+        loadGcal();
         loadClients();
         loadGuests();
         loadGuestIntros();
@@ -795,7 +1019,7 @@
         '<div class="cand-row">' +
           '<div class="cand-left">' +
             (c.photo_url ? '<img class="cand-photo" src="' + esc(c.photo_url) + '" alt="">' : '<div class="cand-photo-empty"></div>') +
-            '<div style="min-width:0;"><div class="cand-name">' + esc(c.first_name) + '</div>' +
+            '<div style="min-width:0;"><div class="cand-name view-cand-btn" role="button" tabindex="0" title="View profile">' + esc(c.first_name) + '</div>' +
             '<div class="cand-meta">' + [c.age, c.city ? esc(String(c.city).split(',')[0]) : null, c.occupation ? esc(c.occupation) : null, c.height_cm ? c.height_cm + ' cm' : null].filter(Boolean).join(' · ') + '</div>' +
             (c.member_note ? '<div class="req-note">In their words: “' + esc(c.member_note) + '”</div>' : '') +
             (extraNote ? '<div class="req-note">' + esc(extraNote) + '</div>' : '') + '</div>' +
@@ -887,6 +1111,12 @@
 
     function renderPairTray() {
       const tray = document.getElementById('pairTray');
+      // Once the pair is complete and the note form is up, clear the page down
+      // to just the tray — the result list comes back on cancel/clear/send.
+      const pairComplete = (guestIntroActive && guestPick) || pairSelection.size >= 2;
+      document.getElementById('results').classList.toggle('hidden', !!pairComplete);
+      document.getElementById('filtersNote').classList.toggle('hidden', !!pairComplete);
+      document.getElementById('searchUi').classList.toggle('hidden', !!pairComplete);
       if (guestIntroActive) {
         tray.classList.remove('hidden');
         tray.innerHTML =
@@ -906,10 +1136,27 @@
       if (!picks.length) { tray.classList.add('hidden'); tray.innerHTML = ''; return; }
       tray.classList.remove('hidden');
       if (picks.length === 1) {
+        const [pickedUid, pickedName] = picks[0];
+        const clientOpts = (myClients || [])
+          .filter((c) => !c.paused && c.user_id !== pickedUid)
+          .map((c) => '<option value="m:' + esc(c.user_id) + '" data-name="' + esc(c.first_name) + '">' +
+            esc(c.first_name) + (c.city ? ' · ' + esc(String(c.city).split(',')[0]) : '') + ' — on Ethos</option>')
+          .join('');
+        const guestOpts = (myGuests || [])
+          .map((g) => '<option value="g:' + esc(g.id) + '" data-name="' + esc(g.first_name) + '">' +
+            esc(g.first_name) + (g.city_name ? ' · ' + esc(String(g.city_name).split(',')[0]) : '') + ' — off Ethos</option>')
+          .join('');
         tray.innerHTML =
           '<div style="display:flex;justify-content:space-between;align-items:center;">' +
-          '<span class="pair-title">Introducing ' + esc(picks[0][1]) + ' — pick one more member</span>' +
-          '<button class="pair-clear">Clear</button></div>';
+          '<span class="pair-title">Introducing ' + esc(pickedName) + '</span>' +
+          '<button class="pair-clear">Clear</button></div>' +
+          ((clientOpts || guestOpts)
+            ? '<label class="pair-label">Pair with one of your clients</label>' +
+              '<select class="form-input" id="pairClientSel">' +
+              '<option value="">Select a client…</option>' + clientOpts + guestOpts +
+              '</select>' +
+              '<div class="filters-note" style="margin-top:0.5rem;">Or pick another member from the results with their Pair button.</div>'
+            : '<div class="filters-note" style="margin-top:0.5rem;">Pick one more member from the results with their Pair button.</div>');
         return;
       }
       const [[, nameA], [, nameB]] = picks;
@@ -925,10 +1172,60 @@
         '<p class="form-error" id="pairError"></p><p class="form-ok" id="pairOk"></p>';
     }
 
+    // "Searching for" client picker above the search box: choosing a client
+    // seeds the intro flow up front — an Ethos client becomes the first half
+    // of a pair, an off-Ethos client arms the guest-intro flow. Either way,
+    // tapping Pair on a result then completes the introduction.
+    function refreshIntroForSel() {
+      const sel = document.getElementById('introForSel');
+      const cur = sel.value;
+      sel.innerHTML = '<option value="">Select a client (optional)</option>' +
+        (myClients || []).filter((c) => !c.paused)
+          .map((c) => '<option value="m:' + esc(c.user_id) + '" data-name="' + esc(c.first_name) + '">' +
+            esc(c.first_name) + (c.city ? ' · ' + esc(String(c.city).split(',')[0]) : '') + ' — on Ethos</option>').join('') +
+        (myGuests || [])
+          .map((g) => '<option value="g:' + esc(g.id) + '" data-name="' + esc(g.first_name) + '">' +
+            esc(g.first_name) + (g.city_name ? ' · ' + esc(String(g.city_name).split(',')[0]) : '') + ' — off Ethos</option>').join('');
+      sel.value = cur;
+    }
+    document.getElementById('introForSel').addEventListener('change', (e) => {
+      pairSelection.clear();
+      guestIntroActive = null; guestPick = null;
+      if (e.target.value) {
+        const kind = e.target.value.slice(0, 1);
+        const id = e.target.value.slice(2);
+        const name = e.target.selectedOptions[0].dataset.name || 'Client';
+        if (kind === 'm') pairSelection.set(id, name);
+        else guestIntroActive = { id, name };
+      }
+      renderPairTray();
+    });
+
+    // Client picker inside the tray: an Ethos client completes a member↔member
+    // pair; an off-Ethos client flips to the guest-intro flow with the picked
+    // search candidate as the receiving member.
+    document.getElementById('pairTray').addEventListener('change', (e) => {
+      if (e.target.id !== 'pairClientSel' || !e.target.value) return;
+      const kind = e.target.value.slice(0, 1);
+      const id = e.target.value.slice(2);
+      const name = e.target.selectedOptions[0].dataset.name || 'Client';
+      if (kind === 'm') {
+        pairSelection.set(id, name);
+        renderPairTray();
+      } else {
+        const [candUid, candName] = [...pairSelection.entries()][0];
+        guestIntroActive = { id, name };
+        guestPick = { uid: candUid, name: candName };
+        pairSelection.clear();
+        renderPairTray();
+      }
+    });
+
     document.getElementById('pairTray').addEventListener('click', async (e) => {
       if (e.target.classList.contains('pair-clear')) {
         pairSelection.clear();
         guestIntroActive = null; guestPick = null;
+        document.getElementById('introForSel').value = '';
         renderPairTray();
         return;
       }
@@ -944,6 +1241,7 @@
           });
           const name = guestIntroActive.name;
           guestIntroActive = null; guestPick = null;
+          document.getElementById('introForSel').value = '';
           renderPairTray();
           const tray = document.getElementById('pairTray');
           tray.classList.remove('hidden');
@@ -969,6 +1267,7 @@
           token, user_a: picks[0], user_b: picks[1], note_a: noteA, note_b: noteB,
         });
         pairSelection.clear();
+        document.getElementById('introForSel').value = '';
         renderPairTray();
         const tray = document.getElementById('pairTray');
         tray.classList.remove('hidden');
@@ -992,7 +1291,40 @@
       const btn = e.target.closest('button[data-tab]');
       if (btn) switchTab(btn.dataset.tab);
     });
-    switchTab(localStorage.getItem('ethos_mm_tab') || 'introduce');
+    // Match Making sub-tabs: Find Candidates / Member Introductions.
+    function switchMmSub(name) {
+      if (name !== 'find' && name !== 'intros') name = 'find';
+      document.querySelectorAll('#mmSubtabs button').forEach(b =>
+        b.classList.toggle('active', b.dataset.sub === name));
+      document.querySelectorAll('.sub-find').forEach(p => p.classList.toggle('hidden', name !== 'find'));
+      document.querySelectorAll('.sub-intros').forEach(p => p.classList.toggle('hidden', name !== 'intros'));
+      try { localStorage.setItem('ethos_mm_subtab', name); } catch (_) { /* private mode */ }
+    }
+    document.getElementById('mmSubtabs').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-sub]');
+      if (btn) switchMmSub(btn.dataset.sub);
+    });
+    switchMmSub(localStorage.getItem('ethos_mm_subtab') || 'find');
+
+    // Legacy remembered tabs from before the Match Making merge.
+    const savedTab = localStorage.getItem('ethos_mm_tab');
+    switchTab(savedTab === 'introduce' || savedTab === 'intros' ? 'matchmaking' : (savedTab || 'clients'));
+
+    // ── Text size setting (Small / Medium / Large) ─────────────────────────
+    const TEXT_SIZE_KEY = 'ethos_mm_textsize';
+    function applyTextSize(size) {
+      if (size !== 'small' && size !== 'large') size = 'medium';
+      if (size === 'medium') delete document.documentElement.dataset.textsize;
+      else document.documentElement.dataset.textsize = size;
+      document.querySelectorAll('#textSizeRow button').forEach(b =>
+        b.classList.toggle('active', b.dataset.size === size));
+      try { localStorage.setItem(TEXT_SIZE_KEY, size); } catch (_) { /* private mode */ }
+    }
+    document.getElementById('textSizeRow').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-size]');
+      if (btn) applyTextSize(btn.dataset.size);
+    });
+    applyTextSize(localStorage.getItem(TEXT_SIZE_KEY) || 'medium');
 
     // ── Crop modal: pan + zoom into the exact target shape ────────────────
     const crop = { img: null, aspect: 1, base: 1, zoom: 1, ox: 0, oy: 0, cb: null, dragging: false, lastX: 0, lastY: 0 };
@@ -1233,16 +1565,35 @@
         '<div class="cand-row">' +
           '<div class="cand-left">' +
             (g.headshot_url ? '<img class="cand-photo" src="' + esc(g.headshot_url) + '" alt="">' : '<div class="cand-photo-empty"></div>') +
-            '<div style="min-width:0;"><div class="cand-name">' + esc(g.first_name) + ' <span class="status-chip">off Ethos</span></div>' +
+            '<div style="min-width:0;"><div class="cand-name name-link guest-name-link" role="button" tabindex="0" title="View card">' + esc(g.first_name) + ' <span class="status-chip">off Ethos</span></div>' +
             '<div class="cand-meta">' + [g.age, g.city_name ? esc(String(g.city_name).split(',')[0]) : null, g.occupation ? esc(g.occupation) : null, g.height_cm ? g.height_cm + ' cm' : null].filter(Boolean).join(' · ') + '</div></div>' +
           '</div>' +
           '<span style="white-space:nowrap;">' +
             '<button class="intro-btn guest-introduce" data-name="' + esc(g.first_name) + '">Introduce to a member</button> ' +
             '<button class="intro-btn guest-edit">Edit</button> ' +
-            '<button class="req-dismiss guest-remove">Remove</button>' +
+            '<button class="intro-btn danger guest-remove">Remove</button>' +
           '</span>' +
         '</div>' +
       '</div>';
+    }
+    function renderGuestProfile(panel, g) {
+      const facts = [
+        ['Age', g.age], ['City', g.city_name ? String(g.city_name).split(',')[0] : null],
+        ['Gender', g.gender === 'female' ? 'Woman' : g.gender === 'male' ? 'Man' : g.gender],
+        ['Occupation', g.occupation], ['Education', g.education],
+        ['Height', g.height_cm ? g.height_cm + ' cm' : null],
+        ['Religion', g.religion], ['Languages', g.languages],
+      ].filter(([, v]) => v != null && v !== '');
+      const photos = [g.headshot_url, g.fulllength_url].filter(Boolean);
+      panel.classList.add('profile-panel');
+      panel.innerHTML =
+        (photos.length
+          ? '<div class="photo-strip">' + photos.map(u => '<img src="' + esc(u) + '" alt="">').join('') + '</div>'
+          : '<p class="empty-note">No photos on this card yet.</p>') +
+        '<div class="facts-grid">' +
+        facts.map(([k, v]) => '<div class="fact"><span class="fact-k">' + esc(k) + '</span><span class="fact-v">' + esc(v) + '</span></div>').join('') +
+        '</div>' +
+        (g.mm_notes ? '<p class="card-note">Your notes: “' + esc(g.mm_notes) + '” — members see this in place of a compatibility score.</p>' : '');
     }
     async function loadGuests() {
       try {
@@ -1250,7 +1601,13 @@
         const r = await portal('guests', { token });
         myGuests = r.guests || [];
         document.getElementById('guestsList').innerHTML = myGuests.map(guestCardHtml).join('');
+        updateClientsEmpty();
+        refreshIntroForSel();
       } catch (_) { /* non-fatal */ }
+    }
+    // One combined list: the empty note shows only when BOTH sources are empty.
+    function updateClientsEmpty() {
+      document.getElementById('clientsEmpty').classList.toggle('hidden', !!(myClients.length || myGuests.length));
     }
     function resetGuestForm() {
       const form = document.getElementById('guestForm');
@@ -1261,6 +1618,7 @@
       ['gHeadPrev','gFullPrev'].forEach(id => { const el = document.getElementById(id); el.classList.add('hidden'); el.src = ''; delete el.dataset.b64; });
       document.getElementById('gError').textContent = '';
       document.getElementById('gOk').textContent = '';
+      document.getElementById('gHeightHint').textContent = '';
     }
     document.getElementById('guestAddBtn').addEventListener('click', () => {
       resetGuestForm();
@@ -1269,6 +1627,20 @@
     });
     document.getElementById('gCancelBtn').addEventListener('click', () => {
       document.getElementById('guestForm').classList.add('hidden');
+    });
+    // Clicking the dimmed backdrop (not the modal itself) also closes it.
+    document.getElementById('guestForm').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) e.currentTarget.classList.add('hidden');
+    });
+    // Live ft/in conversion under the height field, same as onboarding.
+    document.getElementById('gHeight').addEventListener('input', (e) => {
+      const cm = parseInt(e.target.value, 10);
+      const hint = document.getElementById('gHeightHint');
+      if (cm >= 120 && cm <= 250) {
+        const ft = Math.floor(cm / 30.48);
+        const inch = Math.round((cm / 30.48 - ft) * 12);
+        hint.textContent = ft + '′' + inch + '″';
+      } else hint.textContent = '';
     });
     document.getElementById('gHeadFile').addEventListener('change', (e) => {
       if (!e.target.files[0]) return;
@@ -1291,6 +1663,23 @@
       const errEl = document.getElementById('gError');
       const okEl = document.getElementById('gOk');
       errEl.textContent = ''; okEl.textContent = '';
+      // Mirror onboarding rules: name/gender/age/city required, age 18+,
+      // height within 120–250 cm, city must come from the Ethos city list.
+      const vFirst = document.getElementById('gFirst').value.trim();
+      const vGender = document.getElementById('gGender').value;
+      const vAge = parseInt(document.getElementById('gAge').value, 10);
+      const vCity = document.getElementById('gCity').value.trim();
+      const vHeight = document.getElementById('gHeight').value;
+      const cityOk = !vCity || [...document.querySelectorAll('#ethosCityList option')].some(o => o.value.toLowerCase() === vCity.toLowerCase());
+      const problem =
+        !vFirst ? 'First name is required.'
+        : !vGender ? 'Gender is required.'
+        : !(vAge >= 18 && vAge <= 99) ? 'Age is required (18 or over).'
+        : !vCity ? 'City is required.'
+        : !cityOk ? 'Choose a city from the list — start typing and pick a suggestion.'
+        : (vHeight && !(parseInt(vHeight, 10) >= 120 && parseInt(vHeight, 10) <= 250)) ? 'Height should be between 120 and 250 cm.'
+        : null;
+      if (problem) { errEl.textContent = problem; return; }
       btn.disabled = true; btn.textContent = 'Saving…';
       try {
         const token = localStorage.getItem(TOKEN_KEY);
@@ -1320,13 +1709,20 @@
       } finally { btn.disabled = false; btn.textContent = 'Save'; }
     });
     document.getElementById('guestsList').addEventListener('click', async (e) => {
+      if (e.target.closest('.guest-name-link')) {
+        const card = e.target.closest('.cand');
+        const g = myGuests.find(x => x.id === card.dataset.gid);
+        if (g) renderGuestProfile(openProfileModal(g.first_name), g);
+        return;
+      }
       const card = e.target.closest('.cand');
       if (!card) return;
       const gid = card.dataset.gid;
       if (e.target.classList.contains('guest-introduce')) {
         guestIntroActive = { id: gid, name: e.target.dataset.name || 'your client' };
         guestPick = null;
-        switchTab('introduce');
+        switchTab('matchmaking');
+        switchMmSub('find');
         renderPairTray();
         document.getElementById('pairTray').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         return;
@@ -1344,12 +1740,12 @@
         document.getElementById('gOccupation').value = g.occupation || '';
         document.getElementById('gEducation').value = g.education || '';
         document.getElementById('gHeight').value = g.height_cm != null ? g.height_cm : '';
+        document.getElementById('gHeight').dispatchEvent(new Event('input'));
         document.getElementById('gReligion').value = g.religion || '';
         document.getElementById('gLanguages').value = g.languages || '';
         document.getElementById('gNotes').value = g.mm_notes || '';
         if (g.headshot_url) { const el = document.getElementById('gHeadPrev'); el.src = g.headshot_url; el.classList.remove('hidden'); }
         form.classList.remove('hidden');
-        form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         return;
       }
       if (e.target.classList.contains('guest-remove')) {
@@ -1464,13 +1860,12 @@
         '<div class="cand-row">' +
           '<div class="cand-left">' +
             (c.photo_url ? '<img class="cand-photo" src="' + esc(c.photo_url) + '" alt="">' : '<div class="cand-photo-empty"></div>') +
-            '<div style="min-width:0;"><div class="cand-name">' + esc(c.first_name) + (c.paused ? ' <span class="status-chip">paused</span>' : '') + '</div>' +
+            '<div style="min-width:0;"><div class="cand-name name-link client-name-link" role="button" tabindex="0" title="View profile">' + esc(c.first_name) + (c.paused ? ' <span class="status-chip">paused</span>' : '') + '</div>' +
             '<div class="cand-meta">' + [c.age, c.city ? esc(String(c.city).split(',')[0]) : null, c.occupation ? esc(c.occupation) : null, c.height_cm ? c.height_cm + ' cm' : null].filter(Boolean).join(' · ') + '</div>' +
             (c.member_note ? '<div class="req-note">In their words: “' + esc(c.member_note) + '”</div>' : '') + '</div>' +
           '</div>' +
           '<button class="intro-btn client-profile-btn">View profile</button>' +
         '</div>' +
-        '<div class="client-profile-panel hidden"></div>' +
       '</div>';
     }
 
@@ -1489,12 +1884,9 @@
         sel.innerHTML = '<option value="">They\'re not on Ethos yet</option>' +
           myClients.map(c => '<option value="' + esc(c.user_id) + '">' + esc(c.first_name) + (c.city ? ' · ' + esc(String(c.city).split(',')[0]) : '') + ' (your client)</option>').join('');
         document.getElementById('briefClientPicker').classList.toggle('hidden', !myClients.length);
-        const el = document.getElementById('clientsList');
-        if (!myClients.length) {
-          el.innerHTML = '<p class="empty-note">No clients yet — share your link to bring them onto Ethos.</p>';
-          return;
-        }
-        el.innerHTML = myClients.map(clientCardHtml).join('');
+        document.getElementById('clientsList').innerHTML = myClients.map(clientCardHtml).join('');
+        updateClientsEmpty();
+        refreshIntroForSel();
       } catch (_) { /* non-fatal */ }
     }
     document.getElementById('briefClientSelect').addEventListener('change', (e) => {
@@ -1515,29 +1907,24 @@
     });
 
     document.getElementById('clientsList').addEventListener('click', async (e) => {
-      if (!e.target.classList.contains('client-profile-btn')) return;
+      if (!e.target.classList.contains('client-profile-btn') && !e.target.closest('.client-name-link')) return;
       const cand = e.target.closest('.cand');
-      const panel = cand.querySelector('.client-profile-panel');
-      if (!panel.classList.contains('hidden')) { panel.classList.add('hidden'); return; }
-      e.target.disabled = true; e.target.textContent = 'Loading…';
+      const name = cand.querySelector('.cand-name');
+      const body = openProfileModal(name ? name.textContent.replace(/paused$/i, '').trim() : 'Profile');
       try {
         const token = localStorage.getItem(TOKEN_KEY);
         const data = await portal('member_profile', { token, client_user_id: cand.dataset.uid });
-        panel.classList.add('profile-panel');
-        renderProfile(panel, data);
-        panel.classList.remove('hidden');
+        renderProfile(body, data);
       } catch (err) {
-        panel.innerHTML = '<p class="empty-note" style="color:var(--color-error);">' + esc(err.message) + '</p>';
-        panel.classList.remove('hidden');
-      } finally {
-        e.target.disabled = false; e.target.textContent = 'View profile';
+        body.innerHTML = '<p class="empty-note" style="color:var(--color-error);">' + esc(err.message) + '</p>';
       }
     });
 
     // ── Availability ──────────────────────────────────────────────────────
     // Pick a day, tap the times you're free — each tap publishes instantly;
     // already-published times show active and tap-off removes them.
-    const PRESET_TIMES = ['10:00', '11:00', '12:00', '14:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
+    // Every hour 08:00–21:00; odd times come via the custom "Add this time" field.
+    const PRESET_TIMES = Array.from({ length: 14 }, (_, i) => String(8 + i).padStart(2, '0') + ':00');
     let mySlots = [];
 
     function slotFlash(msg) {
@@ -1545,9 +1932,148 @@
       okEl.textContent = msg;
       setTimeout(() => { okEl.textContent = ''; }, 2500);
     }
+    // Calendar state: the visible month and the picked day (yyyy-mm-dd).
+    let calMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    let calSelected = null;
     function selectedDate() {
-      return document.getElementById('slotDate').value;
+      return calSelected;
     }
+    function ymd(d) {
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+    try {
+      const browserTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (browserTz) {
+        document.getElementById('tzNote').textContent =
+          'All times are in your timezone (' + browserTz.replace(/_/g, ' ') + ').';
+      }
+    } catch (_) { /* old browser — note simply stays empty */ }
+    let calView = localStorage.getItem('ethos_mm_calview') || 'month';
+    function mondayOf(d) {
+      const x = new Date(d);
+      x.setDate(x.getDate() - ((x.getDay() + 6) % 7));
+      x.setHours(0, 0, 0, 0);
+      return x;
+    }
+    let calWeekStart = mondayOf(new Date());
+    function renderCalendar() {
+      document.querySelectorAll('#calViewToggle button').forEach(b =>
+        b.classList.toggle('active', b.dataset.view === calView));
+      // Free/booked tallies per day drive the month dots and week entries.
+      const tally = {};
+      for (const s of mySlots) {
+        const key = ymd(new Date(s.starts_at));
+        tally[key] = tally[key] || { free: 0, booked: 0 };
+        tally[key][s.booked_by ? 'booked' : 'free']++;
+      }
+      const todayKey = ymd(new Date());
+      const grid = document.getElementById('calGrid');
+      if (calView === 'week') {
+        const weekEnd = new Date(calWeekStart.getFullYear(), calWeekStart.getMonth(), calWeekStart.getDate() + 6);
+        document.getElementById('calTitle').textContent =
+          calWeekStart.getDate() + (calWeekStart.getMonth() === weekEnd.getMonth() ? '' : ' ' + calWeekStart.toLocaleDateString('en-GB', { month: 'short' })) +
+          ' – ' + weekEnd.getDate() + ' ' + weekEnd.toLocaleDateString('en-GB', { month: 'short' }) + ' ' + weekEnd.getFullYear();
+        grid.className = 'cal-week-grid';
+        let html = '';
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(calWeekStart.getFullYear(), calWeekStart.getMonth(), calWeekStart.getDate() + i);
+          const key = ymd(d);
+          const past = key < todayKey;
+          const daySlots = mySlots
+            .filter(s => ymd(new Date(s.starts_at)) === key)
+            .sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at));
+          const cls = 'cal-wday' + (past ? ' past' : '') + (key === calSelected ? ' selected' : '') + (key === todayKey ? ' today' : '');
+          html += '<button class="' + cls + '" data-date="' + key + '" ' + (past ? 'disabled' : '') + '>' +
+            '<span class="cal-wday-head">' + d.toLocaleDateString('en-GB', { weekday: 'short' }) + ' ' + d.getDate() + '</span>' +
+            daySlots.map(s => {
+              const t = new Date(s.starts_at).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+              return s.booked_by
+                ? '<span class="wk-slot booked" data-when="' + esc(s.starts_at) + '" title="View consultation" style="cursor:pointer;">' + t + ' · ' + esc(s.booked_by) + '</span>'
+                : '<span class="wk-slot free">' + t + '</span>';
+            }).join('') +
+            '</button>';
+        }
+        grid.innerHTML = html;
+      } else {
+        document.getElementById('calTitle').textContent =
+          calMonth.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+        grid.className = 'cal-grid';
+        const firstDow = (calMonth.getDay() + 6) % 7; // Monday-first
+        const daysInMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 0).getDate();
+        let html = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          .map((d) => '<div class="cal-dow">' + d + '</div>').join('');
+        for (let i = 0; i < firstDow; i++) html += '<div class="cal-day blank"></div>';
+        for (let day = 1; day <= daysInMonth; day++) {
+          const key = ymd(new Date(calMonth.getFullYear(), calMonth.getMonth(), day));
+          const t = tally[key];
+          const past = key < todayKey;
+          const cls = 'cal-day' + (past ? ' past' : '') + (key === calSelected ? ' selected' : '') + (key === todayKey ? ' today' : '');
+          html += '<button class="' + cls + '" data-date="' + key + '" ' + (past ? 'disabled' : '') + '>' +
+            day +
+            '<span class="cal-dots">' +
+            (t && t.free ? '<span class="cal-dot free"></span>' : '') +
+            (t && t.booked ? '<span class="cal-dot booked"></span>' : '') +
+            '</span></button>';
+        }
+        grid.innerHTML = html;
+      }
+      renderDayPanel();
+    }
+    document.getElementById('calViewToggle').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-view]');
+      if (!btn) return;
+      calView = btn.dataset.view;
+      if (calView === 'week' && calSelected) calWeekStart = mondayOf(new Date(calSelected + 'T12:00'));
+      if (calView === 'month' && calSelected) {
+        const d = new Date(calSelected + 'T12:00');
+        calMonth = new Date(d.getFullYear(), d.getMonth(), 1);
+      }
+      try { localStorage.setItem('ethos_mm_calview', calView); } catch (_) { /* private mode */ }
+      renderCalendar();
+    });
+    function renderDayPanel() {
+      const titleEl = document.getElementById('dayPanelTitle');
+      if (!calSelected) {
+        titleEl.textContent = 'Pick a day';
+        document.getElementById('dayPanelSub').textContent = 'Choose a day on the calendar to lay out your times.';
+      } else {
+        titleEl.textContent = new Date(calSelected + 'T12:00')
+          .toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+        document.getElementById('dayPanelSub').textContent = "Tap the times you're free — tap again to remove.";
+      }
+      renderTimeChips();
+    }
+    document.getElementById('calPrev').addEventListener('click', () => {
+      if (calView === 'week') calWeekStart = new Date(calWeekStart.getFullYear(), calWeekStart.getMonth(), calWeekStart.getDate() - 7);
+      else calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() - 1, 1);
+      renderCalendar();
+    });
+    document.getElementById('calNext').addEventListener('click', () => {
+      if (calView === 'week') calWeekStart = new Date(calWeekStart.getFullYear(), calWeekStart.getMonth(), calWeekStart.getDate() + 7);
+      else calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth() + 1, 1);
+      renderCalendar();
+    });
+    document.getElementById('calGrid').addEventListener('click', (e) => {
+      const bookedSlot = e.target.closest('.wk-slot.booked');
+      const cell = e.target.closest('.cal-day, .cal-wday');
+      if (!cell || cell.disabled || !cell.dataset.date) return;
+      calSelected = cell.dataset.date;
+      consultShowAll = false;
+      renderCalendar();
+      renderTimeChips();
+      renderConsults();
+      if (bookedSlot) jumpToConsult(bookedSlot.dataset.when);
+    });
+    document.getElementById('calToday').addEventListener('click', () => {
+      const now = new Date();
+      calMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      calWeekStart = mondayOf(now);
+      calSelected = ymd(now);
+      consultShowAll = false;
+      renderCalendar();
+      renderTimeChips();
+      renderConsults();
+    });
     function slotAt(dateStr, timeStr) {
       const target = new Date(dateStr + 'T' + timeStr).getTime();
       return mySlots.find(s => new Date(s.starts_at).getTime() === target) || null;
@@ -1555,45 +2081,33 @@
     function renderTimeChips() {
       const el = document.getElementById('slotTimeChips');
       const dateStr = selectedDate();
-      if (!dateStr) { el.innerHTML = '<p class="filters-note" style="margin:0;">Choose a day above to lay out your times.</p>'; return; }
-      el.innerHTML = PRESET_TIMES.map(t => {
-        const existing = slotAt(dateStr, t);
-        const past = new Date(dateStr + 'T' + t).getTime() < Date.now() + 2 * 3600 * 1000;
-        const cls = existing ? 'background:var(--color-gold);color:#fff;border-color:var(--color-gold);' : past ? 'opacity:0.35;cursor:default;' : '';
-        return '<button class="intro-btn time-chip" data-time="' + t + '" ' + (past && !existing ? 'disabled' : '') + ' style="' + cls + '">' + t + (existing && existing.booked_by ? ' · ' + esc(existing.booked_by) : '') + '</button>';
-      }).join('');
-    }
-    function renderSlotsList() {
-      const el = document.getElementById('slotsList');
-      if (!mySlots.length) {
-        el.innerHTML = '<p class="empty-note">No times published yet — without them, members propose their own and wait for you to confirm.</p>';
-        return;
-      }
-      // Grouped by day, chronological.
-      const byDay = {};
+      if (!dateStr) { el.innerHTML = ''; return; }
+      // Union of preset times and whatever is already published that day
+      // (custom times included), chronological.
+      const dayTimes = new Set(PRESET_TIMES);
       for (const s of mySlots) {
         const d = new Date(s.starts_at);
-        const key = d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
-        (byDay[key] = byDay[key] || []).push(s);
+        if (ymd(d) === dateStr) dayTimes.add(String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'));
       }
-      el.innerHTML = Object.entries(byDay).map(([day, slots]) =>
-        '<div style="margin-top:0.75rem;">' +
-          '<div class="cand-meta" style="margin-bottom:0.375rem;">' + esc(day) + '</div>' +
-          '<div style="display:flex;flex-wrap:wrap;gap:0.4rem;">' + slots.map(s =>
-            '<span class="intro-btn" style="cursor:default;display:inline-flex;align-items:center;gap:0.4rem;">' +
-              new Date(s.starts_at).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) +
-              (s.booked_by
-                ? ' <span class="status-chip status-accepted">booked · ' + esc(s.booked_by) + '</span>'
-                : ' <button class="pair-clear slot-remove" data-sid="' + esc(s.id) + '" title="Remove">✕</button>') +
-            '</span>').join('') + '</div>' +
-        '</div>').join('');
+      el.innerHTML = [...dayTimes].sort().map(t => {
+        const existing = slotAt(dateStr, t);
+        const past = new Date(dateStr + 'T' + t).getTime() < Date.now() + 2 * 3600 * 1000;
+        if (existing && existing.booked_by) {
+          return '<span class="intro-btn day-slot-booked" data-when="' + esc(existing.starts_at) + '" title="View consultation" style="cursor:pointer;display:inline-flex;align-items:center;gap:0.35rem;background:rgba(90,122,90,0.14);border-color:rgba(90,122,90,0.4);color:var(--color-success);">' +
+            (existing.booked_photo_url ? '<img class="pair-avatar" style="height:22px;width:22px;margin-right:0;" src="' + esc(existing.booked_photo_url) + '" alt="">' : '') +
+            t + ' · ' + esc(existing.booked_by) + '</span>';
+        }
+        const cls = existing ? 'background:var(--color-gold);color:#fff;border-color:var(--color-gold);' : past ? 'opacity:0.35;cursor:default;' : '';
+        return '<button class="intro-btn time-chip" data-time="' + t + '" ' + (past && !existing ? 'disabled' : '') + ' style="' + cls + '" title="' + (existing ? 'Tap to remove' : 'Tap to publish') + '">' + t + (existing ? ' ✓' : '') + '</button>';
+      }).join('') +
+      '<button class="intro-btn" id="addTimeChip" title="Add a custom time">Add +</button>';
     }
     async function loadSlots() {
       try {
         const token = localStorage.getItem(TOKEN_KEY);
         const r = await portal('availability', { token });
         mySlots = r.slots || [];
-        renderSlotsList();
+        renderCalendar();
         renderTimeChips();
       } catch (_) { /* non-fatal */ }
     }
@@ -1603,8 +2117,13 @@
       slotFlash('Added — members can book it now.');
       loadSlots();
     }
-    document.getElementById('slotDate').addEventListener('change', renderTimeChips);
     document.getElementById('slotTimeChips').addEventListener('click', async (e) => {
+      if (e.target.id === 'addTimeChip') {
+        document.getElementById('addTimeError').textContent = '';
+        document.getElementById('addTimeOverlay').classList.remove('hidden');
+        document.getElementById('slotCustomTime').focus();
+        return;
+      }
       const chip = e.target.closest('.time-chip');
       if (!chip || chip.disabled) return;
       const dateStr = selectedDate();
@@ -1626,7 +2145,7 @@
       }
     });
     document.getElementById('addSlotBtn').addEventListener('click', async () => {
-      const errEl = document.getElementById('slotError');
+      const errEl = document.getElementById('addTimeError');
       errEl.textContent = '';
       const dateStr = selectedDate();
       const timeStr = document.getElementById('slotCustomTime').value;
@@ -1636,32 +2155,219 @@
       try {
         await publishSlot(dateStr, timeStr);
         document.getElementById('slotCustomTime').value = '';
+        document.getElementById('addTimeOverlay').classList.add('hidden');
       } catch (err) {
         errEl.textContent = err.message;
       } finally { btn.disabled = false; }
     });
-    document.getElementById('slotsList').addEventListener('click', async (e) => {
-      if (!e.target.classList.contains('slot-remove')) return;
+    document.getElementById('addTimeCancel').addEventListener('click', () => {
+      document.getElementById('addTimeOverlay').classList.add('hidden');
+    });
+
+    // ── Google Calendar connection (Settings) ─────────────────────────────
+    const GCAL_FN = SUPABASE_URL + '/functions/v1/matchmaker-gcal';
+    async function gcal(action, payload) {
+      const res = await fetch(GCAL_FN, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        },
+        body: JSON.stringify({ action, token: localStorage.getItem(TOKEN_KEY), ...payload }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error || 'Something went wrong.');
+      return body;
+    }
+    async function loadGcal() {
+      const statusEl = document.getElementById('gcalStatus');
+      const connectBtn = document.getElementById('gcalConnectBtn');
+      const disconnectBtn = document.getElementById('gcalDisconnectBtn');
+      try {
+        const s = await gcal('status', {});
+        const msBtn = document.getElementById('msConnectBtn');
+        connectBtn.classList.toggle('hidden', s.connected || !s.configured_google);
+        msBtn.classList.toggle('hidden', s.connected || !s.configured_microsoft);
+        disconnectBtn.classList.toggle('hidden', !s.connected);
+        if (!s.configured_google && !s.configured_microsoft) {
+          statusEl.textContent = 'Coming soon — calendar setup is being finished by the Ethos team.';
+        } else if (s.connected) {
+          statusEl.innerHTML = 'Connected: ' + (s.provider === 'microsoft' ? 'Outlook' : 'Google Calendar') + ' — <strong>' + esc(s.email || 'your account') + '</strong>' +
+            (s.last_synced_at ? ' · last synced ' + new Date(s.last_synced_at).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) : '') +
+            (s.sync_error ? '<br><span style="color:var(--color-error);">' + esc(s.sync_error) + '</span>' : '');
+        } else {
+          statusEl.textContent = 'Not connected.';
+        }
+      } catch (_) {
+        statusEl.textContent = 'Could not check the calendar connection.';
+      }
+    }
+    async function startCalendarConnect(provider) {
+      const errEl = document.getElementById('gcalError');
+      errEl.textContent = '';
+      try {
+        const r = await gcal('auth_url', { provider, return_url: location.origin + location.pathname });
+        location.href = r.url;
+      } catch (err) { errEl.textContent = err.message; }
+    }
+    document.getElementById('gcalConnectBtn').addEventListener('click', () => startCalendarConnect('google'));
+    document.getElementById('msConnectBtn').addEventListener('click', () => startCalendarConnect('microsoft'));
+    document.getElementById('gcalDisconnectBtn').addEventListener('click', async (e) => {
+      if (e.target.dataset.arm !== '1') {
+        e.target.dataset.arm = '1'; e.target.textContent = 'Disconnect — are you sure?';
+        setTimeout(() => { e.target.dataset.arm = ''; e.target.textContent = 'Disconnect'; }, 4000);
+        return;
+      }
       e.target.disabled = true;
+      try { await gcal('disconnect', {}); } catch (_) { /* row is gone either way */ }
+      e.target.disabled = false; e.target.dataset.arm = ''; e.target.textContent = 'Disconnect';
+      loadGcal();
+    });
+    // Back from Google: surface the outcome, then clean the URL.
+    (function () {
+      const q = new URLSearchParams(location.search);
+      if (!q.has('gcal')) return;
+      const ok = q.get('gcal') === 'connected';
+      if (ok) switchTab('settings');
+      const statusEl = document.getElementById('gcalStatus');
+      if (!ok) statusEl.textContent = 'Google connection failed — please try again.';
+      q.delete('gcal');
+      history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : ''));
+    })();
+
+    // ── Shared profile pop-out ────────────────────────────────────────────
+    function openProfileModal(title) {
+      document.getElementById('profileModalTitle').textContent = title || 'Profile';
+      const body = document.getElementById('profileModalBody');
+      body.innerHTML = '<p class="empty-note">Loading…</p>';
+      document.getElementById('profileOverlay').classList.remove('hidden');
+      return body;
+    }
+    document.getElementById('profileModalClose').addEventListener('click', () => {
+      document.getElementById('profileOverlay').classList.add('hidden');
+    });
+    document.getElementById('profileOverlay').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) e.currentTarget.classList.add('hidden');
+    });
+
+    // ── Recurring times ───────────────────────────────────────────────────
+    // Same time on chosen weekdays for the next N weeks. The server rejects
+    // past times and silently dedups, so re-running a setup is harmless.
+    document.getElementById('recurBtn').addEventListener('click', () => {
+      document.getElementById('recurError').textContent = '';
+      // Fresh time chips each open, same presets as the day editor.
+      document.getElementById('recurTimes').innerHTML = PRESET_TIMES
+        .map(t => '<button data-time="' + t + '">' + t + '</button>').join('');
+      document.getElementById('recurOverlay').classList.remove('hidden');
+    });
+    document.getElementById('recurTimes').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-time]');
+      if (btn) btn.classList.toggle('active');
+    });
+    document.getElementById('recurAddTime').addEventListener('click', () => {
+      const input = document.getElementById('recurCustomTime');
+      const t = input.value;
+      if (!t) return;
+      const wrap = document.getElementById('recurTimes');
+      let chip = wrap.querySelector('button[data-time="' + t + '"]');
+      if (!chip) {
+        chip = document.createElement('button');
+        chip.dataset.time = t;
+        chip.textContent = t;
+        // Keep chips chronological so custom times slot in naturally.
+        const after = [...wrap.children].find(b => b.dataset.time > t);
+        wrap.insertBefore(chip, after || null);
+      }
+      chip.classList.add('active');
+      input.value = '';
+    });
+    document.getElementById('recurCancel').addEventListener('click', () => {
+      document.getElementById('recurOverlay').classList.add('hidden');
+    });
+    document.getElementById('recurOverlay').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) e.currentTarget.classList.add('hidden');
+    });
+    document.getElementById('recurDows').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-dow]');
+      if (btn) btn.classList.toggle('active');
+    });
+    document.getElementById('recurCreateBtn').addEventListener('click', async () => {
+      const errEl = document.getElementById('recurError');
+      errEl.textContent = '';
+      const dows = [...document.querySelectorAll('#recurDows button.active')].map(b => Number(b.dataset.dow));
+      const times = [...document.querySelectorAll('#recurTimes button.active')].map(b => b.dataset.time);
+      const weeks = Number(document.getElementById('recurWeeks').value);
+      if (!dows.length) { errEl.textContent = 'Pick at least one day of the week.'; return; }
+      if (!times.length) { errEl.textContent = 'Pick at least one time.'; return; }
+      const btn = document.getElementById('recurCreateBtn');
+      btn.disabled = true; btn.textContent = 'Creating…';
       try {
         const token = localStorage.getItem(TOKEN_KEY);
-        await portal('remove_availability', { token, slot_id: e.target.dataset.sid });
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        // Build the full occurrence list first, then publish in small
+        // parallel chunks so day × time × week grids stay quick.
+        const targets = [];
+        for (let i = 0; i < weeks * 7; i++) {
+          const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
+          if (!dows.includes((d.getDay() + 6) % 7)) continue;
+          for (const timeStr of times) {
+            const when = new Date(ymd(d) + 'T' + timeStr);
+            if (when.getTime() < Date.now() + 2 * 3600 * 1000) continue;
+            if (slotAt(ymd(d), timeStr)) continue;
+            targets.push(when);
+          }
+        }
+        let added = 0;
+        for (let i = 0; i < targets.length; i += 6) {
+          await Promise.all(targets.slice(i, i + 6).map(when =>
+            portal('add_availability', { token, starts_at: when.toISOString() }).then(() => { added++; })));
+          btn.textContent = 'Creating… ' + added + '/' + targets.length;
+        }
+        document.getElementById('recurOverlay').classList.add('hidden');
+        slotFlash(added ? 'Added ' + added + ' times — members can book them now.' : 'Nothing to add — those times already exist.');
         loadSlots();
-      } catch (_) { e.target.disabled = false; }
+      } catch (err) {
+        errEl.textContent = err.message;
+      } finally { btn.disabled = false; btn.textContent = 'Create times'; }
+    });
+    document.getElementById('addTimeOverlay').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) e.currentTarget.classList.add('hidden');
     });
 
     // ── Consultations ─────────────────────────────────────────────────────
+    let myConsults = [];
+    let consultShowAll = false;
     async function loadConsults() {
       try {
         const token = localStorage.getItem(TOKEN_KEY);
         const r = await portal('consults', { token });
-        const el = document.getElementById('consultsList');
-        const rows = r.consults || [];
-        if (!rows.length) {
-          el.innerHTML = '<p class="empty-note">No consultation requests yet.</p>';
-          return;
-        }
-        el.innerHTML = rows.map(c => {
+        myConsults = r.consults || [];
+        renderConsults();
+      } catch (_) { /* non-fatal */ }
+    }
+    function consultOnDate(c, dateKey) {
+      if (c.scheduled_at && ymd(new Date(c.scheduled_at)) === dateKey) return true;
+      if (c.status === 'requested') return (c.proposed_times || []).some(t => ymd(new Date(t)) === dateKey);
+      return false;
+    }
+    function renderConsults() {
+      const el = document.getElementById('consultsList');
+      const noteEl = document.getElementById('consultsFilterNote');
+      const dayText = calSelected
+        ? new Date(calSelected + 'T12:00').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })
+        : '';
+      const filtering = !!calSelected && !consultShowAll;
+      noteEl.innerHTML = !calSelected ? '' : filtering
+        ? 'Showing ' + esc(dayText) + ' · <button class="pair-clear" id="consultsShowAll">Show all</button>'
+        : 'Showing all · <button class="pair-clear" id="consultsShowDay">Only ' + esc(dayText) + '</button>';
+      const rows = filtering ? myConsults.filter(c => consultOnDate(c, calSelected)) : myConsults;
+      if (!rows.length) {
+        el.innerHTML = '<p class="empty-note">' +
+          (filtering ? 'No consultations on ' + esc(dayText) + '.' : 'No consultation requests yet.') + '</p>';
+        return;
+      }
+      el.innerHTML = rows.map(c => {
           const meta = [c.member_age, c.member_city ? esc(String(c.member_city).split(',')[0]) : null, c.member_occupation ? esc(c.member_occupation) : null].filter(Boolean).join(' · ');
           const live = c.status === 'requested' || c.status === 'confirmed';
           const memberCard =
@@ -1694,41 +2400,64 @@
                 '<button class="intro-btn consult-confirm" data-cid="' + esc(c.id) + '" data-time="' + esc(t) + '">' + fmtDT(t) + '</button>').join('') : '') +
               ' <button class="intro-btn consult-decline" data-cid="' + esc(c.id) + '">Cancel consultation</button></div>';
           } else {
-            bodyHtml = '<div class="req-note">' + esc(c.status) + '</div>';
+            // Terminal states: say when it was for and when it ended up here.
+            const wasFor = c.scheduled_at
+              ? 'Was scheduled for ' + fmtDT(c.scheduled_at) + '. '
+              : (c.proposed_times || []).length
+                ? 'They had proposed ' + (c.proposed_times || []).map(fmtDT).join(', ') + '. '
+                : '';
+            const endedOn = c.updated_at
+              ? esc(c.status.charAt(0).toUpperCase() + c.status.slice(1)) + ' on ' + fmtDT(c.updated_at) + '.'
+              : esc(c.status);
+            bodyHtml = '<div class="req-note">' + wasFor + endedOn + '</div>';
           }
           const noteRow = live
             ? '<div class="chat-compose" style="margin-top:0.5rem;">' +
               '<input class="form-input consult-note-input" data-cid="' + esc(c.id) + '" maxlength="300" placeholder="A short note they\'ll see on their card" value="' + esc(c.mm_note || '') + '">' +
               '<button class="intro-btn consult-note-save" data-cid="' + esc(c.id) + '">Save note</button></div>'
             : '';
-          return '<div class="req">' +
+          return '<div class="req" data-cid="' + esc(c.id) + '">' +
             '<span class="status-chip status-' + esc(c.status) + '">' + esc(c.status) + '</span>' +
             memberCard +
             (c.note ? '<div class="req-brief">' + esc(c.note) + '</div>' : '') +
             bodyHtml + noteRow +
-            '<div class="consult-profile-panel hidden"></div>' +
           '</div>';
         }).join('');
-      } catch (_) { /* non-fatal */ }
     }
+    document.getElementById('consultsFilterNote').addEventListener('click', (e) => {
+      if (e.target.id === 'consultsShowAll') { consultShowAll = true; renderConsults(); }
+      if (e.target.id === 'consultsShowDay') { consultShowAll = false; renderConsults(); }
+    });
+    // Clicking a booked slot (week view or day panel) jumps to its consultation.
+    function jumpToConsult(whenIso) {
+      const target = new Date(whenIso).getTime();
+      const c = myConsults.find(x => x.scheduled_at && new Date(x.scheduled_at).getTime() === target);
+      if (!c) return;
+      consultShowAll = false;
+      renderConsults();
+      const row = document.querySelector('#consultsList .req[data-cid="' + c.id + '"]');
+      if (row) {
+        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        row.classList.add('jump-flash');
+        setTimeout(() => row.classList.remove('jump-flash'), 1600);
+      }
+    }
+    document.getElementById('dayPanel').addEventListener('click', (e) => {
+      const b = e.target.closest('.day-slot-booked');
+      if (b) jumpToConsult(b.dataset.when);
+    });
 
     document.getElementById('consultsList').addEventListener('click', async (e) => {
       const token = localStorage.getItem(TOKEN_KEY);
       // View a client's profile straight from the consultation row.
       if (e.target.classList.contains('consult-profile-btn')) {
-        const req = e.target.closest('.req');
-        const panel = req.querySelector('.consult-profile-panel');
-        if (!panel.classList.contains('hidden')) { panel.classList.add('hidden'); return; }
-        e.target.disabled = true; e.target.textContent = 'Loading…';
+        const body = openProfileModal('Profile');
         try {
           const data = await portal('member_profile', { token, client_user_id: e.target.dataset.uid });
-          panel.classList.add('profile-panel');
-          renderProfile(panel, data);
-          panel.classList.remove('hidden');
+          renderProfile(body, data);
         } catch (err) {
-          panel.innerHTML = '<p class="empty-note" style="color:var(--color-error);">' + esc(err.message) + '</p>';
-          panel.classList.remove('hidden');
-        } finally { e.target.disabled = false; e.target.textContent = 'View profile'; }
+          body.innerHTML = '<p class="empty-note" style="color:var(--color-error);">' + esc(err.message) + '</p>';
+        }
         return;
       }
 
@@ -1777,6 +2506,19 @@
     });
 
     document.getElementById('memberPairs').addEventListener('click', async (e) => {
+      const nameLink = e.target.closest('.pair-name-link');
+      if (nameLink) {
+        const body = openProfileModal(nameLink.textContent.trim());
+        try {
+          const token = localStorage.getItem(TOKEN_KEY);
+          const data = await portal('candidate_profile', { token, user_id: nameLink.dataset.uid });
+          renderProfile(body, data,
+            'Visible because this member opted in to matchmaking. Please treat it confidentially — it stays inside Ethos.');
+        } catch (err) {
+          body.innerHTML = '<p class="empty-note" style="color:var(--color-error);">' + esc(err.message) + '</p>';
+        }
+        return;
+      }
       if (!e.target.classList.contains('pair-withdraw')) return;
       if (e.target.dataset.armed !== '1') {
         e.target.dataset.armed = '1';
@@ -1794,8 +2536,14 @@
       }
     });
 
-    function pairStatusChip(name, status) {
-      return esc(name) + ' <span class="status-chip status-' + esc(status) + '">' + esc(status) + '</span>';
+    function pairStatusChip(name, status, photoUrl, userId) {
+      return (photoUrl
+          ? '<img class="pair-avatar" src="' + esc(photoUrl) + '" alt="">'
+          : '<span class="pair-avatar pair-avatar-empty"></span>') +
+        (userId
+          ? '<span class="name-link pair-name-link" role="button" tabindex="0" data-uid="' + esc(userId) + '" title="View profile">' + esc(name) + '</span>'
+          : esc(name)) +
+        ' <span class="status-chip status-' + esc(status) + '">' + esc(status) + '</span>';
     }
 
     async function loadMemberPairs() {
@@ -1804,7 +2552,7 @@
         const r = await portal('member_intros', { token });
         const el = document.getElementById('memberPairs');
         if (!(r.pairs || []).length) {
-          el.innerHTML = '<p class="empty-note">No member introductions yet — select two candidates above with their Pair buttons.</p>';
+          el.innerHTML = '<p class="empty-note">No member introductions yet — pair two people in Find Candidates.</p>';
           return;
         }
         el.innerHTML = r.pairs.map(p => {
@@ -1822,7 +2570,7 @@
           const canWithdraw = !(p.date_status && ['pending', 'accepted'].includes(p.date_status));
           return '<div class="req">' +
             (canWithdraw ? '<button class="req-dismiss pair-withdraw" data-pid="' + esc(p.id) + '">Withdraw</button>' : '') +
-            '<div class="req-brief">' + pairStatusChip(p.a_first_name, p.a_status) + ' &nbsp;↔&nbsp; ' + pairStatusChip(p.b_first_name, p.b_status) + '</div>' +
+            '<div class="req-brief">' + pairStatusChip(p.a_first_name, p.a_status, p.a_photo_url, p.a_user_id) + ' &nbsp;↔&nbsp; ' + pairStatusChip(p.b_first_name, p.b_status, p.b_photo_url, p.b_user_id) + '</div>' +
             '<div class="req-note">' + line + ' <span style="font-family:var(--font-sans);font-size:0.75rem;color:var(--color-text-light);">' + fmtDate(p.created_at) + '</span></div>' +
           '</div>';
         }).join('');
@@ -1834,6 +2582,18 @@
       if (!cand) return;
       const form = cand.querySelector('.intro-form');
       const status = cand.querySelector('.cand-status');
+      if (e.target.classList.contains('view-cand-btn')) {
+        const body = openProfileModal(e.target.textContent.trim());
+        try {
+          const token = localStorage.getItem(TOKEN_KEY);
+          const data = await portal('candidate_profile', { token, user_id: cand.dataset.uid });
+          renderProfile(body, data,
+            'Visible because this member opted in to matchmaking. Please treat it confidentially — it stays inside Ethos.');
+        } catch (err) {
+          body.innerHTML = '<p class="empty-note" style="color:var(--color-error);">' + esc(err.message) + '</p>';
+        }
+        return;
+      }
       if (e.target.classList.contains('pair-btn')) {
         const uid = cand.dataset.uid;
         if (guestIntroActive) {
@@ -2032,5 +2792,324 @@
     // Boot: resume session if we have a token.
     loadDashboard();
   </script>
+  <datalist id="ethosCityList">
+    <option value="Tokyo, Japan"></option>
+    <option value="Delhi, India"></option>
+    <option value="Shanghai, China"></option>
+    <option value="São Paulo, Brazil"></option>
+    <option value="Mexico City, Mexico"></option>
+    <option value="Cairo, Egypt"></option>
+    <option value="Mumbai, India"></option>
+    <option value="Beijing, China"></option>
+    <option value="Dhaka, Bangladesh"></option>
+    <option value="Osaka, Japan"></option>
+    <option value="New York, United States"></option>
+    <option value="Karachi, Pakistan"></option>
+    <option value="Buenos Aires, Argentina"></option>
+    <option value="Istanbul, Turkey"></option>
+    <option value="Kolkata, India"></option>
+    <option value="Lagos, Nigeria"></option>
+    <option value="Manila, Philippines"></option>
+    <option value="Guangzhou, China"></option>
+    <option value="Rio de Janeiro, Brazil"></option>
+    <option value="Lahore, Pakistan"></option>
+    <option value="Bangalore, India"></option>
+    <option value="Moscow, Russia"></option>
+    <option value="Shenzhen, China"></option>
+    <option value="Jakarta, Indonesia"></option>
+    <option value="London, United Kingdom"></option>
+    <option value="Bangkok, Thailand"></option>
+    <option value="Chennai, India"></option>
+    <option value="Lima, Peru"></option>
+    <option value="Bogotá, Colombia"></option>
+    <option value="Ho Chi Minh City, Vietnam"></option>
+    <option value="Hyderabad, India"></option>
+    <option value="Seoul, South Korea"></option>
+    <option value="Chengdu, China"></option>
+    <option value="Hangzhou, China"></option>
+    <option value="Pune, India"></option>
+    <option value="Ahmedabad, India"></option>
+    <option value="Riyadh, Saudi Arabia"></option>
+    <option value="Jaipur, India"></option>
+    <option value="Surat, India"></option>
+    <option value="Hong Kong"></option>
+    <option value="Singapore"></option>
+    <option value="Jeddah, Saudi Arabia"></option>
+    <option value="Lucknow, India"></option>
+    <option value="Kanpur, India"></option>
+    <option value="Nagpur, India"></option>
+    <option value="Indore, India"></option>
+    <option value="Hanoi, Vietnam"></option>
+    <option value="Johannesburg, South Africa"></option>
+    <option value="Los Angeles, United States"></option>
+    <option value="Chicago, United States"></option>
+    <option value="Toronto, Canada"></option>
+    <option value="Sydney, Australia"></option>
+    <option value="Melbourne, Australia"></option>
+    <option value="Paris, France"></option>
+    <option value="Berlin, Germany"></option>
+    <option value="Madrid, Spain"></option>
+    <option value="Dubai, UAE"></option>
+    <option value="Rome, Italy"></option>
+    <option value="Houston, United States"></option>
+    <option value="Taipei, Taiwan"></option>
+    <option value="Nairobi, Kenya"></option>
+    <option value="Addis Ababa, Ethiopia"></option>
+    <option value="Dar es Salaam, Tanzania"></option>
+    <option value="Yangon, Myanmar"></option>
+    <option value="Colombo, Sri Lanka"></option>
+    <option value="Cape Town, South Africa"></option>
+    <option value="Phoenix, United States"></option>
+    <option value="Philadelphia, United States"></option>
+    <option value="San Antonio, United States"></option>
+    <option value="San Diego, United States"></option>
+    <option value="Dallas, United States"></option>
+    <option value="Busan, South Korea"></option>
+    <option value="Barcelona, Spain"></option>
+    <option value="Kathmandu, Nepal"></option>
+    <option value="Islamabad, Pakistan"></option>
+    <option value="Accra, Ghana"></option>
+    <option value="Abuja, Nigeria"></option>
+    <option value="Kampala, Uganda"></option>
+    <option value="Casablanca, Morocco"></option>
+    <option value="Alexandria, Egypt"></option>
+    <option value="Milan, Italy"></option>
+    <option value="Brisbane, Australia"></option>
+    <option value="Montreal, Canada"></option>
+    <option value="Vancouver, Canada"></option>
+    <option value="Perth, Australia"></option>
+    <option value="San Jose, United States"></option>
+    <option value="Austin, United States"></option>
+    <option value="San Francisco, United States"></option>
+    <option value="Jacksonville, United States"></option>
+    <option value="Fort Worth, United States"></option>
+    <option value="Columbus, United States"></option>
+    <option value="Charlotte, United States"></option>
+    <option value="Indianapolis, United States"></option>
+    <option value="Seattle, United States"></option>
+    <option value="Denver, United States"></option>
+    <option value="Boston, United States"></option>
+    <option value="Nashville, United States"></option>
+    <option value="Washington DC, United States"></option>
+    <option value="Amsterdam, Netherlands"></option>
+    <option value="Munich, Germany"></option>
+    <option value="Stockholm, Sweden"></option>
+    <option value="Vienna, Austria"></option>
+    <option value="Warsaw, Poland"></option>
+    <option value="Budapest, Hungary"></option>
+    <option value="Prague, Czech Republic"></option>
+    <option value="Dublin, Ireland"></option>
+    <option value="Zurich, Switzerland"></option>
+    <option value="Lisbon, Portugal"></option>
+    <option value="Copenhagen, Denmark"></option>
+    <option value="Helsinki, Finland"></option>
+    <option value="Oslo, Norway"></option>
+    <option value="Brussels, Belgium"></option>
+    <option value="Athens, Greece"></option>
+    <option value="Bucharest, Romania"></option>
+    <option value="Manchester, United Kingdom"></option>
+    <option value="Birmingham, United Kingdom"></option>
+    <option value="Edinburgh, United Kingdom"></option>
+    <option value="Glasgow, United Kingdom"></option>
+    <option value="Adelaide, Australia"></option>
+    <option value="Calgary, Canada"></option>
+    <option value="Edmonton, Canada"></option>
+    <option value="Ottawa, Canada"></option>
+    <option value="Auckland, New Zealand"></option>
+    <option value="Incheon, South Korea"></option>
+    <option value="Yokohama, Japan"></option>
+    <option value="Nagoya, Japan"></option>
+    <option value="Surabaya, Indonesia"></option>
+    <option value="Cebu, Philippines"></option>
+    <option value="Medellín, Colombia"></option>
+    <option value="Santiago, Chile"></option>
+    <option value="Montevideo, Uruguay"></option>
+    <option value="Caracas, Venezuela"></option>
+    <option value="Quito, Ecuador"></option>
+    <option value="Panama City, Panama"></option>
+    <option value="Guadalajara, Mexico"></option>
+    <option value="Monterrey, Mexico"></option>
+    <option value="Kigali, Rwanda"></option>
+    <option value="Tunis, Tunisia"></option>
+    <option value="Durban, South Africa"></option>
+    <option value="Pretoria, South Africa"></option>
+    <option value="Abu Dhabi, UAE"></option>
+    <option value="Doha, Qatar"></option>
+    <option value="Kuwait City, Kuwait"></option>
+    <option value="Manama, Bahrain"></option>
+    <option value="Muscat, Oman"></option>
+    <option value="Amman, Jordan"></option>
+    <option value="Beirut, Lebanon"></option>
+    <option value="Tel Aviv, Israel"></option>
+    <option value="Jerusalem, Israel"></option>
+    <option value="Sharjah, UAE"></option>
+    <option value="Portland, United States"></option>
+    <option value="Las Vegas, United States"></option>
+    <option value="Detroit, United States"></option>
+    <option value="Memphis, United States"></option>
+    <option value="Louisville, United States"></option>
+    <option value="Baltimore, United States"></option>
+    <option value="Milwaukee, United States"></option>
+    <option value="Albuquerque, United States"></option>
+    <option value="Tucson, United States"></option>
+    <option value="Fresno, United States"></option>
+    <option value="Sacramento, United States"></option>
+    <option value="Atlanta, United States"></option>
+    <option value="Miami, United States"></option>
+    <option value="Oakland, United States"></option>
+    <option value="Minneapolis, United States"></option>
+    <option value="Cleveland, United States"></option>
+    <option value="Raleigh, United States"></option>
+    <option value="Tampa, United States"></option>
+    <option value="New Orleans, United States"></option>
+    <option value="Pittsburgh, United States"></option>
+    <option value="Cincinnati, United States"></option>
+    <option value="St. Louis, United States"></option>
+    <option value="Orlando, United States"></option>
+    <option value="Honolulu, United States"></option>
+    <option value="Salt Lake City, United States"></option>
+    <option value="Kansas City, United States"></option>
+    <option value="Liverpool, United Kingdom"></option>
+    <option value="Bristol, United Kingdom"></option>
+    <option value="Leeds, United Kingdom"></option>
+    <option value="Sheffield, United Kingdom"></option>
+    <option value="Newcastle, United Kingdom"></option>
+    <option value="Nottingham, United Kingdom"></option>
+    <option value="Southampton, United Kingdom"></option>
+    <option value="Brighton, United Kingdom"></option>
+    <option value="Cambridge, United Kingdom"></option>
+    <option value="Oxford, United Kingdom"></option>
+    <option value="Cardiff, United Kingdom"></option>
+    <option value="Belfast, United Kingdom"></option>
+    <option value="Leicester, United Kingdom"></option>
+    <option value="Coventry, United Kingdom"></option>
+    <option value="Reading, United Kingdom"></option>
+    <option value="Cork, Ireland"></option>
+    <option value="Galway, Ireland"></option>
+    <option value="Limerick, Ireland"></option>
+    <option value="Gold Coast, Australia"></option>
+    <option value="Canberra, Australia"></option>
+    <option value="Newcastle, Australia"></option>
+    <option value="Hobart, Australia"></option>
+    <option value="Darwin, Australia"></option>
+    <option value="Wollongong, Australia"></option>
+    <option value="Geelong, Australia"></option>
+    <option value="Townsville, Australia"></option>
+    <option value="Cairns, Australia"></option>
+    <option value="Toowoomba, Australia"></option>
+    <option value="Wellington, New Zealand"></option>
+    <option value="Christchurch, New Zealand"></option>
+    <option value="Hamilton, New Zealand"></option>
+    <option value="Dunedin, New Zealand"></option>
+    <option value="Winnipeg, Canada"></option>
+    <option value="Quebec City, Canada"></option>
+    <option value="Hamilton, Canada"></option>
+    <option value="Victoria, Canada"></option>
+    <option value="Halifax, Canada"></option>
+    <option value="Saskatoon, Canada"></option>
+    <option value="Regina, Canada"></option>
+    <option value="Kitchener, Canada"></option>
+    <option value="London, Canada"></option>
+    <option value="Bhopal, India"></option>
+    <option value="Visakhapatnam, India"></option>
+    <option value="Patna, India"></option>
+    <option value="Vadodara, India"></option>
+    <option value="Ludhiana, India"></option>
+    <option value="Agra, India"></option>
+    <option value="Nashik, India"></option>
+    <option value="Meerut, India"></option>
+    <option value="Coimbatore, India"></option>
+    <option value="Kochi, India"></option>
+    <option value="Chandigarh, India"></option>
+    <option value="Goa, India"></option>
+    <option value="Trivandrum, India"></option>
+    <option value="Kuala Lumpur, Malaysia"></option>
+    <option value="Penang, Malaysia"></option>
+    <option value="Johor Bahru, Malaysia"></option>
+    <option value="Frankfurt, Germany"></option>
+    <option value="Hamburg, Germany"></option>
+    <option value="Cologne, Germany"></option>
+    <option value="Stuttgart, Germany"></option>
+    <option value="Düsseldorf, Germany"></option>
+    <option value="Hanover, Germany"></option>
+    <option value="Marseille, France"></option>
+    <option value="Lyon, France"></option>
+    <option value="Toulouse, France"></option>
+    <option value="Nice, France"></option>
+    <option value="Bordeaux, France"></option>
+    <option value="Rotterdam, Netherlands"></option>
+    <option value="The Hague, Netherlands"></option>
+    <option value="Utrecht, Netherlands"></option>
+    <option value="Antwerp, Belgium"></option>
+    <option value="Ghent, Belgium"></option>
+    <option value="Geneva, Switzerland"></option>
+    <option value="Basel, Switzerland"></option>
+    <option value="Bern, Switzerland"></option>
+    <option value="Salzburg, Austria"></option>
+    <option value="Luxembourg City, Luxembourg"></option>
+    <option value="Valencia, Spain"></option>
+    <option value="Seville, Spain"></option>
+    <option value="Málaga, Spain"></option>
+    <option value="Bilbao, Spain"></option>
+    <option value="Naples, Italy"></option>
+    <option value="Turin, Italy"></option>
+    <option value="Florence, Italy"></option>
+    <option value="Bologna, Italy"></option>
+    <option value="Venice, Italy"></option>
+    <option value="Porto, Portugal"></option>
+    <option value="Thessaloniki, Greece"></option>
+    <option value="Gothenburg, Sweden"></option>
+    <option value="Malmö, Sweden"></option>
+    <option value="Aarhus, Denmark"></option>
+    <option value="Bergen, Norway"></option>
+    <option value="Tampere, Finland"></option>
+    <option value="Reykjavik, Iceland"></option>
+    <option value="Krakow, Poland"></option>
+    <option value="Wroclaw, Poland"></option>
+    <option value="Gdansk, Poland"></option>
+    <option value="Brno, Czech Republic"></option>
+    <option value="Cluj-Napoca, Romania"></option>
+    <option value="Sofia, Bulgaria"></option>
+    <option value="Belgrade, Serbia"></option>
+    <option value="Zagreb, Croatia"></option>
+    <option value="Split, Croatia"></option>
+    <option value="Ljubljana, Slovenia"></option>
+    <option value="Bratislava, Slovakia"></option>
+    <option value="Tallinn, Estonia"></option>
+    <option value="Riga, Latvia"></option>
+    <option value="Vilnius, Lithuania"></option>
+    <option value="Kyiv, Ukraine"></option>
+    <option value="Lviv, Ukraine"></option>
+    <option value="St. Petersburg, Russia"></option>
+    <option value="Kyoto, Japan"></option>
+    <option value="Fukuoka, Japan"></option>
+    <option value="Sapporo, Japan"></option>
+    <option value="Kaohsiung, Taiwan"></option>
+    <option value="Chiang Mai, Thailand"></option>
+    <option value="Phuket, Thailand"></option>
+    <option value="Bali, Indonesia"></option>
+    <option value="Phnom Penh, Cambodia"></option>
+    <option value="Brasília, Brazil"></option>
+    <option value="Salvador, Brazil"></option>
+    <option value="Belo Horizonte, Brazil"></option>
+    <option value="Curitiba, Brazil"></option>
+    <option value="Córdoba, Argentina"></option>
+    <option value="Mendoza, Argentina"></option>
+    <option value="Valparaíso, Chile"></option>
+    <option value="Cusco, Peru"></option>
+    <option value="Cartagena, Colombia"></option>
+    <option value="Guayaquil, Ecuador"></option>
+    <option value="Cancún, Mexico"></option>
+    <option value="Tijuana, Mexico"></option>
+    <option value="San José, Costa Rica"></option>
+    <option value="Guatemala City, Guatemala"></option>
+    <option value="Havana, Cuba"></option>
+    <option value="San Juan, Puerto Rico"></option>
+    <option value="Kingston, Jamaica"></option>
+    <option value="Nassau, Bahamas"></option>
+    <option value="Marrakech, Morocco"></option>
+    <option value="Suva, Fiji"></option>
+    <option value="Port Moresby, Papua New Guinea"></option>
+  </datalist>
 </body>
 </html>
