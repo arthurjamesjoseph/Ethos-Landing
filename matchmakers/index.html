@@ -526,6 +526,26 @@
   </div>
 
   <!-- Crop modal: pan + zoom an image into the exact shape it will occupy. -->
+  <!-- Guest compatibility quiz — the matchmaker sits with their client and
+       answers the full Ethos questionnaire. Introductions unlock when done. -->
+  <div class="crop-overlay hidden" id="quizOverlay" style="align-items:stretch;padding:0;">
+    <div style="background:var(--color-card);width:100%;max-width:640px;margin:0 auto;display:flex;flex-direction:column;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:1px solid var(--color-input-border);">
+        <div>
+          <h3 id="quizTitle" style="font-family:var(--font-serif);font-size:1.125rem;font-weight:600;">Compatibility quiz</h3>
+          <p class="cand-meta" id="quizProgress"></p>
+        </div>
+        <button class="req-dismiss" id="quizClose">Close</button>
+      </div>
+      <div id="quizBody" style="flex:1;overflow-y:auto;padding:1rem 1.25rem 2rem;"></div>
+      <div style="display:flex;gap:0.5rem;justify-content:flex-end;padding:0.875rem 1.25rem;border-top:1px solid var(--color-input-border);">
+        <span class="form-error" id="quizError" style="margin:0;align-self:center;text-align:left;flex:1;"></span>
+        <button class="intro-btn" id="quizSaveBtn">Save progress</button>
+        <button class="search-btn" id="quizFinishBtn" style="width:auto;padding:0.5rem 1.25rem;">Finish</button>
+      </div>
+    </div>
+  </div>
+
   <div class="crop-overlay hidden" id="cropOverlay">
     <div class="crop-modal">
       <h3 id="cropTitle">Adjust your photo</h3>
@@ -1229,21 +1249,181 @@
     // ── Off-Ethos clients (guest profiles) ────────────────────────────────
     let myGuests = [];
     function guestCardHtml(g) {
+      const quizDone = !!g.quiz_completed_at;
       return '<div class="cand" data-gid="' + esc(g.id) + '">' +
         '<div class="cand-row">' +
           '<div class="cand-left">' +
             (g.headshot_url ? '<img class="cand-photo" src="' + esc(g.headshot_url) + '" alt="">' : '<div class="cand-photo-empty"></div>') +
-            '<div style="min-width:0;"><div class="cand-name">' + esc(g.first_name) + ' <span class="status-chip">off Ethos</span></div>' +
+            '<div style="min-width:0;"><div class="cand-name">' + esc(g.first_name) + ' <span class="status-chip">off Ethos</span> ' +
+            (quizDone
+              ? '<span class="status-chip" style="background:#e8f0e4;color:#3d5c33;">Compatibility ✓</span>'
+              : '<span class="status-chip" style="background:#f3e8d8;color:#8a6d3b;">Compatibility incomplete</span>') + '</div>' +
             '<div class="cand-meta">' + [g.age, g.city_name ? esc(String(g.city_name).split(',')[0]) : null, g.occupation ? esc(g.occupation) : null, g.height_cm ? g.height_cm + ' cm' : null].filter(Boolean).join(' · ') + '</div></div>' +
           '</div>' +
           '<span style="white-space:nowrap;">' +
-            '<button class="intro-btn guest-introduce" data-name="' + esc(g.first_name) + '">Introduce to a member</button> ' +
+            '<button class="intro-btn guest-quiz" data-name="' + esc(g.first_name) + '">' + (quizDone ? 'Review quiz' : 'Compatibility quiz') + '</button> ' +
+            (quizDone
+              ? '<button class="intro-btn guest-introduce" data-name="' + esc(g.first_name) + '">Introduce to a member</button> '
+              : '<button class="intro-btn" disabled title="Complete their compatibility quiz first" style="opacity:0.45;cursor:not-allowed;">Introduce to a member</button> ') +
             '<button class="intro-btn guest-edit">Edit</button> ' +
             '<button class="req-dismiss guest-remove">Remove</button>' +
           '</span>' +
         '</div>' +
       '</div>';
     }
+
+    // ── Guest compatibility quiz runner ──────────────────────────────────
+    // Renders the live question set generically (single/multi select, range
+    // slider) with conditional show/hide and optional dealbreaker flags —
+    // the matchmaker answers on the client's behalf, sitting together.
+    const quiz = { guestId: null, questions: [], answers: new Map() };
+
+    function quizVisible(q) {
+      if (!q.is_conditional || !q.condition_logic) return true;
+      const dep = quiz.answers.get(q.condition_logic.depends_on);
+      if (!dep) return false;
+      const val = String(dep.answer_value != null ? dep.answer_value : (dep.answer_key != null ? dep.answer_key : ''));
+      return (q.condition_logic.show_if || []).some(v => v === val || v === String(dep.answer_key != null ? dep.answer_key : ''));
+    }
+
+    function renderQuiz() {
+      const visible = quiz.questions.filter(quizVisible);
+      const answered = visible.filter(q => quiz.answers.has(q.question_key)).length;
+      document.getElementById('quizProgress').textContent = answered + ' of ' + visible.length + ' answered';
+      document.getElementById('quizBody').innerHTML = visible.map(q => {
+        const a = quiz.answers.get(q.question_key);
+        let controls = '';
+        if (q.question_type === 'single_select') {
+          controls = (q.options || []).map((label, i) =>
+            '<button type="button" class="intro-btn qz-opt' + (a && a.answer_key === q.scoring_options[i] ? ' qz-on' : '') + '" data-q="' + esc(q.question_key) + '" data-k="' + esc(q.scoring_options[i]) + '"' +
+            (a && a.answer_key === q.scoring_options[i] ? ' style="background:var(--color-gold);color:#fff;border-color:var(--color-gold);"' : '') + '>' + esc(label) + '</button>'
+          ).join(' ');
+        } else if (q.question_type === 'multi_select') {
+          controls = (q.options || []).map((label, i) => {
+            const on = a && (a.answer_keys || []).includes(q.scoring_options[i]);
+            return '<button type="button" class="intro-btn qz-multi' + (on ? ' qz-on' : '') + '" data-q="' + esc(q.question_key) + '" data-k="' + esc(q.scoring_options[i]) + '"' +
+            (on ? ' style="background:var(--color-gold);color:#fff;border-color:var(--color-gold);"' : '') + '>' + esc(label) + '</button>';
+          }).join(' ');
+        } else if (q.question_type === 'range_slider') {
+          // Range sliders store KEY SPANS like the app does (a single key or
+          // the run of keys the range covers) — from/to selects over the
+          // scoring keys, labelled from slider_config.
+          const keys = q.scoring_options || [];
+          const labels = (q.slider_config && q.slider_config.labels) || keys;
+          const cur = a && a.answer_keys && a.answer_keys.length
+            ? [keys.indexOf(a.answer_keys[0]), keys.indexOf(a.answer_keys[a.answer_keys.length - 1])]
+            : (a && a.answer_key ? [keys.indexOf(a.answer_key), keys.indexOf(a.answer_key)] : [null, null]);
+          const optHtml = (sel, placeholder) =>
+            '<option value=""' + (sel == null ? ' selected' : '') + '>' + placeholder + '</option>' +
+            keys.map((k, i) =>
+              '<option value="' + i + '"' + (sel === i ? ' selected' : '') + '>' + esc(labels[i] != null ? labels[i] : k) + '</option>').join('');
+          controls = '<span class="cand-meta">From</span> <select class="form-input qz-span" data-q="' + esc(q.question_key) + '" data-side="0" style="display:inline-block;width:auto;">' + optHtml(cur[0], 'Choose') + '</select>' +
+            ' <span class="cand-meta">to</span> <select class="form-input qz-span" data-q="' + esc(q.question_key) + '" data-side="1" style="display:inline-block;width:auto;">' + optHtml(cur[1], 'Choose') + '</select>';
+        }
+        const dbHtml = q.allows_dealbreaker
+          ? '<label class="cand-meta" style="display:block;margin-top:0.375rem;"><input type="checkbox" class="qz-db" data-q="' + esc(q.question_key) + '"' + (a && a.is_dealbreaker ? ' checked' : '') + '> This is a dealbreaker for them</label>'
+          : '';
+        return '<div style="margin-bottom:1.25rem;">' +
+          '<div style="font-family:var(--font-serif);font-weight:600;margin-bottom:0.375rem;">' + esc(q.question_text) + '</div>' +
+          (q.help_text ? '<div class="cand-meta" style="margin-bottom:0.375rem;">' + esc(q.help_text) + '</div>' : '') +
+          '<div style="display:flex;flex-wrap:wrap;gap:0.375rem;">' + controls + '</div>' + dbHtml +
+        '</div>';
+      }).join('');
+    }
+
+    async function openGuestQuiz(guestId, name) {
+      document.getElementById('quizError').textContent = '';
+      document.getElementById('quizTitle').textContent = 'Compatibility quiz — ' + name;
+      document.getElementById('quizBody').innerHTML = '<p class="empty-note">Loading…</p>';
+      document.getElementById('quizOverlay').classList.remove('hidden');
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const r = await portal('guest_quiz', { token, guest_id: guestId });
+        quiz.guestId = guestId;
+        quiz.questions = r.questions || [];
+        quiz.answers = new Map((r.answers || []).map(a => [a.question_key, a]));
+        renderQuiz();
+      } catch (err) {
+        document.getElementById('quizBody').innerHTML = '<p class="empty-note" style="color:var(--color-error);">' + esc(err.message) + '</p>';
+      }
+    }
+
+    document.getElementById('quizBody').addEventListener('click', (e) => {
+      const opt = e.target.closest('.qz-opt');
+      if (opt) {
+        quiz.answers.set(opt.dataset.q, { question_key: opt.dataset.q, answer_key: opt.dataset.k,
+          answer_value: opt.textContent,
+          is_dealbreaker: (quiz.answers.get(opt.dataset.q) || {}).is_dealbreaker === true });
+        renderQuiz();
+        return;
+      }
+      const multi = e.target.closest('.qz-multi');
+      if (multi) {
+        const cur = quiz.answers.get(multi.dataset.q) || { question_key: multi.dataset.q, answer_keys: [], is_dealbreaker: false };
+        const ks = new Set(cur.answer_keys || []);
+        if (ks.has(multi.dataset.k)) ks.delete(multi.dataset.k); else ks.add(multi.dataset.k);
+        if (ks.size) { cur.answer_keys = [...ks]; quiz.answers.set(multi.dataset.q, cur); }
+        else quiz.answers.delete(multi.dataset.q);
+        renderQuiz();
+      }
+    });
+    document.getElementById('quizBody').addEventListener('change', (e) => {
+      if (e.target.classList.contains('qz-span')) {
+        const key = e.target.dataset.q;
+        const q = quiz.questions.find(x => x.question_key === key);
+        const keys = q.scoring_options || [];
+        const cur = quiz.answers.get(key) || { question_key: key, is_dealbreaker: false };
+        const bounds = cur.answer_keys && cur.answer_keys.length
+          ? [keys.indexOf(cur.answer_keys[0]), keys.indexOf(cur.answer_keys[cur.answer_keys.length - 1])]
+          : [null, null];
+        const side = Number(e.target.dataset.side);
+        bounds[side] = e.target.value === '' ? null : Number(e.target.value);
+        if (bounds[0] == null && bounds[1] != null) bounds[0] = bounds[1];
+        if (bounds[1] == null && bounds[0] != null) bounds[1] = bounds[0];
+        if (bounds[0] != null && bounds[0] > bounds[1]) {
+          if (side === 0) bounds[1] = bounds[0]; else bounds[0] = bounds[1];
+        }
+        if (bounds[0] == null) { quiz.answers.delete(key); }
+        else {
+          cur.answer_keys = keys.slice(bounds[0], bounds[1] + 1);
+          delete cur.answer_key;
+          quiz.answers.set(key, cur);
+        }
+        renderQuiz();
+      }
+      if (e.target.classList.contains('qz-db')) {
+        const cur = quiz.answers.get(e.target.dataset.q);
+        if (cur) { cur.is_dealbreaker = e.target.checked; quiz.answers.set(e.target.dataset.q, cur); }
+      }
+    });
+
+    async function saveGuestQuiz(finish) {
+      const errEl = document.getElementById('quizError');
+      errEl.textContent = '';
+      const btn = document.getElementById(finish ? 'quizFinishBtn' : 'quizSaveBtn');
+      btn.disabled = true;
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        // Only send answers for currently-visible questions so stale answers
+        // to hidden conditionals don't linger.
+        const visibleKeys = new Set(quiz.questions.filter(quizVisible).map(q => q.question_key));
+        const payload = [...quiz.answers.values()].filter(a => visibleKeys.has(a.question_key));
+        const r = await portal('save_guest_quiz', { token, guest_id: quiz.guestId, answers: payload });
+        if (finish && !r.completed) {
+          errEl.textContent = r.missing + ' question' + (r.missing === 1 ? '' : 's') + ' still to answer.';
+        } else {
+          document.getElementById('quizOverlay').classList.add('hidden');
+          loadGuests();
+        }
+      } catch (err) {
+        errEl.textContent = err.message;
+      } finally { btn.disabled = false; }
+    }
+    document.getElementById('quizSaveBtn').addEventListener('click', () => saveGuestQuiz(false));
+    document.getElementById('quizFinishBtn').addEventListener('click', () => saveGuestQuiz(true));
+    document.getElementById('quizClose').addEventListener('click', () => {
+      document.getElementById('quizOverlay').classList.add('hidden');
+    });
     async function loadGuests() {
       try {
         const token = localStorage.getItem(TOKEN_KEY);
@@ -1323,6 +1503,10 @@
       const card = e.target.closest('.cand');
       if (!card) return;
       const gid = card.dataset.gid;
+      if (e.target.classList.contains('guest-quiz')) {
+        openGuestQuiz(gid, e.target.dataset.name || 'your client');
+        return;
+      }
       if (e.target.classList.contains('guest-introduce')) {
         guestIntroActive = { id: gid, name: e.target.dataset.name || 'your client' };
         guestPick = null;
@@ -1468,7 +1652,10 @@
             '<div class="cand-meta">' + [c.age, c.city ? esc(String(c.city).split(',')[0]) : null, c.occupation ? esc(c.occupation) : null, c.height_cm ? c.height_cm + ' cm' : null].filter(Boolean).join(' · ') + '</div>' +
             (c.member_note ? '<div class="req-note">In their words: “' + esc(c.member_note) + '”</div>' : '') + '</div>' +
           '</div>' +
-          '<button class="intro-btn client-profile-btn">View profile</button>' +
+          '<span style="white-space:nowrap;">' +
+            '<button class="intro-btn client-profile-btn">View profile</button> ' +
+            '<button class="req-dismiss client-release">Release</button>' +
+          '</span>' +
         '</div>' +
         '<div class="client-profile-panel hidden"></div>' +
       '</div>';
@@ -1515,6 +1702,22 @@
     });
 
     document.getElementById('clientsList').addEventListener('click', async (e) => {
+      if (e.target.classList.contains('client-release')) {
+        // Two-tap confirm: ending the relationship removes your access to
+        // their profile — they stay on Ethos untouched.
+        if (e.target.dataset.arm !== '1') {
+          e.target.dataset.arm = '1'; e.target.textContent = 'Release — are you sure?';
+          setTimeout(() => { e.target.dataset.arm = ''; e.target.textContent = 'Release'; }, 4000);
+          return;
+        }
+        e.target.disabled = true;
+        try {
+          const token = localStorage.getItem(TOKEN_KEY);
+          await portal('release_client', { token, user_id: e.target.closest('.cand').dataset.uid });
+          loadClients();
+        } catch (err) { alert(err.message); e.target.disabled = false; }
+        return;
+      }
       if (!e.target.classList.contains('client-profile-btn')) return;
       const cand = e.target.closest('.cand');
       const panel = cand.querySelector('.client-profile-panel');
@@ -1671,7 +1874,9 @@
               (c.is_client ? ' <span class="status-chip">your client</span>' : '') + '</div>' +
               (meta ? '<div class="cand-meta">' + meta + '</div>' : '') +
               (c.member_note ? '<div class="req-note">In their words: “' + esc(c.member_note) + '”</div>' : '') + '</div>' +
-              (c.is_client ? '<button class="intro-btn consult-profile-btn" data-uid="' + esc(c.user_id) + '" style="margin-left:auto;">View profile</button>' : '') +
+              (c.is_client
+                ? '<button class="intro-btn consult-profile-btn" data-uid="' + esc(c.user_id) + '" style="margin-left:auto;">View profile</button>'
+                : (live ? '<button class="intro-btn consult-invite-client" data-uid="' + esc(c.user_id) + '" style="margin-left:auto;">Invite as a client</button>' : '')) +
             '</div>';
           let bodyHtml = '';
           if (c.status === 'requested') {
@@ -1714,6 +1919,19 @@
 
     document.getElementById('consultsList').addEventListener('click', async (e) => {
       const token = localStorage.getItem(TOKEN_KEY);
+      // Take them on after the call: sends a client invite they accept in
+      // the app — acceptance is what unlocks their profile to you.
+      if (e.target.classList.contains('consult-invite-client')) {
+        e.target.disabled = true; e.target.textContent = 'Inviting…';
+        try {
+          await portal('invite_client', { token, user_id: e.target.dataset.uid });
+          e.target.textContent = 'Invited — they\'ll confirm in the app';
+        } catch (err) {
+          alert(err.message);
+          e.target.disabled = false; e.target.textContent = 'Invite as a client';
+        }
+        return;
+      }
       // View a client's profile straight from the consultation row.
       if (e.target.classList.contains('consult-profile-btn')) {
         const req = e.target.closest('.req');
