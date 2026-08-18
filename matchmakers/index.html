@@ -479,6 +479,14 @@
           <div id="guestForm" class="hidden guest-overlay">
             <div class="guest-modal">
             <h3 class="guest-modal-title">Client details</h3>
+            <label class="pair-label" style="margin-top:0;">Already on Ethos? Find them by name or email</label>
+            <div class="share-row" style="margin-bottom:0.25rem;">
+              <input class="form-input" id="clientSearchInput" maxlength="120" placeholder="e.g. Priya, or priya@gmail.com">
+              <button class="search-btn" id="clientSearchBtn" style="white-space:nowrap;">Find</button>
+            </div>
+            <div id="clientSearchResults"></div>
+            <p class="form-error" id="clientSearchError" style="min-height:0;margin:0;"></p>
+            <div class="cand-meta" style="margin:0.875rem 0 0.5rem;text-align:center;">— or create a card for someone who isn't on Ethos —</div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;">
               <div><div class="cand-meta">First name</div><input class="form-input" id="gFirst" maxlength="60"></div>
               <div><div class="cand-meta">Gender</div><select class="form-input" id="gGender"><option value="">—</option><option value="female">Woman</option><option value="male">Man</option></select></div>
@@ -1138,7 +1146,7 @@
       if (picks.length === 1) {
         const [pickedUid, pickedName] = picks[0];
         const clientOpts = (myClients || [])
-          .filter((c) => !c.paused && c.user_id !== pickedUid)
+          .filter((c) => !c.paused && c.status !== 'pending' && c.user_id !== pickedUid)
           .map((c) => '<option value="m:' + esc(c.user_id) + '" data-name="' + esc(c.first_name) + '">' +
             esc(c.first_name) + (c.city ? ' · ' + esc(String(c.city).split(',')[0]) : '') + ' — on Ethos</option>')
           .join('');
@@ -1180,7 +1188,7 @@
       const sel = document.getElementById('introForSel');
       const cur = sel.value;
       sel.innerHTML = '<option value="">Select a client (optional)</option>' +
-        (myClients || []).filter((c) => !c.paused)
+        (myClients || []).filter((c) => !c.paused && c.status !== 'pending')
           .map((c) => '<option value="m:' + esc(c.user_id) + '" data-name="' + esc(c.first_name) + '">' +
             esc(c.first_name) + (c.city ? ' · ' + esc(String(c.city).split(',')[0]) : '') + ' — on Ethos</option>').join('') +
         (myGuests || [])
@@ -1619,7 +1627,58 @@
       document.getElementById('gError').textContent = '';
       document.getElementById('gOk').textContent = '';
       document.getElementById('gHeightHint').textContent = '';
+      document.getElementById('clientSearchInput').value = '';
+      document.getElementById('clientSearchResults').innerHTML = '';
+      document.getElementById('clientSearchError').textContent = '';
     }
+    async function runClientSearch() {
+      const errEl = document.getElementById('clientSearchError');
+      const resEl = document.getElementById('clientSearchResults');
+      errEl.textContent = ''; resEl.innerHTML = '';
+      const q = document.getElementById('clientSearchInput').value.trim();
+      if (q.length < 3) { errEl.textContent = 'Type at least 3 characters.'; return; }
+      const btn = document.getElementById('clientSearchBtn');
+      btn.disabled = true; btn.textContent = 'Finding…';
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const r = await portal('client_search', { token, query: q });
+        if (!(r.results || []).length) {
+          resEl.innerHTML = '<p class="empty-note" style="margin-top:0.375rem;">No member found' + (q.includes('@') ? ' with that exact email.' : ' by that name in your cities.') + '</p>';
+          return;
+        }
+        resEl.innerHTML = r.results.map(m =>
+          '<div class="day-slot"><span>' +
+            '<span class="day-slot-time">' + esc(m.first_name || 'Member') + '</span> ' +
+            '<span class="cand-meta">' + [m.age, m.city ? esc(String(m.city).split(',')[0]) : null].filter(Boolean).join(' · ') + '</span></span>' +
+          (m.relationship === 'active'
+            ? '<span class="status-chip status-accepted">already your client</span>'
+            : m.relationship === 'pending'
+              ? '<span class="status-chip status-pending">invited</span>'
+              : '<button class="intro-btn invite-client-btn" data-uid="' + esc(m.user_id) + '">Invite as client</button>') +
+          '</div>').join('');
+      } catch (err) {
+        errEl.textContent = err.message;
+      } finally { btn.disabled = false; btn.textContent = 'Find'; }
+    }
+    document.getElementById('clientSearchBtn').addEventListener('click', runClientSearch);
+    document.getElementById('clientSearchInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); runClientSearch(); }
+    });
+    document.getElementById('clientSearchResults').addEventListener('click', async (e) => {
+      const btn = e.target.closest('.invite-client-btn');
+      if (!btn) return;
+      btn.disabled = true; btn.textContent = 'Inviting…';
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        await portal('invite_client', { token, user_id: btn.dataset.uid });
+        btn.outerHTML = '<span class="status-chip status-pending">invited — they confirm in the app</span>';
+        loadClients();
+      } catch (err) {
+        document.getElementById('clientSearchError').textContent = err.message;
+        btn.disabled = false; btn.textContent = 'Invite as client';
+      }
+    });
+
     document.getElementById('guestAddBtn').addEventListener('click', () => {
       resetGuestForm();
       document.getElementById('guestForm').classList.remove('hidden');
@@ -1856,15 +1915,18 @@
     // ── Your clients ──────────────────────────────────────────────────────
     const APP_BASE = IS_DEV ? 'http://localhost:8082' : 'https://app.ethosapp.co';
     function clientCardHtml(c) {
+      const pending = c.status === 'pending';
       return '<div class="cand" data-uid="' + esc(c.user_id) + '">' +
         '<div class="cand-row">' +
           '<div class="cand-left">' +
             (c.photo_url ? '<img class="cand-photo" src="' + esc(c.photo_url) + '" alt="">' : '<div class="cand-photo-empty"></div>') +
-            '<div style="min-width:0;"><div class="cand-name name-link client-name-link" role="button" tabindex="0" title="View profile">' + esc(c.first_name) + (c.paused ? ' <span class="status-chip">paused</span>' : '') + '</div>' +
+            '<div style="min-width:0;"><div class="cand-name' + (pending ? '' : ' name-link client-name-link" role="button" tabindex="0" title="View profile') + '">' + esc(c.first_name) +
+            (pending ? ' <span class="status-chip status-pending">invited · awaiting confirmation</span>' : '') +
+            (c.paused ? ' <span class="status-chip">paused</span>' : '') + '</div>' +
             '<div class="cand-meta">' + [c.age, c.city ? esc(String(c.city).split(',')[0]) : null, c.occupation ? esc(c.occupation) : null, c.height_cm ? c.height_cm + ' cm' : null].filter(Boolean).join(' · ') + '</div>' +
             (c.member_note ? '<div class="req-note">In their words: “' + esc(c.member_note) + '”</div>' : '') + '</div>' +
           '</div>' +
-          '<button class="intro-btn client-profile-btn">View profile</button>' +
+          (pending ? '' : '<button class="intro-btn client-profile-btn">View profile</button>') +
         '</div>' +
       '</div>';
     }
@@ -1882,7 +1944,7 @@
         // entirely until there are actual clients to pick from.
         const sel = document.getElementById('briefClientSelect');
         sel.innerHTML = '<option value="">They\'re not on Ethos yet</option>' +
-          myClients.map(c => '<option value="' + esc(c.user_id) + '">' + esc(c.first_name) + (c.city ? ' · ' + esc(String(c.city).split(',')[0]) : '') + ' (your client)</option>').join('');
+          myClients.filter(c => c.status !== 'pending').map(c => '<option value="' + esc(c.user_id) + '">' + esc(c.first_name) + (c.city ? ' · ' + esc(String(c.city).split(',')[0]) : '') + ' (your client)</option>').join('');
         document.getElementById('briefClientPicker').classList.toggle('hidden', !myClients.length);
         document.getElementById('clientsList').innerHTML = myClients.map(clientCardHtml).join('');
         updateClientsEmpty();
