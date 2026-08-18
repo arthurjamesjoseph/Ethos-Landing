@@ -1942,7 +1942,9 @@
             '<div class="cand-meta">' + [c.age, c.city ? esc(String(c.city).split(',')[0]) : null, c.occupation ? esc(c.occupation) : null, c.height_cm ? c.height_cm + ' cm' : null].filter(Boolean).join(' · ') + '</div>' +
             (c.member_note ? '<div class="req-note">In their words: “' + esc(c.member_note) + '”</div>' : '') + '</div>' +
           '</div>' +
-          (pending ? '' : '<button class="intro-btn client-profile-btn">View profile</button>') +
+          (pending
+            ? '<button class="intro-btn danger invite-cancel-btn">Remove</button>'
+            : '<button class="intro-btn client-profile-btn">View profile</button>') +
         '</div>' +
       '</div>';
     }
@@ -1985,6 +1987,20 @@
     });
 
     document.getElementById('clientsList').addEventListener('click', async (e) => {
+      if (e.target.classList.contains('invite-cancel-btn')) {
+        if (e.target.dataset.arm !== '1') {
+          e.target.dataset.arm = '1'; e.target.textContent = 'Remove — are you sure?';
+          setTimeout(() => { e.target.dataset.arm = ''; e.target.textContent = 'Remove'; }, 4000);
+          return;
+        }
+        e.target.disabled = true;
+        try {
+          const token = localStorage.getItem(TOKEN_KEY);
+          await portal('cancel_client_invite', { token, user_id: e.target.closest('.cand').dataset.uid });
+          loadClients();
+        } catch (_) { e.target.disabled = false; }
+        return;
+      }
       if (!e.target.classList.contains('client-profile-btn') && !e.target.closest('.client-name-link')) return;
       const cand = e.target.closest('.cand');
       const name = cand.querySelector('.cand-name');
