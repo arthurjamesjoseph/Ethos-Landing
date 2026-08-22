@@ -817,7 +817,7 @@
         '<div class="cand-row">' +
           '<div class="cand-left">' +
             (c.photo_url ? '<img class="cand-photo" src="' + esc(c.photo_url) + '" alt="">' : '<div class="cand-photo-empty"></div>') +
-            '<div style="min-width:0;"><div class="cand-name">' + esc(c.first_name) + '</div>' +
+            '<div style="min-width:0;"><div class="cand-name">' + esc(c.first_name) + (c.paused ? ' <span class="status-chip" title="Not dating actively right now — but open to the right introduction">on a break</span>' : '') + '</div>' +
             '<div class="cand-meta">' + [c.age, c.city ? esc(String(c.city).split(',')[0]) : null, c.occupation ? esc(c.occupation) : null, c.height_cm ? c.height_cm + ' cm' : null].filter(Boolean).join(' · ') + '</div>' +
             (c.member_note ? '<div class="req-note">In their words: “' + esc(c.member_note) + '”</div>' : '') +
             (extraNote ? '<div class="req-note">' + esc(extraNote) + '</div>' : '') + '</div>' +
