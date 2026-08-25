@@ -453,6 +453,19 @@
           <input class="form-input" id="profTagline" maxlength="80" placeholder="e.g. Marriage-minded matchmaking, done personally">
           <label class="pair-label">Contact email (shown on your profile in the app)</label>
           <input class="form-input" id="profContactEmail" type="email" maxlength="160" placeholder="e.g. hello@yourcompany.com">
+          <label class="pair-label">Website (adds a "Visit my website" button to your profile)</label>
+          <input class="form-input" id="profWebsite" type="url" maxlength="300" placeholder="https://yourcompany.com">
+          <label class="pair-label">Consultation bookings</label>
+          <select class="form-input" id="profBookingMode">
+            <option value="in_app">In the Ethos app — free video consultation, members book your published times</option>
+            <option value="external">On my website — members are sent to my own booking page</option>
+          </select>
+          <p id="profBookingHintInApp" style="font-family:var(--font-serif);font-size:0.8125rem;color:var(--color-text-light);margin-top:0.25rem;">The "Book a consultation" button appears once you've published available times in the Availability section — no times, no button.</p>
+          <div id="profBookingUrlWrap" class="hidden">
+            <label class="pair-label">Booking link</label>
+            <input class="form-input" id="profBookingUrl" type="url" maxlength="300" placeholder="https://yourcompany.com/book">
+            <p style="font-family:var(--font-serif);font-size:0.8125rem;color:var(--color-text-light);margin-top:0.25rem;">In-app consultations are free while payments are being built; external booking is a temporary bridge and will move in-app later.</p>
+          </div>
           <label class="pair-label">Specialties (comma-separated)</label>
           <input class="form-input" id="profSpecialties" placeholder="Marriage-minded, Cross-city">
           <div class="grid-2" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;">
@@ -1154,6 +1167,11 @@
         document.getElementById('profBio').value = p.bio || '';
         document.getElementById('profTagline').value = p.tagline || '';
         document.getElementById('profContactEmail').value = p.contact_email || '';
+        document.getElementById('profWebsite').value = p.website_url || '';
+        document.getElementById('profBookingMode').value = p.booking_mode || 'in_app';
+        document.getElementById('profBookingUrl').value = p.booking_url || '';
+        document.getElementById('profBookingUrlWrap').classList.toggle('hidden', (p.booking_mode || 'in_app') !== 'external');
+        document.getElementById('profBookingHintInApp').classList.toggle('hidden', (p.booking_mode || 'in_app') === 'external');
         document.getElementById('profYears').value = p.years_experience != null ? p.years_experience : '';
         document.getElementById('profMatches').value = p.matches_made || '';
         document.getElementById('profLanguages').value = p.languages || '';
@@ -1209,6 +1227,12 @@
       });
       e.target.value = '';
     });
+    // External booking shows the link field; in-app is the (free) default.
+    document.getElementById('profBookingMode').addEventListener('change', (e) => {
+      const external = e.target.value === 'external';
+      document.getElementById('profBookingUrlWrap').classList.toggle('hidden', !external);
+      document.getElementById('profBookingHintInApp').classList.toggle('hidden', external);
+    });
     document.getElementById('profSaveBtn').addEventListener('click', async () => {
       const btn = document.getElementById('profSaveBtn');
       const errEl = document.getElementById('profError');
@@ -1225,6 +1249,9 @@
           bio: document.getElementById('profBio').value.trim(),
           tagline: document.getElementById('profTagline').value.trim(),
           contact_email: document.getElementById('profContactEmail').value.trim(),
+          website_url: document.getElementById('profWebsite').value.trim(),
+          booking_mode: document.getElementById('profBookingMode').value,
+          booking_url: document.getElementById('profBookingUrl').value.trim(),
           matches_made: document.getElementById('profMatches').value.trim(),
           languages: document.getElementById('profLanguages').value.trim(),
           approach: document.getElementById('profApproach').value.trim(),
