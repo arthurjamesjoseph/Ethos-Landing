@@ -260,14 +260,25 @@
             <img id="evImagePreview" class="hidden" style="margin-top:0.5rem;max-height:140px;border-radius:10px;" alt="">
             <p style="font-family:var(--font-serif);font-size:0.8125rem;color:var(--color-text-light);margin-top:0.375rem;">The Ethos team crops it for the app during review.</p>
           </div>
-          <div class="grid-3">
+          <div class="field"><label class="form-label">Ticketing</label>
+            <select class="form-select" id="evTicketing">
+              <option value="native">Ethos RSVP — guests reserve in the app</option>
+              <option value="external">External link — tickets on Luma or another site</option>
+            </select>
+          </div>
+          <div class="field hidden" id="evExternalUrlField">
+            <label class="form-label">Ticket link</label>
+            <input class="form-input" id="evExternalUrl" placeholder="https://lu.ma/…">
+            <p style="font-family:var(--font-serif);font-size:0.8125rem;color:var(--color-text-light);margin-top:0.375rem;">Guests get tickets at this link — capacity and price live on your page, so those fields aren't needed here.</p>
+          </div>
+          <div class="grid-3" id="evNativeCaps">
             <div class="field"><label class="form-label">Capacity</label><input class="form-input" id="evCapacity" type="number" min="1" value="12"></div>
             <div class="field"><label class="form-label">Men's tickets</label><input class="form-input" id="evMen" type="number" min="0" placeholder="No split"></div>
             <div class="field"><label class="form-label">Women's tickets</label><input class="form-input" id="evWomen" type="number" min="0" placeholder="No split"></div>
           </div>
           <div class="grid-3">
-            <div class="field"><label class="form-label">Price</label><input class="form-input" id="evPrice" type="number" min="0" step="0.01" placeholder="0"></div>
-            <div class="field"><label class="form-label">Currency</label><select class="form-select" id="evCurrency"><option>INR</option><option>USD</option></select></div>
+            <div class="field" id="evPriceField"><label class="form-label">Price</label><input class="form-input" id="evPrice" type="number" min="0" step="0.01" placeholder="0"></div>
+            <div class="field" id="evCurrencyField"><label class="form-label">Currency</label><select class="form-select" id="evCurrency"><option>INR</option><option>USD</option></select></div>
             <div class="field"><label class="form-label">Audience age (min–max)</label>
               <div style="display:flex;gap:0.5rem;">
                 <input class="form-input" id="evAgeMin" type="number" min="18" max="99" placeholder="Any">
@@ -436,10 +447,10 @@
         '</tr></thead><tbody>' +
         events.map(e =>
           '<tr data-event="' + esc(e.id) + '">' +
-          '<td><strong>' + esc(e.title) + '</strong><br><span style="color:var(--color-text-light);font-size:0.875rem;">' + esc(e.venue_name) + ' · ' + esc(String(e.city_name).split(',')[0]) + ' · ' + fmtMoney(e.price_minor, e.currency) + '</span></td>' +
+          '<td><strong>' + esc(e.title) + '</strong><br><span style="color:var(--color-text-light);font-size:0.875rem;">' + esc(e.venue_name) + ' · ' + esc(String(e.city_name).split(',')[0]) + ' · ' + (e.ticketing === 'external' ? 'External tickets' : fmtMoney(e.price_minor, e.currency)) + '</span></td>' +
           '<td>' + fmtDate(e.starts_at) + '</td>' +
           '<td><span class="status-chip status-' + esc(e.status) + '">' + esc(e.status) + '</span></td>' +
-          '<td>' + e.stats.total + '/' + e.capacity + '</td>' +
+          '<td>' + (e.ticketing === 'external' ? e.stats.total + ' going' : e.stats.total + '/' + e.capacity) + '</td>' +
           '<td class="hide-mobile">' + e.stats.men + ' M · ' + e.stats.women + ' W · ' + e.stats.checked_in + ' in</td>' +
           '<td><button class="mini-btn guests-btn">Guest list</button></td>' +
           '</tr>' +
@@ -535,6 +546,16 @@
       img.src = URL.createObjectURL(file);
     });
 
+    // External ticketing hides the fields the organizer's own page owns
+    // (capacity, gender split, price) and asks for the ticket link instead.
+    document.getElementById('evTicketing').addEventListener('change', (e) => {
+      const external = e.target.value === 'external';
+      document.getElementById('evExternalUrlField').classList.toggle('hidden', !external);
+      document.getElementById('evNativeCaps').classList.toggle('hidden', external);
+      document.getElementById('evPriceField').classList.toggle('hidden', external);
+      document.getElementById('evCurrencyField').classList.toggle('hidden', external);
+    });
+
     document.getElementById('submitEventBtn').addEventListener('click', async () => {
       const btn = document.getElementById('submitEventBtn');
       const errEl = document.getElementById('submitError');
@@ -560,13 +581,15 @@
           currency: document.getElementById('evCurrency').value,
           audience_age_min: document.getElementById('evAgeMin').value,
           audience_age_max: document.getElementById('evAgeMax').value,
+          ticketing: document.getElementById('evTicketing').value,
+          external_url: document.getElementById('evExternalUrl').value,
           image_b64: eventImageB64,
         });
         eventImageB64 = null;
         document.getElementById('evImage').value = '';
         document.getElementById('evImagePreview').classList.add('hidden');
         okEl.textContent = 'Submitted — the Ethos team will review and publish it.';
-        ['evTitle','evVenue','evAddress','evCategory','evDesc','evDetails','evWhen','evMen','evWomen','evPrice','evAgeMin','evAgeMax'].forEach(id => { document.getElementById(id).value = ''; });
+        ['evTitle','evVenue','evAddress','evCategory','evDesc','evDetails','evWhen','evMen','evWomen','evPrice','evAgeMin','evAgeMax','evExternalUrl'].forEach(id => { document.getElementById(id).value = ''; });
         const d = await portal('dashboard', { token });
         renderEvents(d.events || []);
       } catch (err) {
