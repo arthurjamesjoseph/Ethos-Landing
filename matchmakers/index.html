@@ -175,6 +175,18 @@
     }
     .tabpane { display: none; }
     .tabpane.visible { display: block; }
+    /* Pending-review (unlisted) mode: only the Profile tab is open. */
+    .pending-banner {
+      border: 1px solid #d9c9a3;
+      background: #f6efdf;
+      color: #5a4f3f;
+      border-radius: 10px;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+    .portal-tabs button:disabled { opacity: 0.35; cursor: default; }
     .crop-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(30, 26, 22, 0.55); display: flex; align-items: center; justify-content: center; padding: 1rem; }
     .crop-modal { background: var(--color-card); border-radius: 14px; padding: 1.5rem; box-shadow: 0 12px 48px rgba(0,0,0,0.25); max-width: 380px; width: 100%; }
     .crop-modal h3 { font-family: var(--font-serif); font-size: 1.125rem; font-weight: 600; margin-bottom: 0.75rem; }
@@ -279,7 +291,7 @@
               <button class="submit-btn" id="applyBtn">Send application</button>
               <p class="form-error" id="applyError"></p>
             </div>
-            <p class="form-ok hidden" id="applyOk" style="margin: 0;">Thank you — we review every application personally and will be in touch by email.</p>
+            <p class="form-ok hidden" id="applyOk" style="margin: 0;">Thank you — your workspace is ready. Sign in above with the same email to build your profile now; our team reviews it personally before it goes live to members.</p>
           </div>
         </div>
       </div>
@@ -291,6 +303,13 @@
           <button class="signout-btn" id="signoutBtn">Sign out</button>
         </div>
         <p class="dash-terms">Search opted-in members, and send introductions through Ethos.</p>
+
+        <div id="pendingBanner" class="pending-banner hidden">
+          <strong>Your profile isn't live yet.</strong> Finish it below —
+          your photo, bio, and services help most. Our team reviews every
+          profile personally, and we'll email you the moment members can
+          see you.
+        </div>
 
         <div class="privacy-strip">
           You see opted-in members' profiles and photos — never their
@@ -601,7 +620,7 @@
         body: JSON.stringify({ action, ...payload }),
       });
       const body = await res.json().catch(() => ({}));
-      if (!res.ok) throw Object.assign(new Error(body.error || 'Something went wrong.'), { status: res.status });
+      if (!res.ok) throw Object.assign(new Error(body.error || 'Something went wrong.'), { status: res.status, pending: !!body.pending_review });
       return body;
     }
 
@@ -761,11 +780,24 @@
         '<p class="card-note">Shared with you because ' + esc(p.first_name || 'this member') + ' accepted your introduction. Please treat it confidentially — it stays inside Ethos.</p>';
     }
 
+    // Pending-review mode: unlisted matchmakers can sign in but only the
+    // Profile tab works until an admin publishes them (server enforces this
+    // too — every other action returns 403 pending_review).
+    function applyLiveState(live) {
+      document.getElementById('pendingBanner').classList.toggle('hidden', live);
+      document.querySelector('.privacy-strip').classList.toggle('hidden', !live);
+      document.querySelectorAll('#portalTabs button').forEach(b => {
+        b.disabled = !live && b.dataset.tab !== 'profile';
+      });
+      if (!live) switchTab('profile');
+    }
+
     async function loadDashboard() {
       const token = localStorage.getItem(TOKEN_KEY);
       if (!token) { showAuth(); return; }
       try {
         const d = await portal('dashboard', { token });
+        applyLiveState(true);
         document.getElementById('welcomeName').textContent = 'Welcome, ' + d.matchmaker_name.split(' ')[0];
         renderPipeline(d.introductions || []);
         showDash();
@@ -778,6 +810,13 @@
         loadMyProfile();
         loadSlots();
       } catch (err) {
+        if (err.pending) {
+          // Signed in, not yet approved: profile-building mode only.
+          applyLiveState(false);
+          showDash();
+          loadMyProfile();
+          return;
+        }
         localStorage.removeItem(TOKEN_KEY);
         showAuth();
       }
@@ -1159,8 +1198,10 @@
       try {
         const token = localStorage.getItem(TOKEN_KEY);
         const r = await portal('my_profile', { token });
+        if (typeof r.live === 'boolean') applyLiveState(r.live);
         const p = r.profile;
         if (!p) return;
+        if (p.name) document.getElementById('welcomeName').textContent = 'Welcome, ' + p.name.split(' ')[0];
         document.getElementById('profName').value = p.name || '';
         document.getElementById('profCompany').value = p.company_name || '';
         document.getElementById('profSpecialties').value = (p.specialties || []).join(', ');
@@ -1271,7 +1312,9 @@
         if (logoB64) payload.logo_b64 = logoB64;
         if (bannerB64) payload.banner_b64 = bannerB64;
         await portal('update_profile', payload);
-        okEl.textContent = 'Saved — members see the update immediately.';
+        okEl.textContent = document.getElementById('pendingBanner').classList.contains('hidden')
+          ? 'Saved — members see the update immediately.'
+          : 'Saved — this is what our team will review before your profile goes live.';
       } catch (err) {
         errEl.textContent = err.message;
       } finally { btn.disabled = false; btn.textContent = 'Save profile'; }
